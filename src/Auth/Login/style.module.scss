@@ -91,7 +91,52 @@
   color: #7f7f7f;
 
   span {
+    padding-left: 10px;
     color: #4b72c2;
     cursor: pointer;
   }
+}
+
+.confirm {
+  padding-top: 30px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.confirm input[type="checkbox"] {
+  width: 25px;
+  height: 25px;
+  accent-color: #242424;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.confirm input[type="checkbox"]:checked {
+  background-color: #242424;
+}
+
+.confirm label {
+  font-size: 16px;
+  color: #7f7f7f;
+  font-family: Poppins;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0%;
+}
+
+.button {
+  background-color: #1d455a;
+  width: fit-content;
+  padding: 15px 60px;
+
+  font-family: Poppins;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0%;
+  color: white !important;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
 }

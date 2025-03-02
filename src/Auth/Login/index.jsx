@@ -1,8 +1,10 @@
 import React from "react";
 
 import styles from "./style.module.scss";
+import { useNavigate } from "react-router";
 
 const Login = () => {
+  let navigate = useNavigate();
   return (
     <>
       <div className={styles.login}>
@@ -20,9 +22,25 @@ const Login = () => {
           <form className={styles.inputs}>
             <input type="text" placeholder="Email Address" />
             <input type="text" placeholder="Password" />
+
+            <div className={styles.confirm}>
+              <input type="checkbox" />
+              <label htmlFor="confirm">Confirm Password</label>
+            </div>
+
+            <button className={styles.button}>Continue</button>
           </form>
 
-          <p className={styles.p3}>Already have an account ? <span>Sign in</span></p>
+          <p className={styles.p3}>
+            Don't have an account ?{" "}
+            <span
+              onClick={() => {
+                navigate("/register");
+              }}
+            >
+              Sign Up
+            </span>
+          </p>
         </div>
       </div>
     </>
