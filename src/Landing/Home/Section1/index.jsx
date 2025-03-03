@@ -4,7 +4,7 @@ import styles from "./style.module.scss";
 
 import img1 from "../../../Components/images/VR Array 1 (1).png";
 import img2 from "../../../Components/images/Line Chart 1.png";
-import img3 from "../../../Components/images/clock.png";
+import img3 from "../../../Components/images/clock 1.png";
 
 const HomeSection1 = () => {
   return (

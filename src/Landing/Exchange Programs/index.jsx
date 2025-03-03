@@ -1,11 +1,11 @@
 import React from 'react'
 
-const ExchangePrograms = () => {
+const LandingExchangePrograms = () => {
   return (
     <>
-        Exchange programs
+      LandingExchangePrograms
     </>
   )
 }
 
-export default ExchangePrograms
+export default LandingExchangePrograms
