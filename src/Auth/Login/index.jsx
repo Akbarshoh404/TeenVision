@@ -13,7 +13,7 @@ const Login = () => {
         <div className={styles.right}>
           <div className={styles.texts}>
             <p className={styles.p1}>Sign in </p>
-            <p className={styles.p2}>
+            <p className={styles.p2Ё}>
               Lorem Ipsum is simply dummy text of the printing and typesetting
               industry. Lorem Ipsum has been the industry.
             </p>
