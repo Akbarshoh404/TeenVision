@@ -4,11 +4,6 @@
   box-sizing: border-box;
 }
 
-.container {
-  width: 85%;
-  margin: auto;
-}
-
 .footer {
   width: 100%;
 }
@@ -18,7 +13,172 @@
 .topFooter {
   width: 100%;
   height: 500px;
+  padding: 70px 0px;
   background-color: #050b17;
+  color: white !important;
+}
+
+.devider {
+  height: 100%;
+  width: 1px;
+  background-color: white;
+}
+
+.container {
+  width: 85%;
+  height: 100%;
+  margin: auto;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 60px;
+}
+
+// Section 1
+
+.topFooterSection1 {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.topFooterSection1P1 {
+  font-family: Poppins;
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 41.93px;
+  letter-spacing: 0%;
+}
+
+.topFooterSection1Cards {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.topFooterSection1Card {
+  width: 100%;
+  padding: 10px;
+  background-color: #c4c4c430;
+  border-radius: 5px;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-family: Poppins;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 20.97px;
+  letter-spacing: 0%;
+}
+
+// Section 2
+
+.topFooterSection2 {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0px;
+}
+
+.topFooterSection2Div1 {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+
+  input {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+  }
+}
+
+.topFooterSection2Div1P1 {
+  font-family: Poppins;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 38.12px;
+  letter-spacing: 0%;
+}
+
+.topFooterSection2Div2 {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.topFooterSection2Div2P1 {
+  font-family: Poppins;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 38.12px;
+  letter-spacing: 0%;
+}
+
+.topFooterSection2Div2P2 {
+  font-family: Poppins;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 30.5px;
+  letter-spacing: 0%;
+  color: #737373;
+}
+
+// Section 3
+
+.topFooterSection3 {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0px;
+}
+
+.topFooterSection3Div {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.topFooterSection3DivP1 {
+  font-family: Poppins;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 38.12px;
+  letter-spacing: 0%;
+}
+
+.topFooterSection3DivP2 {
+  font-family: Poppins;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 30.5px;
+  letter-spacing: 0%;
+  color: #737373;
+}
+
+// Section 4
+
+.topFooterSection4 {
+  width: 100%;
+  height: 100%;
 }
 
 // Bottom Footer
