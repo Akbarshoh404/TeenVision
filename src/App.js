@@ -1,4 +1,6 @@
 import { Routes, Route } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
 
 // Landing
 
@@ -15,6 +17,26 @@ import Login from "./Auth/Login";
 import Register from "./Auth/Register";
 
 function App() {
+  // FireBase
+  // const [data, setData] = useState([]);
+
+  // useEffect(() => {
+  //   const database = getDatabase(cong);
+  //   const collectionRef = ref(database, "your_collection");
+  //   const fetchData = () => {
+  //     onValue(collectionRef, (snapshot) => {
+  //       const dataItem = snapshot.val();
+  //       if (dataItem) {
+  //         const displayItem = Object.values(dataItem);
+  //         setData(displayItem);
+  //       }
+  //     });
+  //   };
+  //   fetchData();
+  // }, []);
+
+  // console.log(data)
+
   return (
     <>
       <Routes>
