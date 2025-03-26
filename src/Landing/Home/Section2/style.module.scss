@@ -1,15 +1,241 @@
-*{
-    margin: 0px;
-    padding: 0px;
-    box-sizing: border-box;
+// style.module.scss
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
 }
 
 .section {
-    width: 100%;
-    height: 100vh;
+  width: 100%;
+  height: fit-content;
+  background-color: #f9f9f9;
+  display: flex;
+  align-items: center;
+  padding: 100px 0px;
 }
 
 .container {
-    width: 85%;
-    margin: auto;
+  width: 85%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 60px;
+  padding: 40px 0;
+  max-height: 100%;
+}
+
+.title {
+  font-family: Poppins, sans-serif;
+  font-weight: 700;
+  font-size: 42px;
+  line-height: 48px;
+  text-align: center;
+  color: #333;
+}
+
+.cards {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  flex-grow: 1;
+  align-items: stretch;
+}
+
+.card {
+  background-color: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+}
+
+.cardImage {
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.cardName {
+  font-family: Poppins, sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 30px;
+  color: #222;
+  text-align: left;
+}
+
+.cardResponsibility {
+  font-family: Poppins, sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 24px;
+  color: #6236f5;
+  text-align: left;
+}
+
+.cardDescription {
+  font-family: Poppins, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #777;
+  text-align: left;
+  flex-grow: 1;
+}
+
+.socialLinks {
+  display: flex;
+  gap: 20px;
+
+  a {
+    color: #555;
+    text-decoration: none;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #297379;
+    }
+
+    svg {
+      font-size: 24px;
+    }
+  }
+}
+
+// Responsive Design
+@media screen and (max-width: 1024px) {
+  .container {
+    width: 90%;
+    gap: 40px;
+    padding: 30px 0;
+  }
+
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+  }
+
+  .title {
+    font-size: 36px;
+    line-height: 42px;
+  }
+
+  .card {
+    padding: 25px;
+  }
+
+  .cardImage {
+    height: 250px; // Adjusted height for smaller screens
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    width: 92%;
+    gap: 30px;
+    padding: 20px 0;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+
+  .title {
+    font-size: 32px;
+    line-height: 38px;
+  }
+
+  .card {
+    padding: 20px;
+    height: auto;
+  }
+
+  .cardImage {
+    height: 350px;
+  }
+
+  .cardName {
+    font-size: 22px;
+    line-height: 28px;
+  }
+
+  .cardResponsibility {
+    font-size: 16px;
+    line-height: 22px;
+  }
+
+  .cardDescription {
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  .socialLinks {
+    gap: 15px;
+
+    svg {
+      font-size: 22px;
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .container {
+    width: 95%;
+    gap: 20px;
+    padding: 15px 0;
+  }
+
+  .cards {
+    gap: 20px;
+  }
+
+  .title {
+    font-size: 28px;
+    line-height: 34px;
+  }
+
+  .card {
+    padding: 15px;
+    border-radius: 15px;
+    height: auto;
+  }
+
+  .cardImage {
+    height: 250px;
+  }
+
+  .cardName {
+    font-size: 20px;
+    line-height: 26px;
+  }
+
+  .cardResponsibility {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .cardDescription {
+    font-size: 13px;
+    line-height: 20px;
+  }
+
+  .socialLinks {
+    gap: 12px;
+
+    svg {
+      font-size: 20px;
+    }
+  }
 }

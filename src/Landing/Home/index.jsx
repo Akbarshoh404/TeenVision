@@ -15,8 +15,8 @@ const LandingHome = () => {
     <>
       <LandingNavbar />
       <Home_Header />
+      <HomeSection2 />
       <HomeSection1 />
-      {/* <HomeSection2 /> */}
       <HomeSection3 />
       <LandingFooter />
     </>
