@@ -1,6 +1,6 @@
-import React from "react";
-
 import styles from "./style.module.scss";
+
+import { FaInstagram, FaTelegram, FaLinkedin, FaTwitter } from "react-icons/fa";
 
 const LandingFooter = () => {
   return (
@@ -65,7 +65,40 @@ const LandingFooter = () => {
               </div>
             </div>
 
-            <div className={styles.topFooterSection4}></div>
+            <div className={styles.topFooterSection4}>
+              <div className={styles.topFooterSection4}>
+                <div className={styles.socialLinks}>
+                  <a
+                    href="https://instagram.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <FaInstagram />
+                  </a>
+                  <a
+                    href="https://telegram.org"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <FaTelegram />
+                  </a>
+                  <a
+                    href="https://linkedin.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <FaLinkedin />
+                  </a>
+                  <a
+                    href="https://x.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <FaTwitter />
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -73,6 +106,7 @@ const LandingFooter = () => {
           <p>© Copyright ©2025 All rights reserved | Powered by Lorem</p>
         </div>
       </footer>
+      Ё
     </>
   );
 };

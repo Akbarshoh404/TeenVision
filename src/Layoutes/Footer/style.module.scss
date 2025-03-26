@@ -1,3 +1,4 @@
+// style.module.scss
 * {
   margin: 0px;
   padding: 0px;
@@ -9,7 +10,6 @@
 }
 
 // Top Footer
-
 .topFooter {
   width: 100%;
   height: 500px;
@@ -22,21 +22,20 @@
   height: 100%;
   width: 1px;
   background-color: white;
+  flex-shrink: 0;
 }
 
 .container {
   width: 85%;
   height: 100%;
   margin: auto;
-
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: 60px;
+  align-items: stretch;
+  gap: 45px;
 }
 
 // Section 1
-
 .topFooterSection1 {
   width: 100%;
   height: 100%;
@@ -67,11 +66,9 @@
   background-color: #c4c4c430;
   border-radius: 5px;
   cursor: pointer;
-
   display: flex;
   justify-content: center;
   align-items: center;
-
   font-family: Poppins;
   font-weight: 300;
   font-size: 16px;
@@ -80,11 +77,9 @@
 }
 
 // Section 2
-
 .topFooterSection2 {
   width: 100%;
   height: 100%;
-
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -138,20 +133,18 @@
 }
 
 // Section 3
-
 .topFooterSection3 {
   width: 100%;
   height: 100%;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
   padding: 20px 0px;
-  text-align: center;
 }
 
 .topFooterSection3Div {
+  width: 100%;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -162,33 +155,48 @@
   font-family: Poppins;
   font-weight: 500;
   font-size: 24px;
-  line-height: 38.12px;
-  letter-spacing: 0%;
 }
 
 .topFooterSection3DivP2 {
   font-family: Poppins;
   font-weight: 400;
   font-size: 16px;
-  line-height: 30.5px;
-  letter-spacing: 0%;
   color: #737373;
 }
 
 // Section 4
-
 .topFooterSection4 {
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.socialLinks {
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+}
+
+.socialLinks a {
+  text-decoration: none;
+  color: #fff;
+}
+
+.socialLinks svg {
+  font-size: 28px;
+}
+
+.socialLinks a:hover svg {
+  color: #007bff;
 }
 
 // Bottom Footer
-
 .bottomFooter {
   width: 100%;
   height: 70px;
   background-color: white;
-
   display: flex;
   justify-content: center;
   align-items: center;
@@ -197,8 +205,123 @@
     font-family: Poppins;
     font-weight: 400;
     font-size: 18px;
-    line-height: 23.13px;
-    letter-spacing: 1%;
     color: #474747;
+  }
+}
+
+// Responsive Design
+@media screen and (max-width: 1050px) {
+  .topFooter {
+    height: auto;
+    padding: 50px 0;
+  }
+
+  .container {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 90%;
+    gap: 30px;
+  }
+
+  .devider {
+    width: 100%;
+    height: 1px;
+    margin: 20px 0;
+  }
+
+  .topFooterSection1P1 {
+    font-size: 26px;
+    line-height: 36px;
+  }
+
+  .topFooterSection2Div1P1,
+  .topFooterSection2Div2P1,
+  .topFooterSection3DivP1 {
+    font-size: 22px;
+    line-height: 34px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .topFooter {
+    padding: 40px 0;
+  }
+
+  .container {
+    width: 92%;
+    gap: 25px;
+  }
+
+  .topFooterSection1Cards {
+    grid-template-columns: 1fr; // Single column on smaller screens
+  }
+
+  .topFooterSection1P1 {
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  .topFooterSection2Div1P1,
+  .topFooterSection2Div2P1,
+  .topFooterSection3DivP1 {
+    font-size: 20px;
+    line-height: 30px;
+  }
+
+  .socialLinks svg {
+    font-size: 24px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .topFooter {
+    padding: 30px 0;
+  }
+
+  .container {
+    width: 95%;
+    gap: 20px;
+  }
+
+  .topFooterSection1P1 {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .topFooterSection1Card {
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  .topFooterSection2Div1P1,
+  .topFooterSection2Div2P1,
+  .topFooterSection3DivP1 {
+    font-size: 18px;
+    line-height: 26px;
+  }
+
+  .topFooterSection2Div2P2,
+  .topFooterSection3DivP2 {
+    font-size: 14px;
+    line-height: 24px;
+  }
+
+  .socialLinks {
+    justify-content: space-between;
+    padding: 0 15px;
+  }
+
+  .socialLinks svg {
+    font-size: 22px;
+  }
+
+  .bottomFooter {
+    height: 60px;
+  }
+
+  .bottomFooter p {
+    font-size: 14px;
+    text-align: center;
+    padding: 0 10px;
   }
 }
