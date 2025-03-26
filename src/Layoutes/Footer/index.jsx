@@ -106,7 +106,6 @@ const LandingFooter = () => {
           <p>© Copyright ©2025 All rights reserved | Powered by Lorem</p>
         </div>
       </footer>
-      Ё
     </>
   );
 };

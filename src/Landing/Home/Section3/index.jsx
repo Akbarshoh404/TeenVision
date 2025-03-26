@@ -1,7 +1,6 @@
+// HomeSection3.jsx (unchanged)
 import React from "react";
-
 import styles from "./style.module.scss";
-
 import img from "../../../Components/images/HomeSection3.png";
 
 const HomeSection3 = () => {
@@ -19,10 +18,8 @@ const HomeSection3 = () => {
                 <p className={styles.p1}>
                   Frontend <br /> Developer
                 </p>
-
                 <p className={styles.p2}>Learn more</p>
               </div>
-
               <div className={styles.cardRight}>
                 <img src={img} alt="" />
               </div>
@@ -33,10 +30,8 @@ const HomeSection3 = () => {
                 <p className={styles.p1}>
                   Frontend <br /> Developer
                 </p>
-
                 <p className={styles.p2}>Learn more</p>
               </div>
-
               <div className={styles.cardRight}>
                 <img src={img} alt="" />
               </div>
@@ -47,10 +42,8 @@ const HomeSection3 = () => {
                 <p className={styles.p1}>
                   Frontend <br /> Developer
                 </p>
-
                 <p className={styles.p2}>Learn more</p>
               </div>
-
               <div className={styles.cardRight}>
                 <img src={img} alt="" />
               </div>
@@ -61,10 +54,8 @@ const HomeSection3 = () => {
                 <p className={styles.p1}>
                   Frontend <br /> Developer
                 </p>
-
                 <p className={styles.p2}>Learn more</p>
               </div>
-
               <div className={styles.cardRight}>
                 <img src={img} alt="" />
               </div>
@@ -75,10 +66,8 @@ const HomeSection3 = () => {
                 <p className={styles.p1}>
                   Frontend <br /> Developer
                 </p>
-
                 <p className={styles.p2}>Learn more</p>
               </div>
-
               <div className={styles.cardRight}>
                 <img src={img} alt="" />
               </div>
@@ -89,10 +78,8 @@ const HomeSection3 = () => {
                 <p className={styles.p1}>
                   Frontend <br /> Developer
                 </p>
-
                 <p className={styles.p2}>Learn more</p>
               </div>
-
               <div className={styles.cardRight}>
                 <img src={img} alt="" />
               </div>
