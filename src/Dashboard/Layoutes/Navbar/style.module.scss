@@ -1,0 +1,140 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 350px;
+  background-color: #070d18;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.logoImage {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+}
+
+.logoText {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 100%;
+  letter-spacing: -1%;
+}
+
+.navList {
+  list-style: none;
+  flex-grow: 1;
+}
+
+.navItem {
+  margin-bottom: 15px;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: -1%;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 12px;
+  border: 1px solid #2a2f3b;
+  border-radius: 8px;
+  background-color: #121723;
+  transition: background-color 0.2s, border-color 0.2s, transform 0.1s,
+    color 0.2s;
+}
+
+.navLink:hover {
+  background-color: #1a2130;
+  border-color: #3b4254;
+  transform: translateX(5px);
+}
+
+.navLink:focus {
+  outline: none;
+  border-color: #4a90e2;
+  background-color: #1a2130;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
+}
+
+.navLink.active {
+  background-color: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
+}
+
+.navLink.active .icon {
+  color: #000000;
+}
+
+.icon {
+  margin-right: 10px;
+  font-size: 18px;
+  color: #ffffff;
+  transition: color 0.2s;
+}
+
+.hamburger {
+  display: none;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  z-index: 1100;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .navbar {
+    width: 350px;
+    transform: translateX(-100%);
+    padding-top: 60px; /* Padding-top for navbar in responsive */
+  }
+
+  .navbar.open {
+    transform: translateX(0);
+  }
+
+  .logoContainer {
+    padding-top: 20px; /* Additional padding-top for logo */
+  }
+
+  .navList {
+    padding-top: 20px; /* Additional padding-top for nav list */
+  }
+
+  .navItem {
+    padding-top: 10px; /* Additional padding-top for nav items */
+  }
+
+  .hamburger {
+    display: block;
+    top: 20px; /* No padding-top for hamburger */
+  }
+}

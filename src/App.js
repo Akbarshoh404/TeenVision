@@ -16,27 +16,11 @@ import LandingMajors from "./Landing/Majors";
 import Login from "./Auth/Login";
 import Register from "./Auth/Register";
 
+// Dashboard
+
+import DashboardHome from "./Dashboard/Pages/Home";
+
 function App() {
-  // FireBase
-  // const [data, setData] = useState([]);
-
-  // useEffect(() => {
-  //   const database = getDatabase(cong);
-  //   const collectionRef = ref(database, "your_collection");
-  //   const fetchData = () => {
-  //     onValue(collectionRef, (snapshot) => {
-  //       const dataItem = snapshot.val();
-  //       if (dataItem) {
-  //         const displayItem = Object.values(dataItem);
-  //         setData(displayItem);
-  //       }
-  //     });
-  //   };
-  //   fetchData();
-  // }, []);
-
-  // console.log(data)
-
   return (
     <>
       <Routes>
@@ -52,6 +36,10 @@ function App() {
 
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
+        {/* Dashboard */}
+
+        <Route path="/dashboard/home" element={<DashboardHome />} />
       </Routes>
     </>
   );
