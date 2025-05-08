@@ -19,7 +19,6 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
           <button className={styles.iconButton} aria-label="Search">
             <FiSearch className={styles.icon} />
           </button>
-          {/* <FiUser className={styles.profileIcon} aria-hidden="true" /> */}
         </div>
       </div>
       <div className={styles.searchContainer}>
