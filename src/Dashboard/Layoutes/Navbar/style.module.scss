@@ -1,3 +1,10 @@
+$primary-bg: #070d18;
+$card-bg: #121723;
+$card-border: #2a2f3b;
+$hover-bg: #1a2130;
+$hover-border: #3b4254;
+$focus-border: #4a90e2;
+
 * {
   margin: 0;
   padding: 0;
@@ -10,7 +17,8 @@
   left: 0;
   height: 100vh;
   width: 350px;
-  background-color: #070d18;
+  max-width: 100%;
+  background-color: $primary-bg;
   color: #ffffff;
   display: flex;
   flex-direction: column;
@@ -18,6 +26,23 @@
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease-in-out;
   z-index: 1000;
+}
+
+.navbar.open {
+  transform: translateX(0);
+}
+
+.closeBtn {
+  display: none;
+  background: none;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 8px;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 1100;
 }
 
 .logoContainer {
@@ -38,6 +63,7 @@
   font-size: 28px;
   line-height: 100%;
   letter-spacing: -1%;
+  margin-left: 10px;
 }
 
 .navList {
@@ -60,23 +86,23 @@
   color: #ffffff;
   text-decoration: none;
   padding: 12px;
-  border: 1px solid #2a2f3b;
+  border: 1px solid $card-border;
   border-radius: 8px;
-  background-color: #121723;
+  background-color: $card-bg;
   transition: background-color 0.2s, border-color 0.2s, transform 0.1s,
     color 0.2s;
 }
 
 .navLink:hover {
-  background-color: #1a2130;
-  border-color: #3b4254;
+  background-color: $hover-bg;
+  border-color: $hover-border;
   transform: translateX(5px);
 }
 
 .navLink:focus {
   outline: none;
-  border-color: #4a90e2;
-  background-color: #1a2130;
+  border-color: $focus-border;
+  background-color: $hover-bg;
   box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
 }
 
@@ -97,44 +123,49 @@
   transition: color 0.2s;
 }
 
-.hamburger {
-  display: none;
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  background: none;
-  border: none;
-  color: #ffffff;
-  cursor: pointer;
-  z-index: 1100;
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .navbar {
-    width: 350px;
+    width: 100%;
     transform: translateX(-100%);
-    padding-top: 60px; /* Padding-top for navbar in responsive */
+    padding: 16px;
+    padding-top: 80px;
   }
 
   .navbar.open {
     transform: translateX(0);
   }
 
+  .closeBtn {
+    display: block;
+  }
+
   .logoContainer {
-    padding-top: 20px; /* Additional padding-top for logo */
+    padding-top: 20px;
+    margin-bottom: 20px;
   }
 
   .navList {
-    padding-top: 20px; /* Additional padding-top for nav list */
+    padding-top: 20px;
   }
 
   .navItem {
-    padding-top: 10px; /* Additional padding-top for nav items */
+    padding-top: 10px;
+  }
+}
+
+@media (max-width: 400px) {
+  .navbar {
+    padding: 12px;
+    padding-top: 80px;
   }
 
-  .hamburger {
-    display: block;
-    top: 20px; /* No padding-top for hamburger */
+  .logoImage {
+    width: 60px;
+    height: 60px;
+  }
+
+  .logoText {
+    font-size: 24px;
   }
 }

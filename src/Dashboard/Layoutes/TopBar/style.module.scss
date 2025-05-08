@@ -1,0 +1,174 @@
+$primary-bg: #070d18;
+$card-bg: #1a2130;
+$card-border: #2a2f3b;
+$hover-bg: #252c3f;
+$hover-border: #3b4254;
+$focus-border: #4a90e2;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.topBar {
+  width: 100%;
+  padding-left: 350px;
+  height: 80px;
+  background-color: $primary-bg;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 900;
+}
+
+.searchContainer {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border: 1px solid $card-border;
+  border-radius: 8px;
+  padding: 12px;
+  width: 400px;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.searchContainer:hover {
+  background-color: #f5f5f5;
+  border-color: $hover-border;
+}
+
+.searchContainer:focus-within {
+  border-color: $focus-border;
+  background-color: #f5f5f5;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
+}
+
+.searchInput {
+  background: none;
+  border: none;
+  color: #000000;
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: -1%;
+  width: 100%;
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: #6b7280;
+}
+
+.accountContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profileIcon {
+  font-size: 24px;
+  color: #ffffff;
+}
+
+.accountDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.accountName {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: -1%;
+  color: #ffffff;
+}
+
+.accountEmail {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: -1%;
+  color: #6b7280;
+}
+
+.icon {
+  font-size: 24px;
+  color: #000000;
+  margin-right: 10px;
+}
+
+.hamburger {
+  display: none;
+  position: absolute;
+  top: 28px;
+  left: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1200;
+  color: white;
+}
+
+.responsiveIcons {
+  display: none;
+}
+
+.iconButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.leftContainer {
+  display: flex;
+  align-items: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .topBar {
+    left: 0;
+    padding: 0 20px;
+    justify-content: space-between;
+    padding-left: 50px;
+  }
+
+  .searchContainer {
+    display: none;
+  }
+
+  .responsiveIcons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .accountContainer {
+    gap: 8px;
+  }
+
+  .accountName {
+    font-size: 14px;
+  }
+
+  .accountEmail {
+    font-size: 12px;
+  }
+
+  .hamburger {
+    display: block;
+    margin-right: 20px; /* Gap between hamburger and search icon */
+  }
+
+  .leftContainer {
+    gap: 20px; /* Additional gap for clarity */
+  }
+}

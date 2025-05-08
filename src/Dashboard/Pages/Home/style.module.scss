@@ -1,0 +1,21 @@
+$primary-bg: white;
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: $primary-bg;
+}
+
+.mainContent {
+  margin-left: 350px;
+  margin-top: 80px;
+  transition: margin-left 0.3s ease-in-out;
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    margin-left: 0;
+    margin-top: 80px;
+  }
+}
