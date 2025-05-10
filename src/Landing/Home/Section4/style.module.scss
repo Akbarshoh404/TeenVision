@@ -1,0 +1,233 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap");
+
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+.section {
+  width: 100%;
+  height: fit-content;
+  background-color: #050b17;
+  padding: 100px 0;
+  font-family: "Space Grotesk", sans-serif;
+
+  @media (max-width: 768px) {
+    padding: 60px 0;
+  }
+
+  @media (max-width: 480px) {
+    padding: 40px 0;
+  }
+}
+
+.container {
+  width: 85%;
+  max-width: 1200px;
+  height: 100%;
+  margin: auto;
+
+  @media (max-width: 768px) {
+    width: 90%;
+  }
+}
+
+.carousel {
+  position: relative;
+  text-align: center;
+}
+
+.carouselItem {
+  display: none;
+  padding: 60px 20px;
+  opacity: 0;
+  transform: translateX(100px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+
+  @media (max-width: 768px) {
+    padding: 40px 15px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 30px 10px;
+  }
+}
+
+.carouselItem.active {
+  display: block;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.commentBubble {
+  background-color: #191a23;
+  border: 3px solid #42bdec;
+  border-radius: 24px;
+  padding: 80px;
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+  color: white;
+
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: -24px;
+    left: 60px;
+    width: 0;
+    height: 0;
+    border: 24px solid transparent;
+    border-top-color: #191a23;
+    border-bottom: 0;
+    border-left: 0;
+    box-sizing: border-box;
+    filter: drop-shadow(0 0 3px #42bdec);
+  }
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    padding: 50px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 30px;
+  }
+}
+
+.commentText {
+  font-size: 1.5rem;
+  font-style: italic;
+  color: white;
+
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1rem;
+  }
+}
+
+.commentInfo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 40px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 30px;
+  }
+}
+
+.author {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #42bdec;
+
+  @media (max-width: 768px) {
+    font-size: 1.4rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.2rem;
+  }
+}
+
+.job {
+  font-size: 1.5rem;
+  color: white;
+
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1rem;
+  }
+}
+
+.navigation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  margin-top: 50px;
+
+  @media (max-width: 768px) {
+    gap: 30px;
+    margin-top: 40px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 20px;
+    margin-top: 30px;
+  }
+}
+
+.arrow {
+  background: none;
+  border: none;
+  font-size: 3rem;
+  cursor: pointer;
+  color: white;
+  padding: 20px;
+  transition: color 0.3s;
+
+  &:hover {
+    color: #42bdec;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 2.5rem;
+    padding: 15px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 2rem;
+    padding: 10px;
+  }
+}
+
+.dots {
+  display: flex;
+  gap: 20px;
+
+  @media (max-width: 768px) {
+    gap: 15px;
+  }
+
+  @media (max-width: 480px) {
+    gap: 10px;
+  }
+}
+
+.dot {
+  width: 18px;
+  height: 18px;
+  background-color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #42bdec;
+  }
+
+  @media (max-width: 768px) {
+    width: 14px;
+    height: 14px;
+  }
+
+  @media (max-width: 480px) {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+.activeDot {
+  background-color: #42bdec;
+}
