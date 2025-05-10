@@ -1,4 +1,3 @@
-// HomeSection1.jsx (unchanged)
 import React from "react";
 import styles from "./style.module.scss";
 import img1 from "../../../Components/images/VR Array 1 (1).png";

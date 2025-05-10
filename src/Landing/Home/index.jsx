@@ -1,6 +1,6 @@
 import React from "react";
 
-import styles from "./style.module.scss";
+// import styles from "./style.module.scss";
 
 import LandingNavbar from "../../Layoutes/Navbar";
 import LandingFooter from "../../Layoutes/Footer";
