@@ -8,51 +8,37 @@
 
 .header {
   width: 100%;
-  min-height: 100vh;
-  padding-top: 100px;
+  height: 100vh;
   background: #070d18;
   color: white;
+  position: relative;
+  overflow: hidden;
 }
 
 .container {
   height: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 80px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-// Left
-.left {
-  width: 20%;
-  min-width: 100px;
+  width: 95%;
+  margin: auto;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
+  position: relative;
+  padding-top: 7% !important;
 }
 
-.decoration {
-  width: 100px;
-  height: 300px;
-  background: linear-gradient(45deg, #41bbbeaa, transparent);
-  border-radius: 10px;
-  opacity: 0.7;
-  transform: rotate(45deg);
-}
-
-// Center
 .center {
-  width: 60%;
+  width: 100%;
   min-width: 300px;
+  min-height: 80vh;
   padding: 50px 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 40px;
+  z-index: 2;
+  animation: fadeIn 1s ease-in-out;
 }
 
 .centerTexts {
@@ -60,7 +46,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 15px;
 }
 
 .centerText1 {
@@ -68,28 +54,50 @@
   font-weight: 700;
   font-size: 64px;
   line-height: 70px;
-  letter-spacing: 0%;
+  letter-spacing: -1px;
   text-align: center;
+  color: white;
+  width: 60%;
+}
 
-  span {
-    color: #41bbbeaa;
-  }
+.centerText1 span {
+  color: #41bbbe;
 }
 
 .centerText2 {
   font-family: Poppins;
-  font-weight: 500;
-  font-size: 22px;
-  line-height: 189%;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 32px;
   letter-spacing: 0%;
   text-align: center;
+  color: #dbdbdb;
+  width: 60%;
+}
+
+.seeMore {
+  background: white;
+  border: none;
+  padding: 15px 40px;
+  border-radius: 30px;
+  color: #070d18;
+  font-family: Poppins;
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 20px 0;
+  transition: background 0.3s;
+}
+
+.seeMore:hover {
+  background: #e0e0e0;
 }
 
 .numbers {
   width: 100%;
   display: flex;
   justify-content: center;
-  gap: 50px;
+  gap: 60px;
   flex-wrap: wrap;
 }
 
@@ -102,7 +110,7 @@
 .centerCardP1 {
   font-family: "Poppins", sans-serif;
   font-weight: 700;
-  font-size: 30px;
+  font-size: 36px;
   line-height: 40px;
   color: #dbdbdb;
   text-align: center;
@@ -117,70 +125,306 @@
   text-align: center;
 }
 
-// Right
-.right {
-  width: 20%;
-  min-width: 100px;
+/* Review Card (for comments with author and rating) */
+.reviewCard {
+  position: absolute;
+  background: #ffffff26;
+  backdrop-filter: blur(6px);
+  padding: 16px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 240px;
+  z-index: 5;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  animation: float 3s ease-in-out infinite;
 }
 
-// Responsive Design
-@media (max-width: 1024px) {
-  .left,
-  .right {
-    width: 15%;
+.commentHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.commentImage {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #dbdbdb;
+}
+
+.commentAuthor {
+  font-family: Poppins;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+}
+
+.commentRating {
+  font-family: Poppins;
+  font-size: 14px;
+  color: #f4c430;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.commentText1 {
+  font-family: Poppins;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0px;
+  color: white;
+  margin: 0;
+}
+
+.commentText2 {
+  font-family: Poppins;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 100%;
+  letter-spacing: 0px;
+  color: white;
+  margin: 0;
+}
+
+/* Unified Card Style for Web and Game Development */
+.codeCard,
+.gameCard {
+  position: absolute;
+  background: #ffffff; /* White background */
+  padding: 16px 20px; /* Smaller padding */
+  border-radius: 12px;
+  border: none; /* No border */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  width: 300px; /* Larger width */
+  z-index: 5;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  animation: float 3s ease-in-out infinite;
+  transition: transform 0.3s ease;
+}
+
+.codeCard:hover,
+.gameCard:hover {
+  transform: scale(1.05);
+}
+
+.codeCard .commentIcon,
+.gameCard .commentIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: #41bbbe; /* Theme-consistent color */
+}
+
+.commentTitle {
+  font-family: Poppins;
+  font-weight: 500;
+  font-size: 18px;
+  color: #000000;
+  margin: 0;
+}
+
+.keywordContainer {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.commentSubtext {
+  font-family: Poppins;
+  font-size: 14px;
+  background: #f2f2f2; /* Keyword background */
+  color: #828282; /* Keyword text color */
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin: 0;
+  display: inline-block;
+}
+
+.floatingIcon {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  z-index: 5;
+  animation: float 4s ease-in-out infinite;
+}
+
+.lightbulb {
+  background: url("../../../Components/images/bulb.png") no-repeat center;
+  background-size: contain;
+}
+
+.bell {
+  background: url("../../../Components/images/bell.png") no-repeat center;
+  background-size: contain;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1024px) {
   .center {
-    width: 70%;
+    width: 100%;
+    min-height: 70vh;
+    padding: 40px 0;
   }
   .centerText1 {
-    font-size: 36px;
-    line-height: 44px;
+    font-size: 48px;
+    line-height: 54px;
+    width: 80%;
   }
   .centerText2 {
     font-size: 16px;
-    line-height: 24px;
+    line-height: 28px;
   }
-  .decoration {
-    width: 80px;
-    height: 200px;
+  .reviewCard {
+    width: 220px;
+  }
+  .codeCard,
+  .gameCard {
+    width: 280px;
+    padding: 14px 18px;
+  }
+  .codeCard .commentIcon,
+  .gameCard .commentIcon {
+    width: 35px;
+    height: 35px;
+  }
+  .commentTitle {
+    font-size: 16px;
+  }
+  .commentSubtext {
+    font-size: 12px;
+    padding: 3px 6px;
+  }
+  .floatingIcon {
+    width: 100px;
+    height: 100px;
+  }
+  .reviewCard:first-child {
+    top: 20%;
+  }
+  .codeCard {
+    top: 60%;
+  }
+  .gameCard {
+    top: 70%;
   }
 }
 
 @media (max-width: 768px) {
   .container {
-    flex-direction: column;
-    padding: 40px 20px;
-  }
-  .left,
-  .right {
-    width: 100%;
-    height: 80px;
-    display: none; // Hide decorations on mobile
+    padding: 30px 15px;
   }
   .center {
     width: 100%;
-    padding: 20px 0;
+    min-height: 60vh;
+    padding: 30px 0;
   }
   .centerText1 {
-    font-size: 28px;
-    line-height: 36px;
+    font-size: 32px;
+    line-height: 38px;
   }
   .centerText2 {
     font-size: 14px;
-    line-height: 22px;
+    line-height: 24px;
   }
   .numbers {
     gap: 30px;
   }
   .centerCardP1 {
-    font-size: 24px;
+    font-size: 28px;
     line-height: 32px;
   }
   .centerCardP2 {
     font-size: 12px;
     line-height: 18px;
+  }
+  .seeMore {
+    padding: 12px 30px;
+    font-size: 14px;
+  }
+  .reviewCard,
+  .codeCard,
+  .gameCard {
+    display: none;
+  }
+  .floatingIcon {
+    width: 80px;
+    height: 80px;
+  }
+  .lightbulb {
+    left: 80%;
+    top: 15%;
+  }
+  .bell {
+    left: 5%;
+    top: 70%;
+  }
+}
+
+@media (max-width: 480px) {
+  .center {
+    min-height: 50vh;
+    padding: 20px 0;
+  }
+  .centerText1 {
+    font-size: 28px;
+    line-height: 34px;
+  }
+  .centerText2 {
+    font-size: 12px;
+    line-height: 20px;
+  }
+  .centerCardP1 {
+    font-size: 24px;
+    line-height: 28px;
+  }
+  .centerCardP2 {
+    font-size: 10px;
+    line-height: 16px;
+  }
+  .seeMore {
+    padding: 10px 25px;
+    font-size: 12px;
+  }
+  .floatingIcon {
+    width: 60px;
+    height: 60px;
+  }
+  .lightbulb {
+    left: 75%;
+    top: 10%;
+  }
+  .bell {
+    left: 5%;
+    top: 65%;
   }
 }
