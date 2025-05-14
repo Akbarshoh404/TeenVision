@@ -61,10 +61,19 @@
   font-weight: 300;
   font-size: 16px;
   line-height: 24px;
-  transition: background-color 0.3s;
+  position: relative;
+  transition: transform 0.3s ease;
 
-  &:hover {
-    background-color: rgba(196, 196, 196, 0.3);
+  &:nth-child(odd):hover {
+    transform: translateX(-10px); /* Slide left for odd cards */
+  }
+
+  &:nth-child(even):hover {
+    transform: translateX(10px); /* Slide right for even cards */
+  }
+
+  &:not(:hover) {
+    transform: translateX(0); /* Return to original position */
   }
 }
 

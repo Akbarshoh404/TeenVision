@@ -8,87 +8,40 @@
 
 .section {
   width: 100%;
-  height: fit-content;
   background-color: #050b17;
   padding: 100px 0;
   font-family: "Space Grotesk", sans-serif;
-
-  @media (max-width: 768px) {
-    padding: 60px 0;
-  }
-
-  @media (max-width: 480px) {
-    padding: 40px 0;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .container {
   width: 85%;
   max-width: 1200px;
-  height: 100%;
   margin: auto;
-
-  @media (max-width: 768px) {
-    width: 90%;
-  }
 }
 
 .carousel {
   position: relative;
   text-align: center;
   overflow: hidden;
-  min-height: 300px; // Minimum height to ensure content fits
-
-  @media (max-width: 768px) {
-    min-height: 250px;
-  }
-
-  @media (max-width: 480px) {
-    min-height: 200px;
-  }
+  width: 100%;
 }
 
 .carouselItem {
   position: absolute;
   top: 0;
-  left: 0;
   width: 100%;
   padding: 60px 20px;
   opacity: 0;
-  transform: translateX(100%);
-  transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
-  pointer-events: none;
-
-  @media (max-width: 768px) {
-    padding: 40px 15px;
-  }
-
-  @media (max-width: 480px) {
-    padding: 30px 10px;
-  }
+  visibility: hidden;
 }
 
 .carouselItem.active {
   opacity: 1;
-  transform: translateX(0);
-  pointer-events: auto;
-  position: relative; // Ensure active item is in normal flow
-}
-
-.carouselItem.slideLeft {
-  transform: translateX(-100%);
-}
-
-.carouselItem.active.slideLeft {
-  transform: translateX(0);
-}
-
-.carouselItem.slideRight {
-  transform: translateX(100%);
-}
-
-.carouselItem.active.slideRight {
-  transform: translateX(0);
+  visibility: visible;
+  position: relative;
 }
 
 .commentBubble {
@@ -100,44 +53,27 @@
   max-width: 900px;
   margin: 0 auto;
   color: white;
+}
 
-  &:after {
-    content: "";
-    position: absolute;
-    bottom: -24px;
-    left: 60px;
-    width: 0;
-    height: 0;
-    border: 24px solid transparent;
-    border-top-color: #191a23;
-    border-bottom: 0;
-    border-left: 0;
-    box-sizing: border-box;
-    filter: drop-shadow(0 0 3px #42bdec);
-  }
-
-  @media (max-width: 768px) {
-    max-width: 100%;
-    padding: 50px;
-  }
-
-  @media (max-width: 480px) {
-    padding: 30px;
-  }
+.commentBubble:after {
+  content: "";
+  position: absolute;
+  bottom: -24px;
+  left: 60px;
+  width: 0;
+  height: 0;
+  border: 24px solid transparent;
+  border-top-color: #191a23;
+  border-bottom: 0;
+  border-left: 0;
+  box-sizing: border-box;
+  filter: drop-shadow(0 0 3px #42bdec);
 }
 
 .commentText {
   font-size: 1.5rem;
   font-style: italic;
   color: white;
-
-  @media (max-width: 768px) {
-    font-size: 1.2rem;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 1rem;
-  }
 }
 
 .commentInfo {
@@ -146,39 +82,17 @@
   align-items: center;
   gap: 20px;
   margin-top: 40px;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 30px;
-  }
 }
 
 .author {
   font-size: 1.8rem;
   font-weight: bold;
   color: #42bdec;
-
-  @media (max-width: 768px) {
-    font-size: 1.4rem;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 1.2rem;
-  }
 }
 
 .job {
   font-size: 1.5rem;
   color: white;
-
-  @media (max-width: 768px) {
-    font-size: 1.2rem;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 1rem;
-  }
 }
 
 .navigation {
@@ -186,18 +100,9 @@
   justify-content: center;
   align-items: center;
   gap: 40px;
-  margin-top: 20px; // Reduced margin to bring closer to carousel
-  position: relative; // Ensure navigation is in normal flow
-
-  @media (max-width: 768px) {
-    gap: 30px;
-    margin-top: 15px;
-  }
-
-  @media (max-width: 480px) {
-    gap: 20px;
-    margin-top: 10px;
-  }
+  margin-top: 40px;
+  padding-bottom: 20px;
+  width: 100%;
 }
 
 .arrow {
@@ -208,33 +113,20 @@
   color: white;
   padding: 20px;
   transition: color 0.3s;
+}
 
-  &:hover {
-    color: #42bdec;
-  }
+.arrow:hover {
+  color: #42bdec;
+}
 
-  @media (max-width: 768px) {
-    font-size: 2.5rem;
-    padding: 15px;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 2rem;
-    padding: 10px;
-  }
+.arrow:disabled {
+  color: #666;
+  cursor: not-allowed;
 }
 
 .dots {
   display: flex;
   gap: 20px;
-
-  @media (max-width: 768px) {
-    gap: 15px;
-  }
-
-  @media (max-width: 480px) {
-    gap: 10px;
-  }
 }
 
 .dot {
@@ -244,22 +136,115 @@
   border-radius: 50%;
   cursor: pointer;
   transition: background-color 0.3s;
+}
 
-  &:hover {
-    background-color: #42bdec;
-  }
-
-  @media (max-width: 768px) {
-    width: 14px;
-    height: 14px;
-  }
-
-  @media (max-width: 480px) {
-    width: 10px;
-    height: 10px;
-  }
+.dot:hover {
+  background-color: #42bdec;
 }
 
 .activeDot {
   background-color: #42bdec;
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 60px 0;
+  }
+
+  .container {
+    width: 90%;
+  }
+
+  .carouselItem {
+    padding: 40px 15px;
+  }
+
+  .commentBubble {
+    max-width: 100%;
+    padding: 50px;
+  }
+
+  .commentText {
+    font-size: 1.2rem;
+  }
+
+  .commentInfo {
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 30px;
+  }
+
+  .author {
+    font-size: 1.4rem;
+  }
+
+  .job {
+    font-size: 1.2rem;
+  }
+
+  .navigation {
+    gap: 30px;
+    margin-top: 30px;
+    padding-bottom: 15px;
+  }
+
+  .arrow {
+    font-size: 2.5rem;
+    padding: 15px;
+  }
+
+  .dots {
+    gap: 15px;
+  }
+
+  .dot {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .section {
+    padding: 40px 0;
+  }
+
+  .carouselItem {
+    padding: 30px 10px;
+  }
+
+  .commentBubble {
+    padding: 30px;
+  }
+
+  .commentText {
+    font-size: 1rem;
+  }
+
+  .author {
+    font-size: 1.2rem;
+  }
+
+  .job {
+    font-size: 1rem;
+  }
+
+  .navigation {
+    gap: 20px;
+    margin-top: 20px;
+    padding-bottom: 10px;
+  }
+
+  .arrow {
+    font-size: 2rem;
+    padding: 10px;
+  }
+
+  .dots {
+    gap: 10px;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+  }
 }

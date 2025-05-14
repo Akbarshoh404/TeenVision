@@ -28,7 +28,9 @@ const Login = () => {
               <label htmlFor="confirm">Confirm Password</label>
             </div>
 
-            <button className={styles.button}>Continue</button>
+            <button className={styles.button} onClick={()=> {
+              navigate("/dashboard/home")
+            }}>Continue</button>
           </form>
 
           <p className={styles.p3}>

@@ -94,12 +94,12 @@ const HomeSection2 = () => {
   const carouselRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardsPerPage, setCardsPerPage] = useState(
-    window.innerWidth <= 768 ? 1 : 3
+    window.innerWidth <= 800 ? 1 : 3
   );
 
   useEffect(() => {
     const updateCardsPerPage = () => {
-      setCardsPerPage(window.innerWidth <= 768 ? 1 : 3);
+      setCardsPerPage(window.innerWidth <= 800 ? 1 : 3);
       setCurrentIndex(0); // Reset index on resize to avoid invalid scroll
     };
 
@@ -114,7 +114,7 @@ const HomeSection2 = () => {
     (index) => {
       if (carouselRef.current) {
         const container = carouselRef.current;
-        const cardWidth = container.offsetWidth / cardsPerPage;
+        const cardWidth = container.offsetWidth / cardsPerPage; // No partial card offset
         container.scrollTo({
           left: cardWidth * index,
           behavior: "smooth",
@@ -127,7 +127,7 @@ const HomeSection2 = () => {
 
   useEffect(() => {
     scrollToIndex(0); // Initialize scroll position
-  }, [scrollToIndex]);
+  }, [scrollToIndex, cardsPerPage]);
 
   const handleNext = () => {
     const nextIndex = Math.min(currentIndex + 1, maxIndex);
@@ -159,6 +159,7 @@ const HomeSection2 = () => {
               className={styles.navButton}
               onClick={handlePrev}
               disabled={currentIndex === 0}
+              aria-label="Previous team members"
             >
               <FaChevronLeft />
             </button>
@@ -168,7 +169,7 @@ const HomeSection2 = () => {
             {teamMembers.map((member) => (
               <div key={member.id} className={styles.card}>
                 <div className={styles.cardImage}>
-                  <img src={member.image} alt={`${member.name}`} />
+                  <img src={member.image} alt={`${member.name}'s profile`} />
                 </div>
                 <h3 className={styles.cardName}>{member.name}</h3>
                 <p className={styles.cardResponsibility}>
@@ -180,6 +181,7 @@ const HomeSection2 = () => {
                     href={member.social.instagram}
                     target="_blank"
                     rel="noreferrer"
+                    aria-label={`${member.name}'s Instagram`}
                   >
                     <FaInstagram />
                   </a>
@@ -187,6 +189,7 @@ const HomeSection2 = () => {
                     href={member.social.twitter}
                     target="_blank"
                     rel="noreferrer"
+                    aria-label={`${member.name}'s Twitter`}
                   >
                     <FaTwitter />
                   </a>
@@ -194,6 +197,7 @@ const HomeSection2 = () => {
                     href={member.social.linkedin}
                     target="_blank"
                     rel="noreferrer"
+                    aria-label={`${member.name}'s LinkedIn`}
                   >
                     <FaLinkedin />
                   </a>
@@ -207,6 +211,7 @@ const HomeSection2 = () => {
               className={styles.navButton}
               onClick={handleNext}
               disabled={currentIndex >= maxIndex}
+              aria-label="Next team members"
             >
               <FaChevronRight />
             </button>
@@ -222,6 +227,7 @@ const HomeSection2 = () => {
                   index === currentIndex ? styles.activeDot : ""
                 }`}
                 onClick={() => scrollToIndex(index)}
+                aria-label={`Go to slide ${index + 1}`}
               />
             )
           )}
