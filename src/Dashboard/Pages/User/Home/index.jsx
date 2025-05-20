@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from "react";
 import PropTypes from "prop-types";
-import DashboardNavbar from "../../Layoutes/Navbar";
-import DashboardTopBar from "../../Layoutes/TopBar";
+import DashboardNavbar from "../../../Layoutes/Navbar";
+import DashboardTopBar from "../../../Layoutes/TopBar";
 import styles from "./style.module.scss";
-import img from "../../../Components/images/cardexample.png";
+import img from "../../../../Components/images/cardexample.png";
 
 const Programs = [
   {

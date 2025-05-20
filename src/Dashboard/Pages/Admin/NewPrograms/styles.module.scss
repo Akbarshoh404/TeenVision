@@ -15,14 +15,17 @@ $primary-bg: white;
 }
 
 .mainContent {
-  margin-left: 250px;
+  margin-left: 350px;
   transition: margin-left 0.3s ease-in-out;
+
+  &.navOpen {
+    margin-left: 0;
+  }
 }
 
 .section {
   width: 100%;
   background-color: #f9f9f9;
-  // padding: 0 0 80px 0;
   padding-top: 30px;
 }
 
@@ -36,37 +39,11 @@ $primary-bg: white;
   gap: 48px;
 }
 
-.sortSection {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  justify-content: flex-start;
-
-  select {
-    font-family: Poppins, sans-serif;
-    font-size: 16px;
-    padding: 8px 16px;
-    border: 1px solid #070d18fc;
-    border-radius: 8px;
-    background-color: #070d18fc;
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-
-    &:hover {
-      background-color: #1a252f;
-    }
-
-    &:focus {
-      outline: none;
-      border-color: #1a252f;
-    }
-
-    option {
-      background-color: white;
-      color: #070d18fc;
-    }
-  }
+.sectionTitle {
+  font-family: Poppins, sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  color: #222;
 }
 
 .cards {
@@ -74,6 +51,7 @@ $primary-bg: white;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 50px;
+  padding-bottom: 100px;
 }
 
 .card {
@@ -83,6 +61,30 @@ $primary-bg: white;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  position: relative;
+}
+
+.addCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: #eae7e7;
+  border-radius: 20px;
+}
+
+.addButton {
+  font-family: Poppins, sans-serif;
+  font-weight: 400;
+  font-size: 200px;
+  color: #ffffff;
+  background-color: #eae7e7;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
 .cardImage {
@@ -171,7 +173,114 @@ $primary-bg: white;
   flex-grow: 1;
 }
 
-// Responsive Design
+.editButton {
+  font-family: Poppins, sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: white;
+  background-color: #297379;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 0 24px 24px;
+  align-self: flex-start;
+
+  &:hover {
+    background-color: #1a5557;
+  }
+}
+
+.programForm {
+  width: 100%;
+  max-width: 600px;
+  background-color: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0px 4px 4px 0px #070d184d;
+
+  h3 {
+    font-family: Poppins, sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+    color: #222;
+    margin-bottom: 16px;
+  }
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+
+  label {
+    font-family: Poppins, sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 8px;
+  }
+
+  input,
+  textarea,
+  select {
+    font-family: Poppins, sans-serif;
+    font-size: 14px;
+    padding: 8px 12px;
+    border: 1px solid #070d18fc;
+    border-radius: 8px;
+    background-color: #fff;
+    transition: border-color 0.3s ease;
+
+    &:focus {
+      outline: none;
+      border-color: #1a252f;
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+}
+
+.formButtons {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.submitButton,
+.cancelButton {
+  font-family: Poppins, sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submitButton {
+  background-color: #070d18fc;
+  color: white;
+
+  &:hover {
+    background-color: #1a252f;
+  }
+}
+
+.cancelButton {
+  background-color: #d32f2f;
+  color: white;
+
+  &:hover {
+    background-color: #b71c1c;
+  }
+}
+
 @media screen and (max-width: 1500px) {
   .container {
     width: 90%;
@@ -205,9 +314,27 @@ $primary-bg: white;
     font-size: 11px;
     padding: 3px 10px;
   }
+
+  .editButton {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+
+  .sectionTitle {
+    font-size: 22px;
+  }
+
+  .programForm {
+    h3 {
+      font-size: 18px;
+    }
+  }
 }
 
 @media screen and (max-width: 1200px) {
+  .mainContent {
+    margin-left: 0;
+  }
   .container {
     width: 95%;
     gap: 36px;
@@ -220,11 +347,6 @@ $primary-bg: white;
 }
 
 @media screen and (max-width: 768px) {
-  .mainContent {
-    margin-left: 0;
-    margin-top: 64px;
-  }
-
   .container {
     width: 100%;
     padding: 0 16px;
@@ -262,15 +384,8 @@ $primary-bg: white;
     line-height: 20px;
   }
 
-  .sortSection {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-
-    select {
-      width: 100%;
-      max-width: 280px;
-    }
+  .programForm {
+    padding: 16px;
   }
 }
 
@@ -317,11 +432,37 @@ $primary-bg: white;
     padding: 2px 8px;
   }
 
-  .sortSection {
-    select {
-      font-size: 14px;
+  .editButton {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+
+  .sectionTitle {
+    font-size: 20px;
+  }
+
+  .programForm {
+    h3 {
+      font-size: 16px;
+    }
+
+    .formGroup {
+      label {
+        font-size: 12px;
+      }
+
+      input,
+      textarea,
+      select {
+        font-size: 12px;
+        padding: 6px 10px;
+      }
+    }
+
+    .submitButton,
+    .cancelButton {
+      font-size: 12px;
       padding: 6px 12px;
-      max-width: 100%;
     }
   }
 }

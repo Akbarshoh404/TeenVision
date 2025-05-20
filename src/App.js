@@ -13,7 +13,9 @@ import Login from "./Auth/Login";
 import Register from "./Auth/Register";
 
 // Dashboard
-import DashboardHome from "./Dashboard/Pages/Home";
+import DashboardHome from "./Dashboard/Pages/User/Home";
+import DashboardAdminDeletedPrograms from "./Dashboard/Pages/Admin/DeletedPrograms";
+import DashboardAdminNewPrograms from "./Dashboard/Pages/Admin/NewPrograms";
 
 function App() {
   return (
@@ -30,7 +32,13 @@ function App() {
       <Route path="/register" element={<Register />} />
 
       {/* Dashboard Routes */}
+
+      {/* Dashboard Users */}
       <Route path="/dashboard/home" element={<DashboardHome />} />
+
+      {/* Dashboard Admins */}
+      <Route path="/dashboard/admin/new-programs" element={<DashboardAdminNewPrograms />} />
+      <Route path="/dashboard/admin/deleted-programs" element={<DashboardAdminDeletedPrograms />} />
 
       {/* Fallback Route */}
       <Route path="*" element={<Landing404 />} />

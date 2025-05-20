@@ -2,8 +2,6 @@ $primary-bg: #070d18;
 $card-bg: #121723;
 $card-border: #2a2f3b;
 $hover-bg: #1a2130;
-$hover-border: #3b4254;
-$focus-border: #4a90e2;
 
 * {
   margin: 0;
@@ -82,7 +80,6 @@ $focus-border: #4a90e2;
   font-weight: 400;
   font-size: 16px;
   line-height: 100%;
-  letter-spacing: -1%;
   color: #ffffff;
   text-decoration: none;
   padding: 12px;
@@ -95,25 +92,18 @@ $focus-border: #4a90e2;
 
 .navLink:hover {
   background-color: $hover-bg;
-  border-color: $hover-border;
+  border-color: $card-border;
   transform: translateX(5px);
 }
 
-.navLink:focus {
-  outline: none;
-  border-color: $focus-border;
-  background-color: $hover-bg;
-  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
-}
-
 .navLink.active {
-  background-color: #ffffff;
-  color: #000000;
-  border-color: #ffffff;
+  background-color: $hover-bg;
+  color: #4a90e2; // Highlight color for active page
+  border-color: $card-border;
 }
 
 .navLink.active .icon {
-  color: #000000;
+  color: #4a90e2; // Icon color matches active page
 }
 
 .icon {
