@@ -16,26 +16,26 @@ const Login = () => {
     setError("");
 
     try {
-      // Make API request to the correct token endpoint
+      // Make API request to the correct login endpoint
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/v1/auth/token/", // Updated endpoint
+        "http://127.0.0.1:8000/api/v1/api/v1/auth/login/",
         { email, password },
         {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded", // Updated to match schema
           },
         }
       );
 
       // Log user information to the console
-      console.log("User  Information:", response.data);
+      console.log("User Information:", response.data);
 
       // Save user data and tokens to localStorage
       localStorage.setItem("user", JSON.stringify(response.data.user));
       localStorage.setItem("access_token", response.data.access);
       localStorage.setItem("refresh_token", response.data.refresh);
 
-      console.log("User  data saved to localStorage:", response.data);
+      console.log("User data saved to localStorage:", response.data);
 
       // Fetch all programs after successful login
       await fetchAllPrograms();
@@ -64,7 +64,7 @@ const Login = () => {
         "http://127.0.0.1:8000/api/v1/programs/",
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`, // Use the access token for authorization
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           },
         }
       );
