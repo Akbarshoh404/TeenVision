@@ -11,6 +11,8 @@ import {
 } from "react-icons/fi";
 import logo from "../../../Components/icons/logo.png";
 
+import { useNavigate } from "react-router-dom";
+
 const DashboardAdminNavbar = ({ isNavOpen, toggleNav, closeNav }) => {
   const location = useLocation();
 
@@ -25,7 +27,14 @@ const DashboardAdminNavbar = ({ isNavOpen, toggleNav, closeNav }) => {
       </button>
       <div className={styles.logoContainer}>
         <img src={logo} alt="TeenVision Logo" className={styles.logoImage} />
-        <span className={styles.logoText}>TeenVision</span>
+        <span
+          className={styles.logoText}
+          onClick={() => {
+            navigate("/");
+          }}
+        >
+          TeenVision
+        </span>
       </div>
       <ul className={styles.navList}>
         <li className={styles.navItem}>

@@ -37,11 +37,34 @@ const Login = () => {
 
       console.log("User data saved to localStorage:", response.data);
 
-      // Fetch all programs after successful login
-      await fetchAllPrograms();
+      // Attempt to fetch admin status
+      try {
+        const adminResponse = await axios.get(
+          "http://127.0.0.1:8000/api/v1/admins/", // Adjust the URL if needed
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
 
-      // Navigate to dashboard
-      navigate("/dashboard/home");
+        console.log("Admin Response:", adminResponse.data);
+
+        // If the admin endpoint returns successfully, navigate to the admin page
+        navigate("/dashboard/admin/new-programs");
+      } catch (adminErr) {
+        // If the admin endpoint fails, it's likely not an admin user.
+        console.warn(
+          "Not an admin user:",
+          adminErr.response?.data || adminErr.message
+        );
+
+        // Fetch all programs for non-admin users
+        await fetchAllPrograms();
+
+        // Navigate to the regular dashboard
+        navigate("/dashboard/home");
+      }
     } catch (err) {
       if (err.response) {
         setError(err.response.data.detail || "Invalid email or password");

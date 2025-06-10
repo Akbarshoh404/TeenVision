@@ -11,7 +11,10 @@ import {
 } from "react-icons/fi";
 import logo from "../../../Components/icons/logo.png";
 
+import { useNavigate } from "react-router-dom";
+
 const DashboardNavbar = ({ isNavOpen, toggleNav, closeNav }) => {
+  const navigate = useNavigate();
   return (
     <nav className={`${styles.navbar} ${isNavOpen ? styles.open : ""}`}>
       <button
@@ -23,7 +26,14 @@ const DashboardNavbar = ({ isNavOpen, toggleNav, closeNav }) => {
       </button>
       <div className={styles.logoContainer}>
         <img src={logo} alt="TeenVision Logo" className={styles.logoImage} />
-        <span className={styles.logoText}>TeenVision</span>
+        <span
+          className={styles.logoText}
+          onClick={() => {
+            navigate("/");
+          }}
+        >
+          TeenVision
+        </span>
       </div>
       <ul className={styles.navList}>
         <li className={styles.navItem}>
