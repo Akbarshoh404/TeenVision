@@ -4,6 +4,13 @@ import styles from "./style.module.scss";
 import { FiSearch, FiUser, FiMenu, FiX } from "react-icons/fi";
 
 const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
+  // Retrieve user data from localStorage
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  // Default values in case user data is not available
+  const userName = user?.full_name || user?.username || "Guest User"; // Prioritize full_name, then username
+  const userEmail = user?.email || "guest@example.com";
+
   return (
     <header className={styles.topBar}>
       <div className={styles.leftContainer}>
@@ -33,8 +40,8 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
       <div className={styles.accountContainer}>
         <FiUser className={styles.profileIcon} aria-hidden="true" />
         <div className={styles.accountDetails}>
-          <span className={styles.accountName}>John Doe</span>
-          <span className={styles.accountEmail}>john.doe@gmail.com</span>
+          <span className={styles.accountName}>{userName}</span>
+          <span className={styles.accountEmail}>{userEmail}</span>
         </div>
       </div>
     </header>
