@@ -1,20 +1,17 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./styles.module.scss";
-import {
-  FiHome,
-  FiStar,
-  FiBook,
-  FiSettings,
-  FiAward,
-  FiX,
-} from "react-icons/fi";
+import { FiHome, FiTrash2, FiX } from "react-icons/fi";
 import logo from "../../../Components/icons/logo.png";
-
-import { useNavigate } from "react-router-dom";
 
 const DashboardAdminNavbar = ({ isNavOpen, toggleNav, closeNav }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleNavClick = (path) => {
+    navigate(path);
+    closeNav();
+  };
 
   return (
     <nav className={`${styles.navbar} ${isNavOpen ? styles.open : ""}`}>
@@ -39,11 +36,17 @@ const DashboardAdminNavbar = ({ isNavOpen, toggleNav, closeNav }) => {
       <ul className={styles.navList}>
         <li className={styles.navItem}>
           <a
-            href="#home"
+            href="/dashboard/admin/new-programs"
             className={`${styles.navLink} ${
-              location.hash === "#home" ? styles.active : ""
+              location.pathname === "/dashboard/admin/new-programs" ||
+              location.pathname === "/dashboard/admin/new-programs/create"
+                ? styles.active
+                : ""
             }`}
-            onClick={closeNav}
+            onClick={(e) => {
+              e.preventDefault();
+              handleNavClick("/dashboard/admin/new-programs");
+            }}
           >
             <FiHome className={styles.icon} />
             New Programs
@@ -51,13 +54,18 @@ const DashboardAdminNavbar = ({ isNavOpen, toggleNav, closeNav }) => {
         </li>
         <li className={styles.navItem}>
           <a
-            href="#reviews"
+            href="/dashboard/admin/deleted-programs"
             className={`${styles.navLink} ${
-              location.hash === "#reviews" ? styles.active : ""
+              location.pathname === "/dashboard/admin/deleted-programs"
+                ? styles.active
+                : ""
             }`}
-            onClick={closeNav}
+            onClick={(e) => {
+              e.preventDefault();
+              handleNavClick("/dashboard/admin/deleted-programs");
+            }}
           >
-            <FiStar className={styles.icon} />
+            <FiTrash2 className={styles.icon} />
             Deleted Programs
           </a>
         </li>

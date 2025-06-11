@@ -1,0 +1,459 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
+$primary-bg: #f5f7fa;
+$primary-color: #1a56db;
+$secondary-color: #64748b;
+$text-color: #0f172a;
+$border-color: #e2e8f0;
+$shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.1);
+$input-bg: #f1f3f5;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  background-color: $primary-bg;
+}
+
+.mainContent {
+  margin-left: 350px;
+  transition: margin-left 0.3s ease-in-out;
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 8px;
+
+  &.navOpen {
+    margin-left: 0;
+  }
+}
+
+.section {
+  width: 100%;
+  padding: 24px 0;
+}
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sectionTitle {
+  font-family: Inter, sans-serif;
+  font-weight: 600;
+  font-size: 36px;
+  color: $text-color;
+  margin-bottom: 8px;
+}
+
+.programForm {
+  width: 100%;
+  background-color: transparent;
+  border-radius: 16px;
+
+  h3 {
+    font-family: Inter, sans-serif;
+    font-weight: 600;
+    font-size: 32px;
+    color: $text-color;
+    margin-bottom: 24px;
+  }
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+
+  label {
+    font-family: Inter, sans-serif;
+    font-weight: 500;
+    font-size: 18px;
+    color: $text-color;
+    margin-bottom: 8px;
+  }
+
+  input,
+  textarea,
+  select {
+    font-family: Inter, sans-serif;
+    font-size: 20px;
+    padding: 14px 18px;
+    border: 1px solid $border-color;
+    border-radius: 10px;
+    background-color: $input-bg;
+    transition: all 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.1);
+    }
+
+    &::placeholder {
+      color: $secondary-color;
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 140px;
+  }
+
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1.2rem center;
+    background-size: 1.3em;
+  }
+}
+
+.formButtons {
+  display: flex;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.submitButton,
+.cancelButton,
+.editButton {
+  font-family: Inter, sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submitButton {
+  background-color: $primary-color;
+  color: white;
+
+  &:hover {
+    background-color: darken($primary-color, 10%);
+  }
+}
+
+.cancelButton {
+  background-color: #ef4444;
+  color: white;
+
+  &:hover {
+    background-color: darken(#ef4444, 10%);
+  }
+}
+
+.editButton {
+  color: white;
+
+  &:hover {
+    background-color: darken($primary-color, 10%);
+  }
+}
+
+.carouselContainer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.photoCarousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  gap: 8px;
+  padding-bottom: 8px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.photoCarousel::-webkit-scrollbar {
+  display: none;
+}
+
+.photoCard,
+.addPhotoCard {
+  position: relative;
+  width: 180px;
+  flex: 0 0 180px;
+  aspect-ratio: 1 / 1;
+  scroll-snap-align: center;
+  cursor: pointer;
+}
+
+.photoImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.emptyPhotoCard {
+  width: 100%;
+  height: 100%;
+  background-color: #f1f1ef;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.addPhotoText {
+  font-family: Inter, sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: $secondary-color;
+  text-align: center;
+}
+
+.photoInput {
+  display: none;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.carouselButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background-color: $primary-color;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    stroke: white;
+  }
+
+  &:hover {
+    background-color: darken($primary-color, 10%);
+    transform: scale(1.1);
+  }
+
+  &:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .mainContent {
+    margin-left: 0;
+    padding: 20px;
+  }
+
+  .container {
+    padding: 0 20px;
+  }
+
+  .sectionTitle {
+    font-size: 32px;
+    margin-bottom: 6px;
+  }
+
+  .programForm {
+    h3 {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+  }
+
+  .formGroup {
+    margin-bottom: 16px;
+
+    label {
+      font-size: 16px;
+    }
+
+    input,
+    textarea,
+    select {
+      font-size: 16px;
+      padding: 12px 16px;
+    }
+  }
+
+  .photoCarousel {
+    gap: 8px;
+  }
+
+  .photoCard,
+  .addPhotoCard {
+    width: 160px;
+    flex: 0 0 160px;
+  }
+
+  .addPhotoText {
+    font-size: 13px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 0 16px;
+    gap: 16px;
+  }
+
+  .sectionTitle {
+    font-size: 28px;
+  }
+
+  .programForm {
+    h3 {
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+  }
+
+  .formGroup {
+    margin-bottom: 14px;
+
+    label {
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    input,
+    textarea,
+    select {
+      font-size: 15px;
+      padding: 10px 14px;
+    }
+
+    textarea {
+      min-height: 120px;
+    }
+  }
+
+  .formButtons {
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .submitButton,
+  .cancelButton,
+  .editButton {
+    font-size: 16px;
+    padding: 12px 24px;
+  }
+
+  .photoCard,
+  .addPhotoCard {
+    width: 140px;
+    flex: 0 0 140px;
+  }
+
+  .addPhotoText {
+    font-size: 12px;
+  }
+
+  .carouselButton {
+    width: 28px;
+    height: 28px;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .mainContent {
+    padding: 16px;
+  }
+
+  .container {
+    padding: 0 12px;
+    gap: 12px;
+  }
+
+  .sectionTitle {
+    font-size: 24px;
+    margin-bottom: 4px;
+  }
+
+  .programForm {
+    h3 {
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+  }
+
+  .formGroup {
+    margin-bottom: 12px;
+
+    label {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    input,
+    textarea,
+    select {
+      font-size: 14px;
+      padding: 8px 12px;
+    }
+
+    textarea {
+      min-height: 100px;
+    }
+  }
+
+  .formButtons {
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .submitButton,
+  .cancelButton,
+  .editButton {
+    font-size: 14px;
+    padding: 10px 20px;
+    width: 100%;
+  }
+
+  .photoCard,
+  .addPhotoCard {
+    width: 120px;
+    flex: 0 0 120px;
+  }
+
+  .addPhotoText {
+    font-size: 11px;
+  }
+
+  .carouselButton {
+    width: 24px;
+    height: 24px;
+
+    svg {
+      width: 12px;
+      height: 12px;
+    }
+  }
+}
