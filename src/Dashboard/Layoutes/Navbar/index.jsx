@@ -37,31 +37,61 @@ const DashboardNavbar = ({ isNavOpen, toggleNav, closeNav }) => {
       </div>
       <ul className={styles.navList}>
         <li className={styles.navItem}>
-          <a href="#home" className={styles.navLink} onClick={closeNav}>
+          <a
+            className={styles.navLink}
+            onClick={() => {
+              navigate("/dashboard/home");
+              closeNav();
+            }}
+          >
             <FiHome className={styles.icon} />
             Home
           </a>
         </li>
         <li className={styles.navItem}>
-          <a href="#reviews" className={styles.navLink} onClick={closeNav}>
+          <a
+            className={styles.navLink}
+            onClick={() => {
+              navigate("/dashboard/reviews");
+              closeNav();
+            }}
+          >
             <FiStar className={styles.icon} />
             Reviews
           </a>
         </li>
         <li className={styles.navItem}>
-          <a href="#tutorials" className={styles.navLink} onClick={closeNav}>
+          <a
+            className={styles.navLink}
+            onClick={() => {
+              navigate("/dashboard/tutorials");
+              closeNav();
+            }}
+          >
             <FiBook className={styles.icon} />
             Tutorials
           </a>
         </li>
         <li className={styles.navItem}>
-          <a href="#settings" className={styles.navLink} onClick={closeNav}>
+          <a
+            className={styles.navLink}
+            onClick={() => {
+              navigate("/dashboard/settings");
+              closeNav();
+            }}
+          >
             <FiSettings className={styles.icon} />
             Settings
           </a>
         </li>
         <li className={styles.navItem}>
-          <a href="#premium" className={styles.navLink} onClick={closeNav}>
+          <a
+            className={styles.navLink}
+            onClick={() => {
+              navigate("/dashboard/premium");
+              closeNav();
+            }}
+          >
             <FiAward className={styles.icon} />
             Premium
           </a>

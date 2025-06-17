@@ -19,6 +19,7 @@ import DashboardAdminDeletedPrograms from "./Dashboard/Pages/Admin/DeletedProgra
 import DashboardAdminNewPrograms from "./Dashboard/Pages/Admin/NewPrograms";
 import DashboardAdminCreatePrograms from "./Dashboard/Pages/Admin/CreatePrograms";
 import DashboardAdminProgramEdit from "./Dashboard/Pages/Admin/ProgramEdit";
+import DashboardSettings from "./Dashboard/Pages/User/Settings";
 
 function App() {
   return (
@@ -36,6 +37,9 @@ function App() {
 
       {/* Dashboard Routes */}
       <Route path="/dashboard/home" element={<DashboardHome />} />
+      <Route path="/dashboard/settings" element={<DashboardSettings />} />
+
+      {/* Dashboard Admins */}
       <Route
         path="/dashboard/admin/new-programs"
         element={<DashboardAdminNewPrograms />}
