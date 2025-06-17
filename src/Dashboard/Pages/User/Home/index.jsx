@@ -8,34 +8,68 @@ import img from "../../../../Components/images/cardexample.png";
 const DashboardHome = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [sortCriteria, setSortCriteria] = useState({
-    age: "",
+    start_age: "",
+    end_age: "",
     gender: "",
     country: "",
     major: "",
     format: "",
   });
   const [filteredPrograms, setFilteredPrograms] = useState([]);
+  const [majors, setMajors] = useState({}); // Store major ID to name mapping
 
-  // Fetch and normalize data from localStorage
+  // Fetch programs and majors from API
   useEffect(() => {
-    const storedPrograms = localStorage.getItem("programs");
-    let programs = storedPrograms ? JSON.parse(storedPrograms) : [];
+    // Fetch programs
+    const fetchPrograms = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/v1/programs/");
+        const data = await response.json();
+        const programs = data.results || [];
 
-    // Normalize data to match expected structure
-    programs = programs.map((program) => ({
-      ...program,
-      photo: program.photo || img, // Fallback to default image if null
-      desc: program.desc || "No description available", // Fallback for null desc
-      date: program.created_at, // Map created_at to date
-      type: program.type || "Program", // Default type if needed
-      major: program.major || [], // Ensure major is an array
-      gender: program.gender === "any" ? "All" : program.gender.charAt(0).toUpperCase() + program.gender.slice(1), // Normalize gender
-      format: program.format
-        ? program.format.charAt(0).toUpperCase() + program.format.slice(1)
-        : "Unknown", // Capitalize format
-    }));
+        // Normalize program data
+        const normalizedPrograms = programs.map((program) => ({
+          ...program,
+          photo: program.photo || img,
+          desc: program.desc || "No description available",
+          date: program.created_at,
+          type: program.type || "Program",
+          major: program.major || [],
+          gender:
+            program.gender === "any"
+              ? "All"
+              : program.gender.charAt(0).toUpperCase() +
+                program.gender.slice(1),
+          format: program.format
+            ? program.format.charAt(0).toUpperCase() + program.format.slice(1)
+            : "Unknown",
+        }));
 
-    setFilteredPrograms(programs);
+        // Store in localStorage
+        localStorage.setItem("programs", JSON.stringify(programs));
+        setFilteredPrograms(normalizedPrograms);
+      } catch (error) {
+        console.error("Error fetching programs:", error);
+      }
+    };
+
+    // Fetch majors
+    const fetchMajors = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/v1/majors/");
+        const data = await response.json();
+        const majorMap = {};
+        data.results.forEach((major) => {
+          majorMap[major.id] = major.name;
+        });
+        setMajors(majorMap);
+      } catch (error) {
+        console.error("Error fetching majors:", error);
+      }
+    };
+
+    fetchPrograms();
+    fetchMajors();
   }, []);
 
   const toggleNav = useCallback(() => {
@@ -61,7 +95,10 @@ const DashboardHome = () => {
       date: program.created_at,
       type: program.type || "Program",
       major: program.major || [],
-      gender: program.gender === "any" ? "All" : program.gender.charAt(0).toUpperCase() + program.gender.slice(1),
+      gender:
+        program.gender === "any"
+          ? "All"
+          : program.gender.charAt(0).toUpperCase() + program.gender.slice(1),
       format: program.format
         ? program.format.charAt(0).toUpperCase() + program.format.slice(1)
         : "Unknown",
@@ -71,7 +108,8 @@ const DashboardHome = () => {
 
     if (value === "reset") {
       setSortCriteria({
-        age: "",
+        start_age: "",
+        end_age: "",
         gender: "",
         country: "",
         major: "",
@@ -81,12 +119,14 @@ const DashboardHome = () => {
       return;
     }
 
-    if (name === "age") {
-      if (value === "12-14") {
-        filtered = filtered.filter((p) => p.start_age <= 14 && p.end_age >= 12);
-      } else if (value === "15-18") {
-        filtered = filtered.filter((p) => p.start_age <= 18 && p.end_age >= 15);
-      }
+    if (name === "start_age" && value) {
+      filtered = filtered.filter(
+        (p) => !p.start_age || p.start_age >= parseInt(value)
+      );
+    } else if (name === "end_age" && value) {
+      filtered = filtered.filter(
+        (p) => !p.end_age || p.end_age <= parseInt(value)
+      );
     } else if (name === "gender" && value) {
       filtered = filtered.filter(
         (p) => p.gender === value || p.gender === "All"
@@ -94,7 +134,7 @@ const DashboardHome = () => {
     } else if (name === "country" && value) {
       filtered = filtered.filter((p) => p.country === value);
     } else if (name === "major" && value) {
-      filtered = filtered.filter((p) => p.major.includes(value));
+      filtered = filtered.filter((p) => p.major.includes(parseInt(value)));
     } else if (name === "format" && value) {
       filtered = filtered.filter((p) => p.format === value);
     }
@@ -112,7 +152,9 @@ const DashboardHome = () => {
   ];
   const uniqueMajors = [
     ...new Set(
-      JSON.parse(localStorage.getItem("programs") || "[]").flatMap((p) => p.major || [])
+      JSON.parse(localStorage.getItem("programs") || "[]").flatMap(
+        (p) => p.major || []
+      )
     ),
   ];
 
@@ -129,13 +171,29 @@ const DashboardHome = () => {
           <div className={styles.container}>
             <div className={styles.sortSection}>
               <select
-                name="age"
-                value={sortCriteria.age}
+                name="start_age"
+                value={sortCriteria.start_age}
                 onChange={handleSortChange}
               >
-                <option value="">Age</option>
-                <option value="12-14">12-14</option>
-                <option value="<|control636|>-18">15-18</option>
+                <option value="">Start Age</option>
+                {[12, 13, 14, 15, 16, 17, 18].map((age) => (
+                  <option key={age} value={age}>
+                    {age}
+                  </option>
+                ))}
+                <option value="reset">Reset</option>
+              </select>
+              <select
+                name="end_age"
+                value={sortCriteria.end_age}
+                onChange={handleSortChange}
+              >
+                <option value="">End Age</option>
+                {[12, 13, 14, 15, 16, 17, 18].map((age) => (
+                  <option key={age} value={age}>
+                    {age}
+                  </option>
+                ))}
                 <option value="reset">Reset</option>
               </select>
               <select
@@ -168,9 +226,9 @@ const DashboardHome = () => {
                 onChange={handleSortChange}
               >
                 <option value="">Major</option>
-                {uniqueMajors.map((major) => (
-                  <option key={major} value={major}>
-                    {major}
+                {uniqueMajors.map((majorId) => (
+                  <option key={majorId} value={majorId}>
+                    {majors[majorId] || majorId}
                   </option>
                 ))}
                 <option value="reset">Reset</option>
@@ -194,9 +252,9 @@ const DashboardHome = () => {
                     <img src={img} alt={program.title} />
                   </div>
                   <div className={styles.cardMajors}>
-                    {program.major.map((major, index) => (
+                    {program.major.map((majorId, index) => (
                       <span key={index} className={styles.majorButton}>
-                        {major}
+                        {majors[majorId] || majorId}
                       </span>
                     ))}
                   </div>

@@ -8,7 +8,7 @@ const DashboardAdminCreatePrograms = () => {
   const navigate = useNavigate();
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [error, setError] = useState(null);
-  const [majors, setMajors] = useState([]); // Dynamic majors from API
+  const [majors, setMajors] = useState([]);
   const [formData, setFormData] = useState({
     title: "",
     slug: "",
@@ -18,14 +18,14 @@ const DashboardAdminCreatePrograms = () => {
     link: "",
     country: "",
     format: "",
-    photos: [], // Array for multiple photos
+    photos: [],
     type: "",
     funding: "",
     start_age: "",
     end_age: "",
     gender: "",
     status: "on",
-    major: [], // Flat array of integers
+    major: [],
   });
   const [photoPreviews, setPhotoPreviews] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -34,14 +34,19 @@ const DashboardAdminCreatePrograms = () => {
   const toggleNav = useCallback(() => setIsNavOpen((prev) => !prev), []);
   const closeNav = useCallback(() => setIsNavOpen(false), []);
 
-  // Fetch majors from backend
   useEffect(() => {
     const fetchMajors = async () => {
       try {
         const token = localStorage.getItem("access_token");
+        if (!token) {
+          setError("No authentication token found. Redirecting to login...");
+          setTimeout(() => navigate("/login"), 3000);
+          return;
+        }
         const response = await fetch("http://127.0.0.1:8000/api/v1/majors/", {
           headers: {
             Authorization: `Bearer ${token}`,
+            Accept: "application/json",
           },
         });
         if (!response.ok) {
@@ -50,7 +55,7 @@ const DashboardAdminCreatePrograms = () => {
             setTimeout(() => navigate("/login"), 3000);
             return;
           }
-          throw new Error("Failed to fetch majors");
+          throw new Error(`Failed to fetch majors: ${response.status}`);
         }
         const data = await response.json();
         setMajors(data.results || []);
@@ -65,7 +70,13 @@ const DashboardAdminCreatePrograms = () => {
   const handleInputChange = (event) => {
     const { name, value, files } = event.target;
     if (name === "photos" && files.length > 0) {
-      const newFiles = Array.from(files);
+      const newFiles = Array.from(files).filter((file) =>
+        file.type.startsWith("image/")
+      );
+      if (newFiles.length === 0) {
+        setError("Please select valid image files.");
+        return;
+      }
       setFormData((prev) => ({
         ...prev,
         photos: [...prev.photos, ...newFiles],
@@ -99,22 +110,24 @@ const DashboardAdminCreatePrograms = () => {
     const newFiles = Array.from(event.dataTransfer.files).filter((file) =>
       file.type.startsWith("image/")
     );
-    if (newFiles.length > 0) {
-      setFormData((prev) => ({
-        ...prev,
-        photos: [...prev.photos, ...newFiles],
-      }));
-      const newPreviews = newFiles.map((file) => {
-        const reader = new FileReader();
-        return new Promise((resolve) => {
-          reader.onloadend = () => resolve(reader.result);
-          reader.readAsDataURL(file);
-        });
-      });
-      Promise.all(newPreviews).then((results) => {
-        setPhotoPreviews((prev) => [...prev, ...results]);
-      });
+    if (newFiles.length === 0) {
+      setError("Please drop valid image files.");
+      return;
     }
+    setFormData((prev) => ({
+      ...prev,
+      photos: [...prev.photos, ...newFiles],
+    }));
+    const newPreviews = newFiles.map((file) => {
+      const reader = new FileReader();
+      return new Promise((resolve) => {
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(file);
+      });
+    });
+    Promise.all(newPreviews).then((results) => {
+      setPhotoPreviews((prev) => [...prev, ...results]);
+    });
   };
 
   const handleDragOver = (event) => {
@@ -152,6 +165,12 @@ const DashboardAdminCreatePrograms = () => {
         return;
       }
 
+      // Validate photos (optional, uncomment if photos are required)
+      // if (formData.photos.length === 0) {
+      //   setError("Please upload at least one photo.");
+      //   return;
+      // }
+
       const programData = new FormData();
       programData.append("title", formData.title);
       if (formData.slug) programData.append("slug", formData.slug);
@@ -162,9 +181,6 @@ const DashboardAdminCreatePrograms = () => {
       programData.append("link", formData.link);
       if (formData.country) programData.append("country", formData.country);
       if (formData.format) programData.append("format", formData.format);
-      formData.photos.forEach((photo, index) =>
-        programData.append(`photos[${index}]`, photo)
-      );
       programData.append("type", formData.type);
       if (formData.funding) programData.append("funding", formData.funding);
       if (formData.start_age)
@@ -174,6 +190,23 @@ const DashboardAdminCreatePrograms = () => {
       if (formData.gender) programData.append("gender", formData.gender);
       programData.append("status", formData.status);
       formData.major.forEach((id) => programData.append("major", id));
+
+      // Log photos for debugging
+      console.log("Photos to be sent:", formData.photos);
+      formData.photos.forEach((photo, index) => {
+        if (photo instanceof File) {
+          programData.append(`photos[${index}]`, photo);
+        }
+      });
+
+      // Alternative photo field names (uncomment one if backend expects a different key)
+      // formData.photos.forEach((photo) => programData.append("photos", photo)); // Try plain "photos"
+      // if (formData.photos[0]) programData.append("photo", formData.photos[0]); // Try single "photo"
+
+      // Log FormData contents for debugging
+      for (let [key, value] of programData.entries()) {
+        console.log(`FormData ${key}:`, value);
+      }
 
       const response = await fetch("http://127.0.0.1:8000/api/v1/programs/", {
         method: "POST",
@@ -194,10 +227,11 @@ const DashboardAdminCreatePrograms = () => {
         throw new Error(
           errorData.detail ||
             JSON.stringify(errorData) ||
-            "Failed to create program"
+            `Failed to create program: ${response.status}`
         );
       }
 
+      const newProgram = await response.json();
       setFormData({
         title: "",
         slug: "",
@@ -373,16 +407,15 @@ const DashboardAdminCreatePrograms = () => {
                         </span>
                       </div>
                     )}
+                    {photoPreviews.length > 0 && photoPreviews.length < 10 && (
+                      <div
+                        className={styles.addPhotoCard}
+                        onClick={triggerAddPhotoInput}
+                      >
+                        <span className={styles.addPhotoText}>Add More</span>
+                      </div>
+                    )}
                   </div>
-                  {photoPreviews.length > 0 && (
-                    <button
-                      type="button"
-                      className={styles.addButton}
-                      onClick={triggerAddPhotoInput}
-                    >
-                      Add More
-                    </button>
-                  )}
                   <input
                     type="file"
                     name="photos"
@@ -428,6 +461,7 @@ const DashboardAdminCreatePrograms = () => {
                   name="start_age"
                   value={formData.start_age}
                   onChange={handleInputChange}
+                  placeholder="Minimum age"
                   min="0"
                 />
               </div>
@@ -438,6 +472,7 @@ const DashboardAdminCreatePrograms = () => {
                   name="end_age"
                   value={formData.end_age}
                   onChange={handleInputChange}
+                  placeholder="Maximum age"
                   min="0"
                 />
               </div>
@@ -461,8 +496,8 @@ const DashboardAdminCreatePrograms = () => {
                   value={formData.status}
                   onChange={handleInputChange}
                 >
-                  <option value="on">On</option>
-                  <option value="off">Off</option>
+                  <option value="on">Active</option>
+                  <option value="off">Inactive</option>
                 </select>
               </div>
               <div className={styles.formGroup}>

@@ -10,6 +10,7 @@ const DashboardAdminProgramEdit = () => {
   const navigate = useNavigate();
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [program, setProgram] = useState(null);
+  const [majors, setMajors] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
@@ -25,43 +26,54 @@ const DashboardAdminProgramEdit = () => {
     start_age: "",
     end_age: "",
     gender: "",
-    major: "",
+    major: [],
     slug: "",
     status: "on",
-    photos: [null, null, null, null],
+    photos: [],
   });
-  const [photoPreviews, setPhotoPreviews] = useState([null, null, null, null]);
-  const carouselRef = useRef(null);
+  const [photoPreviews, setPhotoPreviews] = useState([]);
   const addPhotoInputRef = useRef(null);
 
   useEffect(() => {
-    const fetchProgram = async () => {
+    const fetchData = async () => {
       setLoading(true);
       setError(null);
       try {
         const token = localStorage.getItem("access_token");
-        console.log("EditProgram Token:", token ? "Found" : "Not found");
-
         if (!token) {
           setError("No authentication token found. Redirecting to login...");
           setTimeout(() => navigate("/login"), 3000);
           return;
         }
 
-        const response = await fetch(
-          `http://127.0.0.1:8000/api/v1/programs/${slug}/`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-            },
+        // Fetch majors
+        const majorsResponse = await fetch("http://127.0.0.1:8000/api/v1/majors/", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        });
+        if (!majorsResponse.ok) {
+          if (majorsResponse.status === 401) {
+            setError("Unauthorized. Redirecting to login...");
+            setTimeout(() => navigate("/login"), 3000);
+            return;
           }
-        );
+          throw new Error("Failed to fetch majors");
+        }
+        const majorsData = await majorsResponse.json();
+        setMajors(majorsData.results || []);
 
-        console.log("EditProgram API Response Status:", response.status);
+        // Fetch program
+        const response = await fetch(`http://127.0.0.1:8000/api/v1/programs/${slug}/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        });
+
         if (!response.ok) {
           const errorText = await response.text();
-          console.error("EditProgram API Error Response:", errorText);
           if (response.status === 401) {
             setError("Unauthorized. Redirecting to login...");
             setTimeout(() => navigate("/login"), 3000);
@@ -70,25 +82,11 @@ const DashboardAdminProgramEdit = () => {
           if (response.status === 404) {
             throw new Error(`Program not found with slug: ${slug}`);
           }
-          throw new Error(
-            `Failed to fetch program: ${response.status} ${errorText}`
-          );
+          throw new Error(`Failed to fetch program: ${response.status} ${errorText}`);
         }
 
         const foundProgram = await response.json();
-        console.log("EditProgram Found Program:", foundProgram);
-
-        const programs = JSON.parse(localStorage.getItem("programs")) || [];
-        const updatedPrograms = programs.some((p) => p.slug === slug)
-          ? programs.map((p) => (p.slug === slug ? foundProgram : p))
-          : [...programs, foundProgram];
-        localStorage.setItem("programs", JSON.stringify(updatedPrograms));
-
-        const photos = Array.isArray(foundProgram.photos)
-          ? foundProgram.photos.concat(
-              Array(4 - foundProgram.photos.length).fill(null)
-            )
-          : [null, null, null, null];
+        const photos = Array.isArray(foundProgram.photos) ? foundProgram.photos : foundProgram.photo ? [foundProgram.photo] : [];
 
         setProgram(foundProgram);
         setFormData({
@@ -104,26 +102,25 @@ const DashboardAdminProgramEdit = () => {
           start_age: foundProgram.start_age || "",
           end_age: foundProgram.end_age || "",
           gender: foundProgram.gender || "",
-          major: Array.isArray(foundProgram.major)
-            ? foundProgram.major.join(", ")
-            : "",
-          slug,
+          major: Array.isArray(foundProgram.major) ? foundProgram.major : [],
+          slug: foundProgram.slug || "",
           status: foundProgram.status || "on",
           photos,
         });
         setPhotoPreviews(photos);
+
+        // Update localStorage
+        const programs = JSON.parse(localStorage.getItem("programs")) || [];
+        const updatedPrograms = programs.some((p) => p.slug === slug)
+          ? programs.map((p) => (p.slug === slug ? foundProgram : p))
+          : [...programs, foundProgram];
+        localStorage.setItem("programs", JSON.stringify(updatedPrograms));
       } catch (error) {
-        console.error("EditProgram Fetch Error:", error);
         setError(error.message);
-        const localPrograms =
-          JSON.parse(localStorage.getItem("programs")) || [];
+        const localPrograms = JSON.parse(localStorage.getItem("programs")) || [];
         const localProgram = localPrograms.find((p) => p.slug === slug);
         if (localProgram) {
-          const photos = Array.isArray(localProgram.photos)
-            ? localProgram.photos.concat(
-                Array(4 - localProgram.photos.length).fill(null)
-              )
-            : [null, null, null, null];
+          const photos = Array.isArray(localProgram.photos) ? localProgram.photos : localProgram.photo ? [localProgram.photo] : [];
           setProgram(localProgram);
           setFormData({
             title: localProgram.title || "",
@@ -138,9 +135,7 @@ const DashboardAdminProgramEdit = () => {
             start_age: localProgram.start_age || "",
             end_age: localProgram.end_age || "",
             gender: localProgram.gender || "",
-            major: Array.isArray(localProgram.major)
-              ? localProgram.major.join(", ")
-              : "",
+            major: Array.isArray(localProgram.major) ? localProgram.major : [],
             slug: localProgram.slug || "",
             status: localProgram.status || "on",
             photos,
@@ -153,56 +148,51 @@ const DashboardAdminProgramEdit = () => {
       }
     };
 
-    fetchProgram();
+    fetchData();
   }, [slug, navigate]);
 
-  const toggleNav = useCallback(() => {
-    setIsNavOpen((prev) => !prev);
-  }, []);
+  const toggleNav = useCallback(() => setIsNavOpen((prev) => !prev), []);
+  const closeNav = useCallback(() => setIsNavOpen(false), []);
 
-  const closeNav = useCallback(() => {
-    setIsNavOpen(false);
-  }, []);
-
-  const handleInputChange = ({ target: { name, value, files } }) => {
-    if (name === "add_photo" && files[0]) {
-      const file = files[0];
-      const newPhotos = [...formData.photos];
-      const newPreviews = [...photoPreviews];
-
-      const emptyIndex = newPhotos.findIndex((p) => p === null);
-      if (emptyIndex === -1) return;
-
-      newPhotos[emptyIndex] = file;
+  const handleInputChange = (event) => {
+    const { name, value, files } = event.target;
+    if (name === "add_photo" && files.length > 0) {
+      const newFiles = Array.from(files);
       setFormData((prev) => ({
         ...prev,
-        photos: newPhotos,
+        photos: [...prev.photos, ...newFiles],
       }));
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        newPreviews[emptyIndex] = reader.result;
-        setPhotoPreviews([...newPreviews]);
-      };
-      reader.readAsDataURL(file);
+      const newPreviews = newFiles.map((file) => {
+        const reader = new FileReader();
+        return new Promise((resolve) => {
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(file);
+        });
+      });
+      Promise.all(newPreviews).then((results) => {
+        setPhotoPreviews((prev) => [...prev, ...results]);
+      });
+    } else if (name === "major") {
+      const selectedIds = Array.from(event.target.selectedOptions).map((option) =>
+        parseInt(option.value, 10)
+      );
+      setFormData((prev) => ({ ...prev, major: selectedIds }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
+  const removePhoto = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      photos: prev.photos.filter((_, i) => i !== index),
+    }));
+    setPhotoPreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const triggerAddPhotoInput = () => {
     if (addPhotoInputRef.current) {
       addPhotoInputRef.current.click();
-    }
-  };
-
-  const scrollCarousel = (direction) => {
-    if (carouselRef.current) {
-      const scrollAmount = direction === "left" ? -180 : 180;
-      carouselRef.current.scrollBy({
-        left: scrollAmount,
-        behavior: "smooth",
-      });
     }
   };
 
@@ -221,65 +211,46 @@ const DashboardAdminProgramEdit = () => {
       programData.append("title", formData.title);
       if (formData.slug) programData.append("slug", formData.slug);
       if (formData.desc) programData.append("desc", formData.desc);
-      if (formData.full_info)
-        programData.append("full_info", formData.full_info);
+      if (formData.full_info) programData.append("full_info", formData.full_info);
       if (formData.deadline) programData.append("deadline", formData.deadline);
       programData.append("link", formData.link);
       if (formData.country) programData.append("country", formData.country);
       if (formData.format) programData.append("format", formData.format);
       programData.append("type", formData.type);
       if (formData.funding) programData.append("funding", formData.funding);
-      if (formData.start_age)
-        programData.append("start_age", formData.start_age);
-      if (formData.end_age) programData.append("end_age", formData.end_age);
+      if (formData.start_age) programData.append("start_age", parseInt(formData.start_age, 10));
+      if (formData.end_age) programData.append("end_age", parseInt(formData.end_age, 10));
       if (formData.gender) programData.append("gender", formData.gender);
       if (formData.status) programData.append("status", formData.status);
-      if (formData.major) {
-        formData.major
-          .split(",")
-          .map((m) => m.trim())
-          .filter((m) => m)
-          .forEach((major) => programData.append("major", major));
-      }
+      formData.major.forEach((id) => programData.append("major", id));
       formData.photos.forEach((photo, index) => {
-        if (photo && photo !== img) {
+        if (photo && typeof photo !== "string") {
           programData.append(`photos[${index}]`, photo);
         }
       });
 
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/v1/programs/${slug}/`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: programData,
-        }
-      );
+      const response = await fetch(`http://127.0.0.1:8000/api/v1/programs/${slug}/`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}` },
+        body: programData,
+      });
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error("Update Error Response:", errorText);
         if (response.status === 401) {
           setError("Unauthorized. Redirecting to login...");
           setTimeout(() => navigate("/login"), 3000);
           return;
         }
-        throw new Error(
-          `Failed to update program: ${response.status} ${errorText}`
-        );
+        throw new Error(`Failed to update program: ${response.status} ${errorText}`);
       }
 
       const updatedProgram = await response.json();
       const programs = JSON.parse(localStorage.getItem("programs")) || [];
-      const updatedPrograms = programs.map((p) =>
-        p.slug === slug ? updatedProgram : p
-      );
+      const updatedPrograms = programs.map((p) => (p.slug === slug ? updatedProgram : p));
       localStorage.setItem("programs", JSON.stringify(updatedPrograms));
       navigate("/dashboard/admin/new-programs");
     } catch (err) {
-      console.error("Submit Error:", err);
       setError(err.message);
     }
   };
@@ -287,15 +258,9 @@ const DashboardAdminProgramEdit = () => {
   if (loading) {
     return (
       <div className={styles.dashboard}>
-        <DashboardAdminNavbar
-          isNavOpen={isNavOpen}
-          toggleNav={toggleNav}
-          closeNav={closeNav}
-        />
+        <DashboardAdminNavbar isNavOpen={isNavOpen} toggleNav={toggleNav} closeNav={closeNav} />
         <DashboardTopBar isNavOpen={isNavOpen} toggleNav={toggleNav} />
-        <main
-          className={`${styles.mainContent} ${isNavOpen ? styles.navOpen : ""}`}
-        >
+        <main className={`${styles.mainContent} ${isNavOpen ? styles.navOpen : ""}`}>
           <section className={styles.section}>
             <div className={styles.container}>
               <h2 className={styles.sectionTitle}>Loading...</h2>
@@ -309,19 +274,13 @@ const DashboardAdminProgramEdit = () => {
   if (error && !program) {
     return (
       <div className={styles.dashboard}>
-        <DashboardAdminNavbar
-          isNavOpen={isNavOpen}
-          toggleNav={toggleNav}
-          closeNav={closeNav}
-        />
+        <DashboardAdminNavbar isNavOpen={isNavOpen} toggleNav={toggleNav} closeNav={closeNav} />
         <DashboardTopBar isNavOpen={isNavOpen} toggleNav={toggleNav} />
-        <main
-          className={`${styles.mainContent} ${isNavOpen ? styles.navOpen : ""}`}
-        >
+        <main className={`${styles.mainContent} ${isNavOpen ? styles.navOpen : ""}`}>
           <section className={styles.section}>
             <div className={styles.container}>
               <h2 className={styles.sectionTitle}>Program Not Found</h2>
-              <p>{error}</p>
+              <p className={styles.error}>{error}</p>
               <button
                 className={styles.editButton}
                 onClick={() => navigate("/dashboard/admin/new-programs")}
@@ -337,15 +296,9 @@ const DashboardAdminProgramEdit = () => {
 
   return (
     <div className={styles.dashboard}>
-      <DashboardAdminNavbar
-        isNavOpen={isNavOpen}
-        toggleNav={toggleNav}
-        closeNav={closeNav}
-      />
+      <DashboardAdminNavbar isNavOpen={isNavOpen} toggleNav={toggleNav} closeNav={closeNav} />
       <DashboardTopBar isNavOpen={isNavOpen} toggleNav={toggleNav} />
-      <main
-        className={`${styles.mainContent} ${isNavOpen ? styles.navOpen : ""}`}
-      >
+      <main className={`${styles.mainContent} ${isNavOpen ? styles.navOpen : ""}`}>
         <section className={styles.section}>
           <div className={styles.container}>
             <h2 className={styles.sectionTitle}>Edit Program</h2>
@@ -360,6 +313,7 @@ const DashboardAdminProgramEdit = () => {
                     name="title"
                     value={formData.title}
                     onChange={handleInputChange}
+                    placeholder="Enter program title"
                     required
                   />
                 </div>
@@ -370,6 +324,7 @@ const DashboardAdminProgramEdit = () => {
                     name="desc"
                     value={formData.desc}
                     onChange={handleInputChange}
+                    placeholder="Enter short description"
                   />
                 </div>
                 <div className={styles.formGroup}>
@@ -378,6 +333,7 @@ const DashboardAdminProgramEdit = () => {
                     name="full_info"
                     value={formData.full_info}
                     onChange={handleInputChange}
+                    placeholder="Enter detailed program information"
                   />
                 </div>
                 <div className={styles.formGroup}>
@@ -396,20 +352,22 @@ const DashboardAdminProgramEdit = () => {
                     name="link"
                     value={formData.link}
                     onChange={handleInputChange}
+                    placeholder="e.g., https://example.com"
                     required
                   />
                 </div>
                 <div className={styles.formGroup}>
-                  <label>Country</label>
+                  <label>Location</label>
                   <input
                     type="text"
                     name="country"
                     value={formData.country}
                     onChange={handleInputChange}
+                    placeholder="Enter country"
                   />
                 </div>
                 <div className={styles.formGroup}>
-                  <label>Format</label>
+                  <label>Program Type</label>
                   <select
                     name="format"
                     value={formData.format}
@@ -417,8 +375,7 @@ const DashboardAdminProgramEdit = () => {
                   >
                     <option value="">Select Format</option>
                     <option value="online">Online</option>
-                    <option value="offline">Offline</option>
-                    <option value="hybrid">Hybrid</option>
+                    <option value="local">Local</option>
                   </select>
                 </div>
                 <div className={styles.formGroup}>
@@ -455,6 +412,8 @@ const DashboardAdminProgramEdit = () => {
                     name="start_age"
                     value={formData.start_age}
                     onChange={handleInputChange}
+                    placeholder="Minimum age"
+                    min="0"
                   />
                 </div>
                 <div className={styles.formGroup}>
@@ -464,6 +423,8 @@ const DashboardAdminProgramEdit = () => {
                     name="end_age"
                     value={formData.end_age}
                     onChange={handleInputChange}
+                    placeholder="Maximum age"
+                    min="0"
                   />
                 </div>
                 <div className={styles.formGroup}>
@@ -480,14 +441,20 @@ const DashboardAdminProgramEdit = () => {
                   </select>
                 </div>
                 <div className={styles.formGroup}>
-                  <label>Majors (comma-separated)</label>
-                  <input
-                    type="text"
+                  <label>Majors</label>
+                  <select
+                    multiple
                     name="major"
                     value={formData.major}
                     onChange={handleInputChange}
-                    placeholder="e.g., CS, Math, Science"
-                  />
+                    className={styles.multiSelect}
+                  >
+                    {majors.map((major) => (
+                      <option key={major.id} value={major.id}>
+                        {major.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className={styles.formGroup}>
                   <label>Slug</label>
@@ -502,78 +469,59 @@ const DashboardAdminProgramEdit = () => {
                 <div className={styles.formGroup}>
                   <label>Photos</label>
                   <div className={styles.carouselContainer}>
-                    <button
-                      type="button"
-                      className={styles.carouselButton}
-                      onClick={() => scrollCarousel("left")}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <polyline points="15 18 9 12 15 6"></polyline>
-                      </svg>
-                    </button>
-                    <div className={styles.photoCarousel} ref={carouselRef}>
-                      <div
-                        className={`${styles.photoCard} ${styles.addPhotoCard}`}
-                        onClick={triggerAddPhotoInput}
-                      >
-                        <div className={styles.emptyPhotoCard}>
-                          <span className={styles.addPhotoText}>
-                            + Add Photo
-                          </span>
+                    <div className={styles.photoCarousel}>
+                      {photoPreviews.length > 0 ? (
+                        photoPreviews.map((preview, index) => (
+                          <div key={index} className={styles.photoCard}>
+                            <img
+                              src={preview || img}
+                              alt={`Photo ${index + 1}`}
+                              className={styles.photoImage}
+                              onError={(e) => (e.target.src = img)}
+                            />
+                            <button
+                              type="button"
+                              className={styles.removeButton}
+                              onClick={() => removePhoto(index)}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="white"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path d="M18 6L12 12M6 18L12 12M6 6L12 12 18 18" />
+                              </svg>
+                            </button>
+                          </div>
+                        ))
+                      ) : null}
+                      {photoPreviews.length < 10 && (
+                        <div
+                          className={`${styles.photoCard} ${styles.addPhotoCard}`}
+                          onClick={triggerAddPhotoInput}
+                        >
+                          <div className={styles.emptyPhotoCard}>
+                            <span className={styles.addPhotoText}>Add Photo</span>
+                          </div>
                         </div>
-                      </div>
-                      {photoPreviews.map(
-                        (preview, index) =>
-                          preview &&
-                          preview !== img && (
-                            <div key={index} className={styles.photoCard}>
-                              <img
-                                src={preview}
-                                alt={`Preview ${index + 1}`}
-                                className={styles.photoImage}
-                              />
-                            </div>
-                          )
                       )}
                     </div>
-                    <button
-                      type="button"
-                      className={styles.carouselButton}
-                      onClick={() => scrollCarousel("right")}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <polyline points="9 18 15 12 9 6"></polyline>
-                      </svg>
-                    </button>
+                    <input
+                      type="file"
+                      name="add_photo"
+                      accept="image/*"
+                      multiple
+                      ref={addPhotoInputRef}
+                      onChange={handleInputChange}
+                      className={styles.hiddenInput}
+                    />
                   </div>
-                  <input
-                    type="file"
-                    name="add_photo"
-                    accept="image/*"
-                    ref={addPhotoInputRef}
-                    onChange={handleInputChange}
-                    className={styles.hiddenInput}
-                  />
                 </div>
                 <div className={styles.formGroup}>
                   <label>Status</label>

@@ -1,6 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
 $primary-bg: white;
+$primary-color: #297379;
+$secondary-color: #555;
+$text-color: #222;
+$border-color: #e2e8f0;
+$shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
 * {
   margin: 0;
@@ -15,6 +20,362 @@ $primary-bg: white;
 }
 
 .mainContent {
-  margin-left: 250px;
+  margin-left: 350px;
   transition: margin-left 0.3s ease-in-out;
+  background-color: #f9f9f9;
+
+  &.navOpen {
+    margin-left: 0;
+  }
+}
+
+.section {
+  width: 100%;
+  padding-top: 30px;
+}
+
+.container {
+  width: 85%;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 48px;
+}
+
+.sectionTitle {
+  font-family: Poppins, sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  color: $text-color;
+}
+
+.noPrograms {
+  font-family: Poppins, sans-serif;
+  font-size: 16px;
+  color: $secondary-color;
+}
+
+.error {
+  font-family: Poppins, sans-serif;
+  font-size: 14px;
+  color: #ef4444;
+  margin-bottom: 16px;
+}
+
+.cards {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 50px;
+  padding-bottom: 100px;
+}
+
+.card {
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: $shadow;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.cardImage {
+  width: 100%;
+  border-radius: 20px 20px 0 0;
+  overflow: hidden;
+}
+
+.photoCarousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  gap: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: $secondary-color transparent;
+
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $secondary-color;
+    border-radius: 4px;
+  }
+}
+
+.photoImage {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 20px 20px 0 0;
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+}
+
+.cardMajors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 24px;
+}
+
+.majorButton {
+  font-family: Poppins, sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 18px;
+  color: $primary-color;
+  background-color: lighten($primary-color, 40%);
+  border: 1px solid $primary-color;
+  border-radius: 16px;
+  padding: 4px 12px;
+  text-align: center;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: lighten($primary-color, 30%);
+  }
+}
+
+.cardTitle {
+  font-family: Poppins, sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 26px;
+  color: $text-color;
+  text-align: left;
+  padding: 0 24px;
+}
+
+.cardInfoRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 0 24px;
+}
+
+.cardCountry,
+.cardType,
+.cardDate {
+  font-family: Poppins, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: $secondary-color;
+  text-align: left;
+}
+
+.cardCountry {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.separator {
+  font-family: Poppins, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: $secondary-color;
+}
+
+.cardDescription {
+  font-family: Poppins, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #777;
+  text-align: left;
+  padding: 0 24px 24px;
+  flex-grow: 1;
+}
+
+.editButton {
+  font-family: Poppins, sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: white;
+  background: linear-gradient(
+    135deg,
+    $primary-color,
+    lighten($primary-color, 10%)
+  );
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 0 24px 24px;
+  align-self: flex-start;
+
+  &:hover {
+    background: linear-gradient(
+      135deg,
+      darken($primary-color, 10%),
+      $primary-color
+    );
+    transform: translateY(-2px);
+  }
+}
+
+@media screen and (max-width: 1500px) {
+  .container {
+    width: 90%;
+    padding: 0 20px;
+    gap: 40px;
+  }
+
+  .cards {
+    gap: 20px;
+  }
+
+  .cardTitle {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .cardCountry,
+  .cardType,
+  .cardDate,
+  .separator {
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .cardDescription {
+    font-size: 15px;
+    line-height: 22px;
+  }
+
+  .majorButton {
+    font-size: 11px;
+    padding: 3px 10px;
+  }
+
+  .editButton {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+
+  .sectionTitle {
+    font-size: 22px;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .mainContent {
+    margin-left: 0;
+  }
+  .container {
+    width: 95%;
+    gap: 36px;
+  }
+
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    width: 100%;
+    padding: 0 16px;
+    gap: 32px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .card {
+    margin: 0 8px;
+  }
+
+  .cardInfoRow {
+    gap: 6px;
+  }
+
+  .cardTitle {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .cardCountry,
+  .cardType,
+  .cardDate,
+  .separator {
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .cardDescription {
+    font-size: 14px;
+    line-height: 20px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .container {
+    padding: 0 12px;
+    gap: 24px;
+  }
+
+  .cards {
+    gap: 12px;
+  }
+
+  .card {
+    margin: 0 4px;
+  }
+
+  .cardInfoRow {
+    gap: 6px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cardTitle {
+    font-size: 16px;
+    line-height: 22px;
+  }
+
+  .cardCountry,
+  .cardType,
+  .cardDate,
+  .separator {
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  .cardDescription {
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .majorButton {
+    font-size: 10px;
+    padding: 2px 8px;
+  }
+
+  .editButton {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+
+  .sectionTitle {
+    font-size: 20px;
+  }
 }

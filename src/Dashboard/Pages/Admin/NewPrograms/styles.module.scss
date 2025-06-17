@@ -1,6 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
 $primary-bg: white;
+$primary-color: #297379;
+$secondary-color: #555;
+$text-color: #222;
+$border-color: #e2e8f0;
+$shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
 * {
   margin: 0;
@@ -17,6 +22,7 @@ $primary-bg: white;
 .mainContent {
   margin-left: 350px;
   transition: margin-left 0.3s ease-in-out;
+  background-color: #f9f9f9;
 
   &.navOpen {
     margin-left: 0;
@@ -25,7 +31,6 @@ $primary-bg: white;
 
 .section {
   width: 100%;
-  background-color: #f9f9f9;
   padding-top: 30px;
 }
 
@@ -36,14 +41,76 @@ $primary-bg: white;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 48px;
+  gap: 24px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 .sectionTitle {
   font-family: Poppins, sans-serif;
   font-weight: 600;
   font-size: 24px;
-  color: #222;
+  color: $text-color;
+}
+
+.noPrograms {
+  font-family: Poppins, sans-serif;
+  font-size: 16px;
+  color: $secondary-color;
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+.error {
+  font-family: Poppins, sans-serif;
+  font-size: 14px;
+  color: #ef4444;
+  margin-bottom: 16px;
+}
+
+.sortControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sortLabel {
+  font-family: Poppins, sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: $secondary-color;
+}
+
+.sortButton {
+  font-family: Poppins, sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: $primary-color;
+  background-color: lighten($primary-color, 40%);
+  border: 1px solid $primary-color;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &.active {
+    background-color: $primary-color;
+    color: white;
+  }
+
+  &:hover {
+    background-color: $primary-color;
+    color: white;
+    transform: translateY(-1px);
+  }
 }
 
 .cards {
@@ -57,11 +124,17 @@ $primary-bg: white;
 .card {
   background-color: white;
   border-radius: 20px;
-  box-shadow: 0px 4px 4px 0px #070d184d;
+  box-shadow: $shadow;
   display: flex;
   flex-direction: column;
   gap: 16px;
   position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
 }
 
 .addCard {
@@ -72,19 +145,29 @@ $primary-bg: white;
   height: 100%;
   background-color: #eae7e7;
   border-radius: 20px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: lighten($primary-color, 40%);
+  }
 }
 
 .addButton {
   font-family: Poppins, sans-serif;
   font-weight: 400;
-  font-size: 200px;
-  color: #ffffff;
-  background-color: #eae7e7;
+  font-size: 100px;
+  color: $primary-color;
+  background-color: transparent;
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: darken($primary-color, 10%);
+  }
 }
 
 .cardImage {
@@ -93,10 +176,32 @@ $primary-bg: white;
   overflow: hidden;
 }
 
-.cardImage img {
+.photoCarousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  gap: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: $secondary-color transparent;
+
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $secondary-color;
+    border-radius: 4px;
+  }
+}
+
+.photoImage {
   width: 100%;
-  height: auto;
+  height: 200px;
   object-fit: cover;
+  border-radius: 20px 20px 0 0;
+  flex: 0 0 100%;
+  scroll-snap-align: center;
 }
 
 .cardMajors {
@@ -111,12 +216,17 @@ $primary-bg: white;
   font-weight: 500;
   font-size: 12px;
   line-height: 18px;
-  color: #297379;
-  background-color: #e6f0f1;
-  border: 1px solid #297379;
+  color: $primary-color;
+  background-color: lighten($primary-color, 40%);
+  border: 1px solid $primary-color;
   border-radius: 16px;
   padding: 4px 12px;
   text-align: center;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: lighten($primary-color, 30%);
+  }
 }
 
 .cardTitle {
@@ -124,7 +234,7 @@ $primary-bg: white;
   font-weight: 600;
   font-size: 20px;
   line-height: 26px;
-  color: #222;
+  color: $text-color;
   text-align: left;
   padding: 0 24px;
 }
@@ -144,7 +254,7 @@ $primary-bg: white;
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;
-  color: #555;
+  color: $secondary-color;
   text-align: left;
 }
 
@@ -159,7 +269,7 @@ $primary-bg: white;
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;
-  color: #555;
+  color: $secondary-color;
 }
 
 .cardDescription {
@@ -178,106 +288,26 @@ $primary-bg: white;
   font-weight: 500;
   font-size: 14px;
   color: white;
-  background-color: #297379;
+  background: linear-gradient(
+    135deg,
+    $primary-color,
+    lighten($primary-color, 10%)
+  );
   border: none;
   border-radius: 8px;
   padding: 8px 16px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
   margin: 0 24px 24px;
   align-self: flex-start;
 
   &:hover {
-    background-color: #1a5557;
-  }
-}
-
-.programForm {
-  width: 100%;
-  max-width: 600px;
-  background-color: white;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0px 4px 4px 0px #070d184d;
-
-  h3 {
-    font-family: Poppins, sans-serif;
-    font-weight: 600;
-    font-size: 20px;
-    color: #222;
-    margin-bottom: 16px;
-  }
-}
-
-.formGroup {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 16px;
-
-  label {
-    font-family: Poppins, sans-serif;
-    font-weight: 500;
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 8px;
-  }
-
-  input,
-  textarea,
-  select {
-    font-family: Poppins, sans-serif;
-    font-size: 14px;
-    padding: 8px 12px;
-    border: 1px solid #070d18fc;
-    border-radius: 8px;
-    background-color: #fff;
-    transition: border-color 0.3s ease;
-
-    &:focus {
-      outline: none;
-      border-color: #1a252f;
-    }
-  }
-
-  textarea {
-    resize: vertical;
-    min-height: 100px;
-  }
-}
-
-.formButtons {
-  display: flex;
-  gap: 16px;
-  margin-top: 24px;
-}
-
-.submitButton,
-.cancelButton {
-  font-family: Poppins, sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.submitButton {
-  background-color: #070d18fc;
-  color: white;
-
-  &:hover {
-    background-color: #1a252f;
-  }
-}
-
-.cancelButton {
-  background-color: #d32f2f;
-  color: white;
-
-  &:hover {
-    background-color: #b71c1c;
+    background: linear-gradient(
+      135deg,
+      darken($primary-color, 10%),
+      $primary-color
+    );
+    transform: translateY(-2px);
   }
 }
 
@@ -285,7 +315,7 @@ $primary-bg: white;
   .container {
     width: 90%;
     padding: 0 20px;
-    gap: 40px;
+    gap: 20px;
   }
 
   .cards {
@@ -324,10 +354,9 @@ $primary-bg: white;
     font-size: 22px;
   }
 
-  .programForm {
-    h3 {
-      font-size: 18px;
-    }
+  .sortButton {
+    font-size: 13px;
+    padding: 5px 10px;
   }
 }
 
@@ -337,7 +366,7 @@ $primary-bg: white;
   }
   .container {
     width: 95%;
-    gap: 36px;
+    gap: 16px;
   }
 
   .cards {
@@ -350,7 +379,12 @@ $primary-bg: white;
   .container {
     width: 100%;
     padding: 0 16px;
-    gap: 32px;
+    gap: 12px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .cards {
@@ -384,15 +418,16 @@ $primary-bg: white;
     line-height: 20px;
   }
 
-  .programForm {
-    padding: 16px;
+  .sortButton {
+    font-size: 12px;
+    padding: 4px 8px;
   }
 }
 
 @media screen and (max-width: 480px) {
   .container {
     padding: 0 12px;
-    gap: 24px;
+    gap: 8px;
   }
 
   .cards {
@@ -441,28 +476,8 @@ $primary-bg: white;
     font-size: 20px;
   }
 
-  .programForm {
-    h3 {
-      font-size: 16px;
-    }
-
-    .formGroup {
-      label {
-        font-size: 12px;
-      }
-
-      input,
-      textarea,
-      select {
-        font-size: 12px;
-        padding: 6px 10px;
-      }
-    }
-
-    .submitButton,
-    .cancelButton {
-      font-size: 12px;
-      padding: 6px 12px;
-    }
+  .sortButton {
+    font-size: 11px;
+    padding: 3px 6px;
   }
 }
