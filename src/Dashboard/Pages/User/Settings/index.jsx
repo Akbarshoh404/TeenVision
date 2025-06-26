@@ -3,17 +3,28 @@ import PropTypes from "prop-types";
 import DashboardNavbar from "../../../Layoutes/Navbar";
 import DashboardTopBar from "../../../Layoutes/TopBar";
 import styles from "./style.module.scss";
+import {
+  FaUser,
+  FaEnvelope,
+  FaLock,
+  FaUpload,
+  FaEye,
+  FaEyeSlash,
+} from "react-icons/fa";
+
+import bg from "../../../../Components/images/settings.png";
+import profile from "../../../../Components/images/cardexample.png";
 
 const DashboardSettings = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [settings, setSettings] = useState({
-    username: "",
-    email: "",
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-    emailNotifications: true,
-    pushNotifications: false,
+    firstName: "Charos",
+    lastName: "Hakimov",
+    email: "charosd@gmail.com",
+    password: "",
+    newsletter: false,
+    profileImage: null,
+    showPassword: false,
   });
 
   const toggleNav = useCallback(() => {
@@ -25,39 +36,21 @@ const DashboardSettings = () => {
   }, []);
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type, checked, files } = e.target;
     setSettings((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]:
+        type === "checkbox" ? checked : type === "file" ? files[0] : value,
     }));
   };
 
   const handleProfileSubmit = (e) => {
     e.preventDefault();
-    // Add API call to update profile here
-    console.log("Profile update:", {
-      username: settings.username,
-      email: settings.email,
-    });
+    console.log("Profile update:", settings);
   };
 
-  const handlePasswordSubmit = (e) => {
-    e.preventDefault();
-    // Add API call to update password here
-    console.log("Password update:", {
-      currentPassword: settings.currentPassword,
-      newPassword: settings.newPassword,
-      confirmPassword: settings.confirmPassword,
-    });
-  };
-
-  const handleNotificationsSubmit = (e) => {
-    e.preventDefault();
-    // Add API call to update notification preferences here
-    console.log("Notification preferences:", {
-      emailNotifications: settings.emailNotifications,
-      pushNotifications: settings.pushNotifications,
-    });
+  const toggleShowPassword = () => {
+    setSettings((prev) => ({ ...prev, showPassword: !prev.showPassword }));
   };
 
   return (
@@ -69,26 +62,52 @@ const DashboardSettings = () => {
       />
       <DashboardTopBar isNavOpen={isNavOpen} toggleNav={toggleNav} />
       <main className={styles.mainContent}>
+        <img src={bg} alt="Header" className={styles.headerImage} />
         <section className={styles.section}>
           <div className={styles.container}>
-            <h1 className={styles.title}>Settings</h1>
             <div className={styles.settingsSection}>
-              <h2 className={styles.sectionTitle}>Profile Information</h2>
+              {/* Profile Header */}
+              <div className={styles.profileHeader}>
+                <img
+                  src={profile}
+                  alt="Profile"
+                  className={styles.profileImage}
+                />
+                <div>
+                  <div className={styles.profileName}>Hakimova Charos</div>
+                  <div className={styles.profileEmail}>charosd@gmail.com</div>
+                </div>
+              </div>
+              {/* Editable Form */}
               <form
                 className={styles.settingsForm}
                 onSubmit={handleProfileSubmit}
               >
                 <div className={styles.formGroup}>
-                  <label htmlFor="username">Username</label>
-                  <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    value={settings.username}
-                    onChange={handleInputChange}
-                    placeholder="Enter your username"
-                    className={styles.input}
-                  />
+                  <div className={styles.nameFields}>
+                    <div className={styles.formField}>
+                      <label htmlFor="firstName">First Name</label>
+                      <input
+                        type="text"
+                        id="firstName"
+                        name="firstName"
+                        value={settings.firstName}
+                        onChange={handleInputChange}
+                        className={styles.input}
+                      />
+                    </div>
+                    <div className={styles.formField}>
+                      <label htmlFor="lastName">Last Name</label>
+                      <input
+                        type="text"
+                        id="lastName"
+                        name="lastName"
+                        value={settings.lastName}
+                        onChange={handleInputChange}
+                        className={styles.input}
+                      />
+                    </div>
+                  </div>
                 </div>
                 <div className={styles.formGroup}>
                   <label htmlFor="email">Email</label>
@@ -98,92 +117,74 @@ const DashboardSettings = () => {
                     name="email"
                     value={settings.email}
                     onChange={handleInputChange}
-                    placeholder="Enter your email"
                     className={styles.input}
-                  />
-                </div>
-                <button type="submit" className={styles.saveButton}>
-                  Save Profile
-                </button>
-              </form>
-            </div>
-            <div className={styles.settingsSection}>
-              <h2 className={styles.sectionTitle}>Change Password</h2>
-              <form
-                className={styles.settingsForm}
-                onSubmit={handlePasswordSubmit}
-              >
-                <div className={styles.formGroup}>
-                  <label htmlFor="currentPassword">Current Password</label>
-                  <input
-                    type="password"
-                    id="currentPassword"
-                    name="currentPassword"
-                    value={settings.currentPassword}
-                    onChange={handleInputChange}
-                    placeholder="Enter current password"
-                    className={styles.input}
+                    disabled
                   />
                 </div>
                 <div className={styles.formGroup}>
-                  <label htmlFor="newPassword">New Password</label>
-                  <input
-                    type="password"
-                    id="newPassword"
-                    name="newPassword"
-                    value={settings.newPassword}
-                    onChange={handleInputChange}
-                    placeholder="Enter new password"
-                    className={styles.input}
-                  />
+                  <label htmlFor="profileImage">Profile Image</label>
+                  <div className={styles.uploadArea}>
+                    <input
+                      type="file"
+                      id="profileImage"
+                      name="profileImage"
+                      accept="image/*"
+                      onChange={handleInputChange}
+                      className={styles.uploadInput}
+                    />
+                    <FaUpload className={styles.uploadIcon} />
+                    <p className={styles.uploadText}>
+                      Click to upload or drag and drop
+                      <br />
+                      SVG, PNG, JPG or GIF (max. 800x400px)
+                    </p>
+                  </div>
                 </div>
                 <div className={styles.formGroup}>
-                  <label htmlFor="confirmPassword">Confirm New Password</label>
-                  <input
-                    type="password"
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    value={settings.confirmPassword}
-                    onChange={handleInputChange}
-                    placeholder="Confirm new password"
-                    className={styles.input}
-                  />
+                  <label htmlFor="password">Password</label>
+                  <div className={styles.passwordWrapper}>
+                    <input
+                      type={settings.showPassword ? "text" : "password"}
+                      id="password"
+                      name="password"
+                      value={settings.password}
+                      onChange={handleInputChange}
+                      placeholder="••••••••"
+                      className={styles.input}
+                    />
+                    <span
+                      className={styles.passwordToggle}
+                      onClick={toggleShowPassword}
+                    >
+                      {settings.showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </span>
+                  </div>
                 </div>
-                <button type="submit" className={styles.saveButton}>
-                  Update Password
-                </button>
-              </form>
-            </div>
-            <div className={styles.settingsSection}>
-              <h2 className={styles.sectionTitle}>Notification Preferences</h2>
-              <form
-                className={styles.settingsForm}
-                onSubmit={handleNotificationsSubmit}
-              >
                 <div className={styles.checkboxGroup}>
                   <label className={styles.checkboxLabel}>
                     <input
                       type="checkbox"
-                      name="emailNotifications"
-                      checked={settings.emailNotifications}
+                      name="newsletter"
+                      checked={settings.newsletter}
                       onChange={handleInputChange}
                     />
-                    Receive email notifications
-                  </label>
-                  <label className={styles.checkboxLabel}>
-                    <input
-                      type="checkbox"
-                      name="pushNotifications"
-                      checked={settings.pushNotifications}
-                      onChange={handleInputChange}
-                    />
-                    Receive push notifications
+                    I am agree to receive newsletters
                   </label>
                 </div>
-                <button type="submit" className={styles.saveButton}>
-                  Save Preferences
-                </button>
               </form>
+              {/* Action Buttons */}
+              <div className={styles.buttonGroup}>
+                <button
+                  type="submit"
+                  className={styles.saveButton}
+                  onClick={handleProfileSubmit}
+                >
+                  Save
+                </button>
+                <button type="button" className={styles.cancelButton}>
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
         </section>
