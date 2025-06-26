@@ -1,24 +1,23 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
 
-// Color Definitions
-$background-color: #ffffff; // White background for main component
-$text-color: #333333; // Dark gray for main text
-$card-bg: #ffffff; // White for content card
-$input-bg: #ffffff; // White for input backgrounds
-$input-border: #cccccc; // Light gray for input borders
-$input-text: #333333; // Dark gray for input text
-$button-bg: #000000; // Black for Save button
-$button-text: #ffffff; // White for button text
-$button-hover: #333333; // Darker black for hover
-$cancel-bg: #ffffff; // White for Cancel button
-$cancel-text: #000000; // Black for Cancel text
-$cancel-hover: #e0e0e0; // Light gray for Cancel hover
-$disabled-bg: #e9ecef; // Light gray for disabled inputs
-$label-text: #232360; // Dark blue for labels
-$upload-text: #666666; // Medium gray for upload instructions
-$border-color: #cccccc; // Light gray for borders
-$border-radius: 8px; // Border radius for buttons and inputs
-$upload-icon-color: #232360; // Dark blue for upload icon
+$background-color: #ffffff;
+$text-color: #333333;
+$card-bg: #ffffff;
+$input-bg: #ffffff;
+$input-border: #cccccc;
+$input-text: #333333;
+$button-bg: #000000;
+$button-text: #ffffff;
+$button-hover: #333333;
+$cancel-bg: #ffffff;
+$cancel-text: #000000;
+$cancel-hover: #e0e0e0;
+$disabled-bg: #e9ecef;
+$label-text: #232360;
+$upload-text: #666666;
+$border-color: #cccccc;
+$border-radius: 8px;
+$upload-icon-color: #232360;
 
 * {
   margin: 0;
@@ -32,7 +31,7 @@ $upload-icon-color: #232360; // Dark blue for upload icon
   background-color: $background-color;
   font-family: "Poppins", sans-serif;
   color: $text-color;
-  min-height: 100vh;
+  height: 100vh;
 }
 
 .mainContent {
@@ -42,7 +41,7 @@ $upload-icon-color: #232360; // Dark blue for upload icon
 
 .headerImage {
   width: 100%;
-  height: 150px; // Reduced height of the header image
+  height: 250px;
   display: block;
   object-fit: cover;
 }
@@ -51,7 +50,7 @@ $upload-icon-color: #232360; // Dark blue for upload icon
   width: 100%;
   background-color: $card-bg;
   padding: 30px;
-  margin-top: 20px; // Space below the header image
+  margin-top: 20px;
   position: relative;
 }
 
@@ -68,8 +67,8 @@ $upload-icon-color: #232360; // Dark blue for upload icon
 }
 
 .profileImage {
-  width: 100px; // Increased size of profile image
-  height: 100px; // Increased size of profile image
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -95,7 +94,7 @@ $upload-icon-color: #232360; // Dark blue for upload icon
 }
 
 .formGroup {
-  margin-bottom: 20px; // Increased spacing
+  margin-bottom: 20px;
 }
 
 .nameFields {
@@ -109,18 +108,18 @@ $upload-icon-color: #232360; // Dark blue for upload icon
 
 label {
   font-weight: 600;
-  margin-bottom: 10px; // Increased spacing
+  margin-bottom: 10px;
   color: $label-text;
 }
 
 .input {
-  padding: 15px; // Increased padding for bigger inputs
+  padding: 15px;
   border: 1px solid $input-border;
   border-radius: $border-radius;
   width: 100%;
   background-color: $input-bg;
   color: $input-text;
-  font-size: 1rem; // Increased font size
+  font-size: 1rem;
   transition: border-color 0.3s;
 
   &:focus {
@@ -148,18 +147,18 @@ label {
 }
 
 .uploadArea {
-  padding: 25px; // Increased padding for bigger upload area
+  padding: 25px;
   border: 2px dashed $border-color;
   border-radius: $border-radius;
   text-align: center;
   background-color: $input-bg;
   color: $input-text;
   cursor: pointer;
-  height: 150px; // Increased height of upload area
+  height: 150px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center; // Center the icon
+  align-items: center;
   gap: 10px;
 }
 
@@ -168,18 +167,18 @@ label {
 }
 
 .uploadIcon {
-  font-size: 2.5rem; // Larger upload icon
+  font-size: 2.5rem;
   color: $upload-icon-color;
 }
 
 .uploadText {
-  font-size: 1rem; // Increased font size
+  font-size: 1rem;
   color: $upload-text;
-  white-space: normal; // Ensure text wraps properly
+  white-space: normal;
 }
 
 .saveButton {
-  padding: 12px 25px; // Increased padding for bigger button
+  padding: 12px 25px;
   background-color: $button-bg;
   color: $button-text;
   border: none;
@@ -193,7 +192,7 @@ label {
 }
 
 .cancelButton {
-  padding: 12px 25px; // Increased padding for bigger button
+  padding: 12px 25px;
   background-color: $cancel-bg;
   color: $cancel-text;
   border: 1px solid $cancel-text;
@@ -214,13 +213,17 @@ label {
 }
 
 .checkboxLabel {
-  font-size: 1rem; // Increased font size
+  font-size: 1rem;
   color: $label-text;
-  white-space: normal; // Ensure "I" is visible by allowing text wrap
+  white-space: normal;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
 }
 
 input[type="checkbox"] {
-  transform: scale(1.5); // Increased checkbox size
+  transform: scale(1.5);
 }
 
 .buttonGroup {
@@ -232,19 +235,80 @@ input[type="checkbox"] {
 }
 
 /* Responsiveness */
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
   .mainContent {
-    margin-left: 0;
+    margin-left: 0px;
+  }
+  .settingsForm {
+    width: 85%;
+  }
+  .profileImage {
+    width: 80px;
+    height: 80px;
+  }
+  .headerImage {
+    height: 120px;
+  }
+}
+
+@media (max-width: 768px) {
+  .settingsForm {
+    width: 100%;
   }
   .nameFields {
     flex-direction: column;
   }
   .formField {
-    flex: 0 0 100%; // Full width on mobile
+    width: 100%;
+  }
+  .profileHeader {
+    flex-direction: column;
+    text-align: center;
+  }
+  .profileImage {
+    width: 60px;
+    height: 60px;
+  }
+  .headerImage {
+    height: 100px;
   }
   .buttonGroup {
     position: static;
     margin-top: 20px;
     justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .section {
+    padding: 15px;
+  }
+  .formGroup {
+    margin-bottom: 15px;
+  }
+  .input {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+  .uploadArea {
+    height: 120px;
+    padding: 15px;
+  }
+  .uploadIcon {
+    font-size: 2rem;
+  }
+  .uploadText {
+    font-size: 0.9rem;
+  }
+  .saveButton,
+  .cancelButton {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+  .checkboxLabel {
+    font-size: 0.9rem;
+  }
+  input[type="checkbox"] {
+    transform: scale(1.3);
   }
 }
