@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import DashboardNavbar from "../../../Layoutes/Navbar";
 import DashboardTopBar from "../../../Layoutes/TopBar";
@@ -11,21 +11,91 @@ import {
   FaEye,
   FaEyeSlash,
 } from "react-icons/fa";
+import axios from "axios";
 
 import bg from "../../../../Components/images/settings.png";
 import profile from "../../../../Components/images/cardexample.png";
 
+// Fallback country list if API fails
+const fallbackCountries = [
+  { code: "AF", name: "Afghanistan" },
+  { code: "AX", name: "Åland Islands" },
+  { code: "AL", name: "Albania" },
+  { code: "US", name: "United States" },
+  { code: "UZ", name: "Uzbekistan" },
+  { code: "ZW", name: "Zimbabwe" },
+];
+
 const DashboardSettings = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [countries, setCountries] = useState(fallbackCountries);
   const [settings, setSettings] = useState({
-    firstName: "Charos",
-    lastName: "Hakimov",
-    email: "charosd@gmail.com",
+    firstName: "",
+    lastName: "",
+    email: "",
     password: "",
+    age: "",
+    gender: "",
+    country: "",
     newsletter: false,
     profileImage: null,
+    selectedFileName: "",
     showPassword: false,
+    loading: false,
+    error: null,
+    warning: null,
   });
+
+  const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    // Load user data from localStorage
+    try {
+      const userData = localStorage.getItem("user");
+      if (!userData) throw new Error("User data not found in localStorage");
+
+      const user = JSON.parse(userData);
+      const fullName = user.full_name ? user.full_name.split(" ") : ["", ""];
+      const firstName = fullName[0] || "";
+      const lastName = fullName.slice(1).join(" ") || "";
+
+      setSettings((prev) => ({
+        ...prev,
+        firstName,
+        lastName,
+        email: user.email || "",
+        loading: false,
+      }));
+    } catch (err) {
+      console.error("LocalStorage error:", err.message);
+      setSettings((prev) => ({
+        ...prev,
+        loading: false,
+        error: "Failed to load user data from localStorage",
+      }));
+    }
+
+    // Fetch country list from API
+    const fetchCountries = async () => {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/v1/countries/"
+        );
+        setCountries(response.data);
+      } catch (err) {
+        console.error(
+          "Country fetch error:",
+          err.response?.data || err.message
+        );
+        setCountries(fallbackCountries); // Use fallback if API fails
+        setSettings((prev) => ({
+          ...prev,
+          error: "Failed to load countries, using default list",
+        }));
+      }
+    };
+    fetchCountries();
+  }, []);
 
   const toggleNav = useCallback(() => {
     setIsNavOpen((prev) => !prev);
@@ -41,17 +111,140 @@ const DashboardSettings = () => {
       ...prev,
       [name]:
         type === "checkbox" ? checked : type === "file" ? files[0] : value,
+      selectedFileName:
+        type === "file" && files[0] ? files[0].name : prev.selectedFileName,
     }));
-  };
-
-  const handleProfileSubmit = (e) => {
-    e.preventDefault();
-    console.log("Profile update:", settings);
   };
 
   const toggleShowPassword = () => {
     setSettings((prev) => ({ ...prev, showPassword: !prev.showPassword }));
   };
+
+  const handleUploadClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (
+      file &&
+      ["image/png", "image/jpeg", "image/svg+xml", "image/gif"].includes(
+        file.type
+      )
+    ) {
+      setSettings((prev) => ({
+        ...prev,
+        profileImage: file,
+        selectedFileName: file.name,
+      }));
+    } else {
+      setSettings((prev) => ({
+        ...prev,
+        error: "Please drop a valid image file (PNG, JPG, SVG, or GIF)",
+      }));
+    }
+  };
+
+  const handleProfileSubmit = async (e) => {
+    e.preventDefault();
+    setSettings((prev) => ({
+      ...prev,
+      loading: true,
+      error: null,
+      warning: null,
+    }));
+
+    // Warn user about unsupported fields
+    if (
+      settings.firstName ||
+      settings.lastName ||
+      settings.password ||
+      settings.newsletter
+    ) {
+      setSettings((prev) => ({
+        ...prev,
+        warning:
+          "Note: First Name, Last Name, Password, and Newsletter preferences cannot be updated with this form.",
+      }));
+    }
+
+    try {
+      const token = localStorage.getItem("access_token");
+      if (!token) throw new Error("No access token found");
+
+      const formData = new FormData();
+      if (settings.age) formData.append("age", settings.age);
+      if (settings.gender) formData.append("gender", settings.gender);
+      if (settings.country) formData.append("country", settings.country);
+      if (settings.profileImage)
+        formData.append("photo", settings.profileImage);
+
+      await axios.patch(
+        "http://127.0.0.1:8000/api/v1/api/v1/auth/profile/update/",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      setSettings((prev) => ({ ...prev, loading: false }));
+      alert("Profile updated successfully!");
+    } catch (err) {
+      console.error("Submit error:", err.response?.data || err.message);
+      let errorMessage = "Failed to update profile";
+      if (err.response?.status === 401) {
+        errorMessage = "Session expired. Please log in again.";
+      } else if (err.response?.status === 400) {
+        errorMessage =
+          err.response?.data?.detail ||
+          "Invalid data provided. Please check your input.";
+      } else if (err.response?.status === 405) {
+        errorMessage = "Method not allowed. Please contact support.";
+      }
+      setSettings((prev) => ({
+        ...prev,
+        loading: false,
+        error: errorMessage,
+      }));
+    }
+  };
+
+  const handleCancel = () => {
+    const userData = localStorage.getItem("user");
+    const user = userData ? JSON.parse(userData) : {};
+    const fullName = user.full_name ? user.full_name.split(" ") : ["", ""];
+    const firstName = fullName[0] || "";
+    const lastName = fullName.slice(1).join(" ") || "";
+
+    setSettings((prev) => ({
+      ...prev,
+      firstName,
+      lastName,
+      email: user.email || "",
+      password: "",
+      age: "",
+      gender: "",
+      country: "",
+      newsletter: false,
+      profileImage: null,
+      selectedFileName: "",
+      showPassword: false,
+      error: null,
+      warning: null,
+    }));
+  };
+
+  if (settings.loading) return <div>Loading...</div>;
+  if (settings.error && !settings.firstName && !settings.email) {
+    return <div className={styles.error}>{settings.error}</div>;
+  }
 
   return (
     <div className={styles.dashboard}>
@@ -66,7 +259,6 @@ const DashboardSettings = () => {
         <section className={styles.section}>
           <div className={styles.container}>
             <div className={styles.settingsSection}>
-              {/* Profile Header */}
               <div className={styles.profileHeader}>
                 <img
                   src={profile}
@@ -74,11 +266,12 @@ const DashboardSettings = () => {
                   className={styles.profileImage}
                 />
                 <div>
-                  <div className={styles.profileName}>Hakimova Charos</div>
-                  <div className={styles.profileEmail}>charosd@gmail.com</div>
+                  <div className={styles.profileName}>
+                    {settings.firstName} {settings.lastName}
+                  </div>
+                  <div className={styles.profileEmail}>{settings.email}</div>
                 </div>
               </div>
-              {/* Editable Form */}
               <form
                 className={styles.settingsForm}
                 onSubmit={handleProfileSubmit}
@@ -94,6 +287,7 @@ const DashboardSettings = () => {
                         value={settings.firstName}
                         onChange={handleInputChange}
                         className={styles.input}
+                        disabled
                       />
                     </div>
                     <div className={styles.formField}>
@@ -105,6 +299,7 @@ const DashboardSettings = () => {
                         value={settings.lastName}
                         onChange={handleInputChange}
                         className={styles.input}
+                        disabled
                       />
                     </div>
                   </div>
@@ -122,15 +317,65 @@ const DashboardSettings = () => {
                   />
                 </div>
                 <div className={styles.formGroup}>
+                  <label htmlFor="age">Age</label>
+                  <input
+                    type="number"
+                    id="age"
+                    name="age"
+                    value={settings.age}
+                    onChange={handleInputChange}
+                    className={styles.input}
+                    min="0"
+                    max="2147483647"
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label htmlFor="gender">Gender</label>
+                  <select
+                    id="gender"
+                    name="gender"
+                    value={settings.gender}
+                    onChange={handleInputChange}
+                    className={styles.input}
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </select>
+                </div>
+                <div className={styles.formGroup}>
+                  <label htmlFor="country">Country</label>
+                  <select
+                    id="country"
+                    name="country"
+                    value={settings.country}
+                    onChange={handleInputChange}
+                    className={styles.input}
+                  >
+                    <option value="">Select Country</option>
+                    {countries.map((country) => (
+                      <option key={country.code} value={country.code}>
+                        {country.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className={styles.formGroup}>
                   <label htmlFor="profileImage">Profile Image</label>
-                  <div className={styles.uploadArea}>
+                  <div
+                    className={styles.uploadArea}
+                    onClick={handleUploadClick}
+                    onDragOver={handleDragOver}
+                    onDrop={handleDrop}
+                  >
                     <input
                       type="file"
                       id="profileImage"
                       name="profileImage"
-                      accept="image/*"
+                      accept="image/png,image/jpeg,image/svg+xml,image/gif"
                       onChange={handleInputChange}
                       className={styles.uploadInput}
+                      ref={fileInputRef}
                     />
                     <FaUpload className={styles.uploadIcon} />
                     <p className={styles.uploadText}>
@@ -138,6 +383,9 @@ const DashboardSettings = () => {
                       <br />
                       SVG, PNG, JPG or GIF (max. 800x400px)
                     </p>
+                    {settings.selectedFileName && (
+                      <p>Selected: {settings.selectedFileName}</p>
+                    )}
                   </div>
                 </div>
                 <div className={styles.formGroup}>
@@ -168,23 +416,32 @@ const DashboardSettings = () => {
                       checked={settings.newsletter}
                       onChange={handleInputChange}
                     />
-                    I am agree to receive newsletters
+                    I agree to receive newsletters
                   </label>
                 </div>
+                {settings.warning && (
+                  <div className={styles.warning}>{settings.warning}</div>
+                )}
+                <div className={styles.buttonGroup}>
+                  <button
+                    type="submit"
+                    className={styles.saveButton}
+                    disabled={settings.loading}
+                  >
+                    {settings.loading ? "Saving..." : "Save"}
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.cancelButton}
+                    onClick={handleCancel}
+                  >
+                    Cancel
+                  </button>
+                </div>
+                {settings.error && (
+                  <div className={styles.error}>{settings.error}</div>
+                )}
               </form>
-              {/* Action Buttons */}
-              <div className={styles.buttonGroup}>
-                <button
-                  type="submit"
-                  className={styles.saveButton}
-                  onClick={handleProfileSubmit}
-                >
-                  Save
-                </button>
-                <button type="button" className={styles.cancelButton}>
-                  Cancel
-                </button>
-              </div>
             </div>
           </div>
         </section>

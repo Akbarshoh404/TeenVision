@@ -31,7 +31,7 @@ $upload-icon-color: #232360;
   background-color: $background-color;
   font-family: "Poppins", sans-serif;
   color: $text-color;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .mainContent {
