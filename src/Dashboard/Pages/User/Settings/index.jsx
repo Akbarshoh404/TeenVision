@@ -18,13 +18,81 @@ import profile from "../../../../Components/images/cardexample.png";
 
 // Fallback country list if API fails
 const fallbackCountries = [
-  { code: "AF", name: "Afghanistan" },
-  { code: "AX", name: "Åland Islands" },
-  { code: "AL", name: "Albania" },
   { code: "US", name: "United States" },
+  { code: "CN", name: "China" },
+  { code: "IN", name: "India" },
+  { code: "BR", name: "Brazil" },
+  { code: "NG", name: "Nigeria" },
+  { code: "RU", name: "Russia" },
+  { code: "JP", name: "Japan" },
+  { code: "DE", name: "Germany" },
+  { code: "GB", name: "United Kingdom" },
+  { code: "FR", name: "France" },
+  { code: "IT", name: "Italy" },
+  { code: "CA", name: "Canada" },
+  { code: "KR", name: "South Korea" },
+  { code: "AU", name: "Australia" },
+  { code: "ES", name: "Spain" },
+  { code: "MX", name: "Mexico" },
+  { code: "ID", name: "Indonesia" },
+  { code: "SA", name: "Saudi Arabia" },
+  { code: "TR", name: "Turkey" },
+  { code: "ZA", name: "South Africa" },
+  { code: "AR", name: "Argentina" },
+  { code: "PL", name: "Poland" },
+  { code: "EG", name: "Egypt" },
+  { code: "TH", name: "Thailand" },
+  { code: "VN", name: "Vietnam" },
+  { code: "PH", name: "Philippines" },
+  { code: "PK", name: "Pakistan" },
+  { code: "BD", name: "Bangladesh" },
+  { code: "ET", name: "Ethiopia" },
+  { code: "CO", name: "Colombia" },
+  { code: "MY", name: "Malaysia" },
+  { code: "KE", name: "Kenya" },
+  { code: "GH", name: "Ghana" },
+  { code: "IR", name: "Iran" },
+  { code: "IQ", name: "Iraq" },
+  { code: "UA", name: "Ukraine" },
+  { code: "SE", name: "Sweden" },
+  { code: "NL", name: "Netherlands" },
+  { code: "BE", name: "Belgium" },
+  { code: "CH", name: "Switzerland" },
+  { code: "SG", name: "Singapore" },
+  { code: "HK", name: "Hong Kong" },
+  { code: "AE", name: "United Arab Emirates" },
+  { code: "IL", name: "Israel" },
+  { code: "NZ", name: "New Zealand" },
+  { code: "NO", name: "Norway" },
+  { code: "DK", name: "Denmark" },
+  { code: "FI", name: "Finland" },
+  { code: "IE", name: "Ireland" },
+  { code: "AT", name: "Austria" },
+  { code: "PT", name: "Portugal" },
+  { code: "GR", name: "Greece" },
+  { code: "CZ", name: "Czech Republic" },
+  { code: "HU", name: "Hungary" },
+  { code: "RO", name: "Romania" },
+  { code: "CL", name: "Chile" },
+  { code: "PE", name: "Peru" },
+  { code: "VE", name: "Venezuela" },
+  { code: "EC", name: "Ecuador" },
+  { code: "QA", name: "Qatar" },
+  { code: "KW", name: "Kuwait" },
+  { code: "MA", name: "Morocco" },
+  { code: "DZ", name: "Algeria" },
+  { code: "TN", name: "Tunisia" },
+  { code: "JO", name: "Jordan" },
+  { code: "LK", name: "Sri Lanka" },
+  { code: "NP", name: "Nepal" },
+  { code: "MM", name: "Myanmar" },
+  { code: "KH", name: "Cambodia" },
+  { code: "LA", name: "Laos" },
   { code: "UZ", name: "Uzbekistan" },
-  { code: "ZW", name: "Zimbabwe" },
-];
+  { code: "KZ", name: "Kazakhstan" },
+  { code: "TW", name: "Taiwan" },
+  { code: "SY", name: "Syria" },
+].sort((a, b) => a.name.localeCompare(b.name));
 
 const DashboardSettings = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -74,27 +142,6 @@ const DashboardSettings = () => {
         error: "Failed to load user data from localStorage",
       }));
     }
-
-    // Fetch country list from API
-    const fetchCountries = async () => {
-      try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/v1/countries/"
-        );
-        setCountries(response.data);
-      } catch (err) {
-        console.error(
-          "Country fetch error:",
-          err.response?.data || err.message
-        );
-        setCountries(fallbackCountries); // Use fallback if API fails
-        setSettings((prev) => ({
-          ...prev,
-          error: "Failed to load countries, using default list",
-        }));
-      }
-    };
-    fetchCountries();
   }, []);
 
   const toggleNav = useCallback(() => {
