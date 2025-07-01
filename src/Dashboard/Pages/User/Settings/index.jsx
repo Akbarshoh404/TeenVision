@@ -3,15 +3,8 @@ import PropTypes from "prop-types";
 import DashboardNavbar from "../../../Layoutes/Navbar";
 import DashboardTopBar from "../../../Layoutes/TopBar";
 import styles from "./style.module.scss";
-import {
-  FaUser,
-  FaEnvelope,
-  FaLock,
-  FaUpload,
-  FaEye,
-  FaEyeSlash,
-} from "react-icons/fa";
 import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 import bg from "../../../../Components/images/settings.png";
 import profile from "../../../../Components/images/cardexample.png";
@@ -21,82 +14,14 @@ const fallbackCountries = [
   { code: "US", name: "United States" },
   { code: "CN", name: "China" },
   { code: "IN", name: "India" },
-  { code: "BR", name: "Brazil" },
-  { code: "NG", name: "Nigeria" },
-  { code: "RU", name: "Russia" },
-  { code: "JP", name: "Japan" },
-  { code: "DE", name: "Germany" },
-  { code: "GB", name: "United Kingdom" },
-  { code: "FR", name: "France" },
-  { code: "IT", name: "Italy" },
-  { code: "CA", name: "Canada" },
-  { code: "KR", name: "South Korea" },
-  { code: "AU", name: "Australia" },
-  { code: "ES", name: "Spain" },
-  { code: "MX", name: "Mexico" },
-  { code: "ID", name: "Indonesia" },
-  { code: "SA", name: "Saudi Arabia" },
-  { code: "TR", name: "Turkey" },
-  { code: "ZA", name: "South Africa" },
-  { code: "AR", name: "Argentina" },
-  { code: "PL", name: "Poland" },
-  { code: "EG", name: "Egypt" },
-  { code: "TH", name: "Thailand" },
-  { code: "VN", name: "Vietnam" },
-  { code: "PH", name: "Philippines" },
-  { code: "PK", name: "Pakistan" },
-  { code: "BD", name: "Bangladesh" },
-  { code: "ET", name: "Ethiopia" },
-  { code: "CO", name: "Colombia" },
-  { code: "MY", name: "Malaysia" },
-  { code: "KE", name: "Kenya" },
-  { code: "GH", name: "Ghana" },
-  { code: "IR", name: "Iran" },
-  { code: "IQ", name: "Iraq" },
-  { code: "UA", name: "Ukraine" },
-  { code: "SE", name: "Sweden" },
-  { code: "NL", name: "Netherlands" },
-  { code: "BE", name: "Belgium" },
-  { code: "CH", name: "Switzerland" },
-  { code: "SG", name: "Singapore" },
-  { code: "HK", name: "Hong Kong" },
-  { code: "AE", name: "United Arab Emirates" },
-  { code: "IL", name: "Israel" },
-  { code: "NZ", name: "New Zealand" },
-  { code: "NO", name: "Norway" },
-  { code: "DK", name: "Denmark" },
-  { code: "FI", name: "Finland" },
-  { code: "IE", name: "Ireland" },
-  { code: "AT", name: "Austria" },
-  { code: "PT", name: "Portugal" },
-  { code: "GR", name: "Greece" },
-  { code: "CZ", name: "Czech Republic" },
-  { code: "HU", name: "Hungary" },
-  { code: "RO", name: "Romania" },
-  { code: "CL", name: "Chile" },
-  { code: "PE", name: "Peru" },
-  { code: "VE", name: "Venezuela" },
-  { code: "EC", name: "Ecuador" },
-  { code: "QA", name: "Qatar" },
-  { code: "KW", name: "Kuwait" },
-  { code: "MA", name: "Morocco" },
-  { code: "DZ", name: "Algeria" },
-  { code: "TN", name: "Tunisia" },
-  { code: "JO", name: "Jordan" },
-  { code: "LK", name: "Sri Lanka" },
-  { code: "NP", name: "Nepal" },
-  { code: "MM", name: "Myanmar" },
-  { code: "KH", name: "Cambodia" },
-  { code: "LA", name: "Laos" },
-  { code: "UZ", name: "Uzbekistan" },
-  { code: "KZ", name: "Kazakhstan" },
-  { code: "TW", name: "Taiwan" },
-  { code: "SY", name: "Syria" },
 ].sort((a, b) => a.name.localeCompare(b.name));
 
 const DashboardSettings = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [countries, setCountries] = useState(fallbackCountries);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(() => {
+    return localStorage.getItem("notificationsEnabled") !== "false";
+  });
   const [settings, setSettings] = useState({
     firstName: "",
     lastName: "",
@@ -132,17 +57,22 @@ const DashboardSettings = () => {
         firstName,
         lastName,
         email: user.email || "",
+        age: user.age || "",
+        gender: user.gender || "",
         loading: false,
       }));
     } catch (err) {
       console.error("LocalStorage error:", err.message);
+      if (notificationsEnabled) {
+        toast.error("Failed to load user data from localStorage");
+      }
       setSettings((prev) => ({
         ...prev,
         loading: false,
-        error: "Failed to load user data from localStorage",
+        error: null,
       }));
     }
-  }, []);
+  }, [notificationsEnabled]);
 
   const toggleNav = useCallback(() => {
     setIsNavOpen((prev) => !prev);
@@ -151,6 +81,19 @@ const DashboardSettings = () => {
   const closeNav = useCallback(() => {
     setIsNavOpen(false);
   }, []);
+
+  const toggleNotifications = () => {
+    setNotificationsEnabled((prev) => {
+      const newState = !prev;
+      localStorage.setItem("notificationsEnabled", newState);
+      if (newState) {
+        toast.success("Notifications enabled");
+      } else {
+        toast.success("Notifications disabled");
+      }
+      return newState;
+    });
+  };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -190,9 +133,12 @@ const DashboardSettings = () => {
         selectedFileName: file.name,
       }));
     } else {
+      if (notificationsEnabled) {
+        toast.error("Please drop a valid image file (PNG, JPG, SVG, or GIF)");
+      }
       setSettings((prev) => ({
         ...prev,
-        error: "Please drop a valid image file (PNG, JPG, SVG, or GIF)",
+        error: null,
       }));
     }
   };
@@ -213,10 +159,17 @@ const DashboardSettings = () => {
       settings.password ||
       settings.newsletter
     ) {
+      if (notificationsEnabled) {
+        toast(
+          "Note: First Name, Last Name, Password, and Newsletter preferences cannot be updated with this form.",
+          {
+            icon: "⚠️",
+          }
+        );
+      }
       setSettings((prev) => ({
         ...prev,
-        warning:
-          "Note: First Name, Last Name, Password, and Newsletter preferences cannot be updated with this form.",
+        warning: null,
       }));
     }
 
@@ -231,7 +184,7 @@ const DashboardSettings = () => {
       if (settings.profileImage)
         formData.append("photo", settings.profileImage);
 
-      await axios.patch(
+      const response = await axios.patch(
         "http://127.0.0.1:8000/api/v1/api/v1/auth/profile/update/",
         formData,
         {
@@ -241,8 +194,19 @@ const DashboardSettings = () => {
           },
         }
       );
+
+      // Update localStorage with new user data
+      const updatedUser = {
+        ...JSON.parse(localStorage.getItem("user")),
+        age: settings.age || undefined,
+        gender: settings.gender || undefined,
+      };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+
       setSettings((prev) => ({ ...prev, loading: false }));
-      alert("Profile updated successfully!");
+      if (notificationsEnabled) {
+        toast.success("Profile updated successfully!");
+      }
     } catch (err) {
       console.error("Submit error:", err.response?.data || err.message);
       let errorMessage = "Failed to update profile";
@@ -255,10 +219,13 @@ const DashboardSettings = () => {
       } else if (err.response?.status === 405) {
         errorMessage = "Method not allowed. Please contact support.";
       }
+      if (notificationsEnabled) {
+        toast.error(errorMessage);
+      }
       setSettings((prev) => ({
         ...prev,
         loading: false,
-        error: errorMessage,
+        error: null,
       }));
     }
   };
@@ -275,10 +242,10 @@ const DashboardSettings = () => {
       firstName,
       lastName,
       email: user.email || "",
-      password: "",
-      age: "",
-      gender: "",
+      age: user.age || "",
+      gender: user.gender || "",
       country: "",
+      password: "",
       newsletter: false,
       profileImage: null,
       selectedFileName: "",
@@ -295,6 +262,29 @@ const DashboardSettings = () => {
 
   return (
     <div className={styles.dashboard}>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            fontFamily: '"Poppins", sans-serif',
+            background: "#ffffff",
+            color: "#333333",
+            border: "1px solid #cccccc",
+            borderRadius: "8px",
+            padding: "10px 15px",
+          },
+          success: {
+            style: {
+              border: "1px solid #000000",
+            },
+          },
+          error: {
+            style: {
+              border: "1px solid #ff4d4f",
+            },
+          },
+        }}
+      />
       <DashboardNavbar
         isNavOpen={isNavOpen}
         toggleNav={toggleNav}
@@ -373,7 +363,7 @@ const DashboardSettings = () => {
                     onChange={handleInputChange}
                     className={styles.input}
                     min="0"
-                    max="2147483647"
+                    max="150"
                   />
                 </div>
                 <div className={styles.formGroup}>
@@ -388,6 +378,7 @@ const DashboardSettings = () => {
                     <option value="">Select Gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
+                    <option value="other">Other</option>
                   </select>
                 </div>
                 <div className={styles.formGroup}>
@@ -424,11 +415,10 @@ const DashboardSettings = () => {
                       className={styles.uploadInput}
                       ref={fileInputRef}
                     />
-                    <FaUpload className={styles.uploadIcon} />
                     <p className={styles.uploadText}>
-                      Click to upload or drag and drop
+                      Click to upload or drag and one drop
                       <br />
-                      SVG, PNG, JPG or GIF (max. 800x400px)
+                      SVG, PNG, JPG, or GIF (max. 800x400px)
                     </p>
                     {settings.selectedFileName && (
                       <p>Selected: {settings.selectedFileName}</p>
@@ -450,9 +440,7 @@ const DashboardSettings = () => {
                     <span
                       className={styles.passwordToggle}
                       onClick={toggleShowPassword}
-                    >
-                      {settings.showPassword ? <FaEyeSlash /> : <FaEye />}
-                    </span>
+                    ></span>
                   </div>
                 </div>
                 <div className={styles.checkboxGroup}>
@@ -488,6 +476,16 @@ const DashboardSettings = () => {
                 {settings.error && (
                   <div className={styles.error}>{settings.error}</div>
                 )}
+                <div className={styles.checkboxGroup}>
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      type="checkbox"
+                      checked={notificationsEnabled}
+                      onChange={toggleNotifications}
+                    />
+                    Enable Notifications
+                  </label>
+                </div>
               </form>
             </div>
           </div>
