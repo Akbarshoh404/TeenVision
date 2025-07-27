@@ -1,9 +1,12 @@
 import React, { useCallback, useState, useEffect } from "react";
+import { useTransition, animated } from "@react spring/web";
 import PropTypes from "prop-types";
 import DashboardNavbar from "../../../Layoutes/Navbar";
 import DashboardTopBar from "../../../Layoutes/TopBar";
 import styles from "./style.module.scss";
 import img from "../../../../Components/images/cardexample.png";
+import axios from "axios";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 
 const DashboardHome = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -16,24 +19,27 @@ const DashboardHome = () => {
     format: "",
   });
   const [filteredPrograms, setFilteredPrograms] = useState([]);
-  const [majors, setMajors] = useState({}); // Store major ID to name mapping
+  const [majors, setMajors] = useState({});
+  const [likedPrograms, setLikedPrograms] = useState(() => {
+    const stored = localStorage.getItem("liked_programs");
+    return stored ? JSON.parse(stored) : [];
+  });
 
-  // Fetch programs and majors from API
   useEffect(() => {
-    // Fetch programs
     const fetchPrograms = async () => {
       try {
         const response = await fetch("http://127.0.0.1:8000/api/v1/programs/");
         const data = await response.json();
-        const programs = data.results || [];
+        const programs = (data.results || []).filter(
+          (p) => p.type === "program"
+        );
 
-        // Normalize program data
         const normalizedPrograms = programs.map((program) => ({
           ...program,
           photo: program.photo || img,
           desc: program.desc || "No description available",
           date: program.created_at,
-          type: program.type || "Program",
+          type: program.type || "program",
           major: program.major || [],
           gender:
             program.gender === "any"
@@ -45,7 +51,6 @@ const DashboardHome = () => {
             : "Unknown",
         }));
 
-        // Store in localStorage
         localStorage.setItem("programs", JSON.stringify(programs));
         setFilteredPrograms(normalizedPrograms);
       } catch (error) {
@@ -53,7 +58,6 @@ const DashboardHome = () => {
       }
     };
 
-    // Fetch majors
     const fetchMajors = async () => {
       try {
         const response = await fetch("http://127.0.0.1:8000/api/v1/majors/");
@@ -84,25 +88,24 @@ const DashboardHome = () => {
     const { name, value } = e.target;
     setSortCriteria((prev) => ({ ...prev, [name]: value }));
 
-    const storedPrograms = localStorage.getItem("programs");
-    let programs = storedPrograms ? JSON.parse(storedPrograms) : [];
-
-    // Normalize data for filtering
-    programs = programs.map((program) => ({
-      ...program,
-      photo: program.photo || img,
-      desc: program.desc || "No description available",
-      date: program.created_at,
-      type: program.type || "Program",
-      major: program.major || [],
-      gender:
-        program.gender === "any"
-          ? "All"
-          : program.gender.charAt(0).toUpperCase() + program.gender.slice(1),
-      format: program.format
-        ? program.format.charAt(0).toUpperCase() + program.format.slice(1)
-        : "Unknown",
-    }));
+    const storedPrograms = JSON.parse(localStorage.getItem("programs") || "[]");
+    let programs = storedPrograms
+      .filter((p) => p.type === "program")
+      .map((program) => ({
+        ...program,
+        photo: program.photo || img,
+        desc: program.desc || "No description available",
+        date: program.created_at,
+        type: program.type || "program",
+        major: program.major || [],
+        gender:
+          program.gender === "any"
+            ? "All"
+            : program.gender.charAt(0).toUpperCase() + program.gender.slice(1),
+        format: program.format
+          ? program.format.charAt(0).toUpperCase() + program.format.slice(1)
+          : "Unknown",
+      }));
 
     let filtered = [...programs];
 
@@ -142,19 +145,54 @@ const DashboardHome = () => {
     setFilteredPrograms(filtered);
   };
 
-  // Get unique countries and majors for dropdowns
+  const handleLike = async (programId, slug) => {
+    try {
+      const token = localStorage.getItem("access_token");
+      if (!token) throw new Error("No access token found");
+
+      await axios.post(
+        `http://127.0.0.1:8000/api/v1/programs/${slug}/like/`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      setLikedPrograms((prev) => {
+        const newLiked = prev.includes(programId)
+          ? prev.filter((id) => id !== programId)
+          : [...prev, programId];
+        localStorage.setItem("liked_programs", JSON.stringify(newLiked));
+        return newLiked;
+      });
+    } catch (error) {
+      console.error("Error liking program:", error);
+    }
+  };
+
+  const transitions = useTransition(filteredPrograms, {
+    keys: (program) => program.id,
+    from: { opacity: 0, transform: "translateY(20px)" },
+    enter: { opacity: 1, transform: "translateY(0)" },
+    config: { duration: 300 },
+  });
+
   const uniqueCountries = [
     ...new Set(
       JSON.parse(localStorage.getItem("programs") || "[]")
+        .filter((p) => p.type === "program")
         .map((p) => p.country)
         .filter((c) => c)
     ),
   ];
   const uniqueMajors = [
     ...new Set(
-      JSON.parse(localStorage.getItem("programs") || "[]").flatMap(
-        (p) => p.major || []
-      )
+      JSON.parse(localStorage.getItem("programs") || "[]")
+        .filter((p) => p.type === "program")
+        .flatMap((p) => p.major || [])
     ),
   ];
 
@@ -246,10 +284,26 @@ const DashboardHome = () => {
               </select>
             </div>
             <div className={styles.cards}>
-              {filteredPrograms.map((program) => (
-                <div key={program.id} className={styles.card}>
+              {transitions((style, program) => (
+                <animated.div
+                  key={program.id}
+                  style={style}
+                  className={styles.card}
+                >
                   <div className={styles.cardImage}>
                     <img src={img} alt={program.title} />
+                    <button
+                      className={`${styles.likeIcon} ${
+                        likedPrograms.includes(program.id) ? styles.liked : ""
+                      }`}
+                      onClick={() => handleLike(program.id, program.slug)}
+                    >
+                      {likedPrograms.includes(program.id) ? (
+                        <AiFillHeart size={24} />
+                      ) : (
+                        <AiOutlineHeart size={24} />
+                      )}
+                    </button>
                   </div>
                   <div className={styles.cardMajors}>
                     {program.major.map((majorId, index) => (
@@ -271,7 +325,7 @@ const DashboardHome = () => {
                     </span>
                   </div>
                   <p className={styles.cardDescription}>{program.desc}</p>
-                </div>
+                </animated.div>
               ))}
             </div>
           </div>
