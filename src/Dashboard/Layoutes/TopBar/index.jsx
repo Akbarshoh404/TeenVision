@@ -1,15 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styles from "./style.module.scss";
-import { FiSearch, FiUser, FiMenu, FiX } from "react-icons/fi";
+import { FiSearch, FiUser, FiMenu, FiX, FiLogOut } from "react-icons/fi";
 
 const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
-  // Retrieve user data from localStorage
   const user = JSON.parse(localStorage.getItem("user"));
-
-  // Default values in case user data is not available
-  const userName = user?.full_name || user?.username || "Guest User"; // Prioritize full_name, then username
+  const userName = user?.full_name || user?.username || "Guest User";
   const userEmail = user?.email || "guest@example.com";
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    window.location.href = "/login";
+  };
 
   return (
     <header className={styles.topBar}>
@@ -42,6 +44,14 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
         <div className={styles.accountDetails}>
           <span className={styles.accountName}>{userName}</span>
           <span className={styles.accountEmail}>{userEmail}</span>
+          <button
+            className={styles.logoutButton}
+            onClick={handleLogout}
+            aria-label="Log out"
+          >
+            <FiLogOut className={styles.logoutIcon} />
+            Log Out
+          </button>
         </div>
       </div>
     </header>

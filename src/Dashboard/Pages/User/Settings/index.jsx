@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useRef } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import DashboardNavbar from "../../../Layoutes/Navbar";
 import DashboardTopBar from "../../../Layoutes/TopBar";
@@ -7,72 +7,89 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
 import bg from "../../../../Components/images/settings.png";
-import profile from "../../../../Components/images/cardexample.png";
-
-// Fallback country list if API fails
-const fallbackCountries = [
-  { code: "US", name: "United States" },
-  { code: "CN", name: "China" },
-  { code: "IN", name: "India" },
-].sort((a, b) => a.name.localeCompare(b.name));
+import profileFallback from "../../../../Components/icons/pofile.png";
 
 const DashboardSettings = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
-  const [countries, setCountries] = useState(fallbackCountries);
-  const [notificationsEnabled, setNotificationsEnabled] = useState(() => {
-    return localStorage.getItem("notificationsEnabled") !== "false";
-  });
   const [settings, setSettings] = useState({
     firstName: "",
     lastName: "",
     email: "",
-    password: "",
     age: "",
     gender: "",
     country: "",
-    newsletter: false,
-    profileImage: null,
-    selectedFileName: "",
-    showPassword: false,
+    profileImageUrl: profileFallback,
+    notification_status: false,
     loading: false,
     error: null,
     warning: null,
   });
 
-  const fileInputRef = useRef(null);
+  const countries = [
+    { code: "AF", name: "Afghanistan" },
+    { code: "AL", name: "Albania" },
+    { code: "AR", name: "Argentina" },
+    { code: "AU", name: "Australia" },
+    { code: "AZ", name: "Azerbaijan" },
+    { code: "BD", name: "Bangladesh" },
+    { code: "BR", name: "Brazil" },
+    { code: "CA", name: "Canada" },
+    { code: "CN", name: "China" },
+    { code: "DE", name: "Germany" },
+    { code: "EG", name: "Egypt" },
+    { code: "ES", name: "Spain" },
+    { code: "FR", name: "France" },
+    { code: "GB", name: "United Kingdom" },
+    { code: "IN", name: "India" },
+    { code: "IR", name: "Iran" },
+    { code: "IT", name: "Italy" },
+    { code: "JP", name: "Japan" },
+    { code: "KZ", name: "Kazakhstan" },
+    { code: "KG", name: "Kyrgyzstan" },
+    { code: "KR", name: "South Korea" },
+    { code: "MX", name: "Mexico" },
+    { code: "NG", name: "Nigeria" },
+    { code: "PK", name: "Pakistan" },
+    { code: "RU", name: "Russia" },
+    { code: "SA", name: "Saudi Arabia" },
+    { code: "SG", name: "Singapore" },
+    { code: "TJ", name: "Tajikistan" },
+    { code: "TH", name: "Thailand" },
+    { code: "TM", name: "Turkmenistan" },
+    { code: "TR", name: "Turkey" },
+    { code: "UA", name: "Ukraine" },
+    { code: "US", name: "United States" },
+    { code: "UZ", name: "Uzbekistan" },
+    { code: "VN", name: "Vietnam" },
+    { code: "ZA", name: "South Africa" },
+  ].sort((a, b) => a.name.localeCompare(b.name));
 
   useEffect(() => {
-    // Load user data from localStorage
     try {
       const userData = localStorage.getItem("user");
       if (!userData) throw new Error("User data not found in localStorage");
 
       const user = JSON.parse(userData);
-      const fullName = user.full_name ? user.full_name.split(" ") : ["", ""];
-      const firstName = fullName[0] || "";
-      const lastName = fullName.slice(1).join(" ") || "";
-
       setSettings((prev) => ({
         ...prev,
-        firstName,
-        lastName,
+        firstName: user.first_name || "",
+        lastName: user.last_name || "",
         email: user.email || "",
         age: user.age || "",
         gender: user.gender || "",
+        country: user.country || "",
+        profileImageUrl: user.profile_image || profileFallback,
+        notification_status: user.notification_status || false,
         loading: false,
       }));
     } catch (err) {
       console.error("LocalStorage error:", err.message);
-      if (notificationsEnabled) {
-        toast.error("Failed to load user data from localStorage");
+      if (settings.notification_status) {
+        toast.error("Failed to load user data");
       }
-      setSettings((prev) => ({
-        ...prev,
-        loading: false,
-        error: null,
-      }));
+      setSettings((prev) => ({ ...prev, loading: false }));
     }
-  }, [notificationsEnabled]);
+  }, []);
 
   const toggleNav = useCallback(() => {
     setIsNavOpen((prev) => !prev);
@@ -83,64 +100,24 @@ const DashboardSettings = () => {
   }, []);
 
   const toggleNotifications = () => {
-    setNotificationsEnabled((prev) => {
-      const newState = !prev;
-      localStorage.setItem("notificationsEnabled", newState);
+    setSettings((prev) => {
+      const newState = !prev.notification_status;
+      localStorage.setItem("notification_status", newState);
       if (newState) {
         toast.success("Notifications enabled");
       } else {
         toast.success("Notifications disabled");
       }
-      return newState;
+      return { ...prev, notification_status: newState };
     });
   };
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked, files } = e.target;
+    const { name, value, type, checked } = e.target;
     setSettings((prev) => ({
       ...prev,
-      [name]:
-        type === "checkbox" ? checked : type === "file" ? files[0] : value,
-      selectedFileName:
-        type === "file" && files[0] ? files[0].name : prev.selectedFileName,
+      [name]: type === "checkbox" ? checked : value,
     }));
-  };
-
-  const toggleShowPassword = () => {
-    setSettings((prev) => ({ ...prev, showPassword: !prev.showPassword }));
-  };
-
-  const handleUploadClick = () => {
-    fileInputRef.current.click();
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (
-      file &&
-      ["image/png", "image/jpeg", "image/svg+xml", "image/gif"].includes(
-        file.type
-      )
-    ) {
-      setSettings((prev) => ({
-        ...prev,
-        profileImage: file,
-        selectedFileName: file.name,
-      }));
-    } else {
-      if (notificationsEnabled) {
-        toast.error("Please drop a valid image file (PNG, JPG, SVG, or GIF)");
-      }
-      setSettings((prev) => ({
-        ...prev,
-        error: null,
-      }));
-    }
   };
 
   const handleProfileSubmit = async (e) => {
@@ -152,37 +129,18 @@ const DashboardSettings = () => {
       warning: null,
     }));
 
-    // Warn user about unsupported fields
-    if (
-      settings.firstName ||
-      settings.lastName ||
-      settings.password ||
-      settings.newsletter
-    ) {
-      if (notificationsEnabled) {
-        toast(
-          "Note: First Name, Last Name, Password, and Newsletter preferences cannot be updated with this form.",
-          {
-            icon: "⚠️",
-          }
-        );
-      }
-      setSettings((prev) => ({
-        ...prev,
-        warning: null,
-      }));
-    }
-
     try {
       const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No access token found");
 
       const formData = new FormData();
+      if (settings.firstName) formData.append("first_name", settings.firstName);
+      if (settings.lastName) formData.append("last_name", settings.lastName);
+      if (settings.email) formData.append("email", settings.email);
       if (settings.age) formData.append("age", settings.age);
       if (settings.gender) formData.append("gender", settings.gender);
       if (settings.country) formData.append("country", settings.country);
-      if (settings.profileImage)
-        formData.append("photo", settings.profileImage);
+      formData.append("notification_status", settings.notification_status);
 
       const response = await axios.patch(
         "http://127.0.0.1:8000/api/v1/api/v1/auth/profile/update/",
@@ -195,16 +153,20 @@ const DashboardSettings = () => {
         }
       );
 
-      // Update localStorage with new user data
       const updatedUser = {
         ...JSON.parse(localStorage.getItem("user")),
+        first_name: settings.firstName,
+        last_name: settings.lastName,
+        email: settings.email,
         age: settings.age || undefined,
         gender: settings.gender || undefined,
+        country: settings.country || undefined,
+        notification_status: settings.notification_status,
       };
       localStorage.setItem("user", JSON.stringify(updatedUser));
 
       setSettings((prev) => ({ ...prev, loading: false }));
-      if (notificationsEnabled) {
+      if (settings.notification_status) {
         toast.success("Profile updated successfully!");
       }
     } catch (err) {
@@ -212,6 +174,7 @@ const DashboardSettings = () => {
       let errorMessage = "Failed to update profile";
       if (err.response?.status === 401) {
         errorMessage = "Session expired. Please log in again.";
+        window.location.href = "/login";
       } else if (err.response?.status === 400) {
         errorMessage =
           err.response?.data?.detail ||
@@ -219,46 +182,32 @@ const DashboardSettings = () => {
       } else if (err.response?.status === 405) {
         errorMessage = "Method not allowed. Please contact support.";
       }
-      if (notificationsEnabled) {
+      if (settings.notification_status) {
         toast.error(errorMessage);
       }
-      setSettings((prev) => ({
-        ...prev,
-        loading: false,
-        error: null,
-      }));
+      setSettings((prev) => ({ ...prev, loading: false }));
     }
   };
 
   const handleCancel = () => {
     const userData = localStorage.getItem("user");
     const user = userData ? JSON.parse(userData) : {};
-    const fullName = user.full_name ? user.full_name.split(" ") : ["", ""];
-    const firstName = fullName[0] || "";
-    const lastName = fullName.slice(1).join(" ") || "";
-
     setSettings((prev) => ({
       ...prev,
-      firstName,
-      lastName,
+      firstName: user.first_name || "",
+      lastName: user.last_name || "",
       email: user.email || "",
       age: user.age || "",
       gender: user.gender || "",
-      country: "",
-      password: "",
-      newsletter: false,
-      profileImage: null,
-      selectedFileName: "",
-      showPassword: false,
+      country: user.country || "",
+      profileImageUrl: user.profile_image || profileFallback,
+      notification_status: user.notification_status || false,
       error: null,
       warning: null,
     }));
   };
 
-  if (settings.loading) return <div>Loading...</div>;
-  if (settings.error && !settings.firstName && !settings.email) {
-    return <div className={styles.error}>{settings.error}</div>;
-  }
+  if (settings.loading) return <div className={styles.loading}>Loading...</div>;
 
   return (
     <div className={styles.dashboard}>
@@ -273,16 +222,8 @@ const DashboardSettings = () => {
             borderRadius: "8px",
             padding: "10px 15px",
           },
-          success: {
-            style: {
-              border: "1px solid #000000",
-            },
-          },
-          error: {
-            style: {
-              border: "1px solid #ff4d4f",
-            },
-          },
+          success: { style: { border: "1px solid #000000" } },
+          error: { style: { border: "1px solid #ff4d4f" } },
         }}
       />
       <DashboardNavbar
@@ -298,7 +239,7 @@ const DashboardSettings = () => {
             <div className={styles.settingsSection}>
               <div className={styles.profileHeader}>
                 <img
-                  src={profile}
+                  src={settings.profileImageUrl}
                   alt="Profile"
                   className={styles.profileImage}
                 />
@@ -324,7 +265,6 @@ const DashboardSettings = () => {
                         value={settings.firstName}
                         onChange={handleInputChange}
                         className={styles.input}
-                        disabled
                       />
                     </div>
                     <div className={styles.formField}>
@@ -336,7 +276,6 @@ const DashboardSettings = () => {
                         value={settings.lastName}
                         onChange={handleInputChange}
                         className={styles.input}
-                        disabled
                       />
                     </div>
                   </div>
@@ -350,7 +289,6 @@ const DashboardSettings = () => {
                     value={settings.email}
                     onChange={handleInputChange}
                     className={styles.input}
-                    disabled
                   />
                 </div>
                 <div className={styles.formGroup}>
@@ -398,65 +336,16 @@ const DashboardSettings = () => {
                     ))}
                   </select>
                 </div>
-                <div className={styles.formGroup}>
-                  <label htmlFor="profileImage">Profile Image</label>
-                  <div
-                    className={styles.uploadArea}
-                    onClick={handleUploadClick}
-                    onDragOver={handleDragOver}
-                    onDrop={handleDrop}
-                  >
-                    <input
-                      type="file"
-                      id="profileImage"
-                      name="profileImage"
-                      accept="image/png,image/jpeg,image/svg+xml,image/gif"
-                      onChange={handleInputChange}
-                      className={styles.uploadInput}
-                      ref={fileInputRef}
-                    />
-                    <p className={styles.uploadText}>
-                      Click to upload or drag and one drop
-                      <br />
-                      SVG, PNG, JPG, or GIF (max. 800x400px)
-                    </p>
-                    {settings.selectedFileName && (
-                      <p>Selected: {settings.selectedFileName}</p>
-                    )}
-                  </div>
-                </div>
-                <div className={styles.formGroup}>
-                  <label htmlFor="password">Password</label>
-                  <div className={styles.passwordWrapper}>
-                    <input
-                      type={settings.showPassword ? "text" : "password"}
-                      id="password"
-                      name="password"
-                      value={settings.password}
-                      onChange={handleInputChange}
-                      placeholder="••••••••"
-                      className={styles.input}
-                    />
-                    <span
-                      className={styles.passwordToggle}
-                      onClick={toggleShowPassword}
-                    ></span>
-                  </div>
-                </div>
                 <div className={styles.checkboxGroup}>
                   <label className={styles.checkboxLabel}>
                     <input
                       type="checkbox"
-                      name="newsletter"
-                      checked={settings.newsletter}
-                      onChange={handleInputChange}
+                      checked={settings.notification_status}
+                      onChange={toggleNotifications}
                     />
-                    I agree to receive newsletters
+                    Enable Notifications
                   </label>
                 </div>
-                {settings.warning && (
-                  <div className={styles.warning}>{settings.warning}</div>
-                )}
                 <div className={styles.buttonGroup}>
                   <button
                     type="submit"
@@ -472,19 +361,6 @@ const DashboardSettings = () => {
                   >
                     Cancel
                   </button>
-                </div>
-                {settings.error && (
-                  <div className={styles.error}>{settings.error}</div>
-                )}
-                <div className={styles.checkboxGroup}>
-                  <label className={styles.checkboxLabel}>
-                    <input
-                      type="checkbox"
-                      checked={notificationsEnabled}
-                      onChange={toggleNotifications}
-                    />
-                    Enable Notifications
-                  </label>
                 </div>
               </form>
             </div>
