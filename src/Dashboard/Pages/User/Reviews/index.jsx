@@ -17,7 +17,10 @@ const DashboardReviews = () => {
     major: "",
     format: "",
   });
-  const [likedPrograms, setLikedPrograms] = useState([]);
+  const [likedPrograms, setLikedPrograms] = useState(() => {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    return user.liked_programs || [];
+  });
   const [majors, setMajors] = useState({});
   const [filteredPrograms, setFilteredPrograms] = useState([]);
 
@@ -36,34 +39,35 @@ const DashboardReviews = () => {
       }
     };
 
-    const storedPrograms = JSON.parse(localStorage.getItem("programs") || "[]");
-    const likedProgramIds = JSON.parse(
-      localStorage.getItem("liked_programs") || "[]"
-    );
+    const fetchLikedPrograms = () => {
+      const storedPrograms = JSON.parse(
+        localStorage.getItem("programs") || "[]"
+      );
+      const liked = storedPrograms
+        .filter((program) => likedPrograms.includes(program.id))
+        .map((program) => ({
+          ...program,
+          photo: program.photo || img,
+          desc: program.desc || "No description available",
+          date: program.created_at,
+          type: program.type || "Program",
+          major: program.major || [],
+          gender:
+            program.gender === "any"
+              ? "All"
+              : program.gender.charAt(0).toUpperCase() +
+                program.gender.slice(1),
+          format: program.format
+            ? program.format.charAt(0).toUpperCase() + program.format.slice(1)
+            : "Unknown",
+        }));
 
-    setLikedPrograms(likedProgramIds);
+      setFilteredPrograms(liked);
+    };
 
-    const liked = storedPrograms
-      .filter((program) => likedProgramIds.includes(program.id))
-      .map((program) => ({
-        ...program,
-        photo: program.photo || img,
-        desc: program.desc || "No description available",
-        date: program.created_at,
-        type: program.type || "Program",
-        major: program.major || [],
-        gender:
-          program.gender === "any"
-            ? "All"
-            : program.gender.charAt(0).toUpperCase() + program.gender.slice(1),
-        format: program.format
-          ? program.format.charAt(0).toUpperCase() + program.format.slice(1)
-          : "Unknown",
-      }));
-
-    setFilteredPrograms(liked);
     fetchMajors();
-  }, []);
+    fetchLikedPrograms();
+  }, [likedPrograms]);
 
   const toggleNav = useCallback(() => {
     setIsNavOpen((prev) => !prev);
@@ -150,39 +154,62 @@ const DashboardReviews = () => {
         }
       );
 
-      setLikedPrograms((prev) => {
-        const newLiked = prev.includes(programId)
-          ? prev.filter((id) => id !== programId)
-          : [...prev, programId];
-        localStorage.setItem("liked_programs", JSON.stringify(newLiked));
+      // Toggle like status locally
+      let updatedLikedPrograms;
+      if (likedPrograms.includes(programId)) {
+        updatedLikedPrograms = likedPrograms.filter((id) => id !== programId);
+      } else {
+        updatedLikedPrograms = [...new Set([...likedPrograms, programId])];
+      }
 
-        const storedPrograms = JSON.parse(
-          localStorage.getItem("programs") || "[]"
+      setLikedPrograms(updatedLikedPrograms);
+      localStorage.setItem(
+        "liked_programs",
+        JSON.stringify(updatedLikedPrograms)
+      );
+
+      // Update user object in localStorage
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      if (user.id) {
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ ...user, liked_programs: updatedLikedPrograms })
         );
-        const updatedFiltered = storedPrograms
-          .filter((program) => newLiked.includes(program.id))
-          .map((program) => ({
-            ...program,
-            photo: program.photo || img,
-            desc: program.desc || "No description available",
-            date: program.created_at,
-            type: program.type || "Program",
-            major: program.major || [],
-            gender:
-              program.gender === "any"
-                ? "All"
-                : program.gender.charAt(0).toUpperCase() +
-                  program.gender.slice(1),
-            format: program.format
-              ? program.format.charAt(0).toUpperCase() + program.format.slice(1)
-              : "Unknown",
-          }));
+      }
 
-        setFilteredPrograms(updatedFiltered);
-        return newLiked;
-      });
+      // Update filteredPrograms
+      const storedPrograms = JSON.parse(
+        localStorage.getItem("programs") || "[]"
+      );
+      const updatedFiltered = storedPrograms
+        .filter((program) => updatedLikedPrograms.includes(program.id))
+        .map((program) => ({
+          ...program,
+          photo: program.photo || img,
+          desc: program.desc || "No description available",
+          date: program.created_at,
+          type: program.type || "Program",
+          major: program.major || [],
+          gender:
+            program.gender === "any"
+              ? "All"
+              : program.gender.charAt(0).toUpperCase() +
+                program.gender.slice(1),
+          format: program.format
+            ? program.format.charAt(0).toUpperCase() + program.format.slice(1)
+            : "Unknown",
+        }));
+
+      setFilteredPrograms(updatedFiltered);
     } catch (error) {
-      console.error("Error liking program:", error);
+      console.error("Error liking/unliking program:", error);
+      if (error.response?.status === 401) {
+        alert("Session expired. Please log in again.");
+      } else if (error.response?.status === 403) {
+        alert("You don't have permission to perform this action.");
+      } else {
+        alert("Failed to like/unlike program. Please try again.");
+      }
     }
   };
 

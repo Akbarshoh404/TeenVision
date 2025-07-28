@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { useTransition, animated } from "@react spring/web";
+import { useTransition, animated } from "@react-spring/web";
 import PropTypes from "prop-types";
 import DashboardNavbar from "../../../Layoutes/Navbar";
 import DashboardTopBar from "../../../Layoutes/TopBar";
@@ -21,8 +21,8 @@ const DashboardHome = () => {
   const [filteredPrograms, setFilteredPrograms] = useState([]);
   const [majors, setMajors] = useState({});
   const [likedPrograms, setLikedPrograms] = useState(() => {
-    const stored = localStorage.getItem("liked_programs");
-    return stored ? JSON.parse(stored) : [];
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    return user.liked_programs || [];
   });
 
   useEffect(() => {
@@ -161,15 +161,37 @@ const DashboardHome = () => {
         }
       );
 
-      setLikedPrograms((prev) => {
-        const newLiked = prev.includes(programId)
-          ? prev.filter((id) => id !== programId)
-          : [...prev, programId];
-        localStorage.setItem("liked_programs", JSON.stringify(newLiked));
-        return newLiked;
-      });
+      // Toggle like status locally
+      let updatedLikedPrograms;
+      if (likedPrograms.includes(programId)) {
+        updatedLikedPrograms = likedPrograms.filter((id) => id !== programId);
+      } else {
+        updatedLikedPrograms = [...new Set([...likedPrograms, programId])];
+      }
+
+      setLikedPrograms(updatedLikedPrograms);
+      localStorage.setItem(
+        "liked_programs",
+        JSON.stringify(updatedLikedPrograms)
+      );
+
+      // Update user object in localStorage
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      if (user.id) {
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ ...user, liked_programs: updatedLikedPrograms })
+        );
+      }
     } catch (error) {
-      console.error("Error liking program:", error);
+      console.error("Error liking/unliking program:", error);
+      if (error.response?.status === 401) {
+        alert("Session expired. Please log in again.");
+      } else if (error.response?.status === 403) {
+        alert("You don't have permission to perform this action.");
+      } else {
+        alert("Failed to like/unlike program. Please try again.");
+      }
     }
   };
 
