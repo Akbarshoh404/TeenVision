@@ -84,7 +84,7 @@ const DashboardNavbar = ({ isNavOpen, toggleNav, closeNav }) => {
             Settings
           </a>
         </li>
-        <li className={styles.navItem}>
+        {/* <li className={styles.navItem}>
           <a
             className={styles.navLink}
             onClick={() => {
@@ -95,7 +95,7 @@ const DashboardNavbar = ({ isNavOpen, toggleNav, closeNav }) => {
             <FiAward className={styles.icon} />
             Premium
           </a>
-        </li>
+        </li> */}
       </ul>
     </nav>
   );

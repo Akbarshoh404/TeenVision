@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import DashboardNavbar from "../../../Layoutes/Navbar";
 import DashboardTopBar from "../../../Layoutes/TopBar";
 import styles from "./style.module.scss";
-import img from "../../../../Components/images/cardexample.png";
+import img from "../../../../Components/images/program sample.png";
 import axios from "axios";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 
@@ -28,7 +28,9 @@ const DashboardHome = () => {
   useEffect(() => {
     const fetchPrograms = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/v1/programs/");
+        const response = await fetch(
+          "http://127.0.0.1:8000/api/v1/programs/"
+        );
         const data = await response.json();
         const programs = (data.results || []).filter(
           (p) => p.type === "program"
@@ -313,7 +315,7 @@ const DashboardHome = () => {
                   className={styles.card}
                 >
                   <div className={styles.cardImage}>
-                    <img src={img} alt={program.title} />
+                    <img src={program.photo} alt={program.img} />
                     <button
                       className={`${styles.likeIcon} ${
                         likedPrograms.includes(program.id) ? styles.liked : ""

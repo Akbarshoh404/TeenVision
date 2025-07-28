@@ -21,6 +21,7 @@ import DashboardAdminCreatePrograms from "./Dashboard/Pages/Admin/CreatePrograms
 import DashboardAdminProgramEdit from "./Dashboard/Pages/Admin/ProgramEdit";
 import DashboardSettings from "./Dashboard/Pages/User/Settings";
 import DashboardReviews from "./Dashboard/Pages/User/Reviews";
+import DashboardTutorials from "./Dashboard/Pages/User/Tutorials";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
       <Route path="/dashboard/home" element={<DashboardHome />} />
       <Route path="/dashboard/settings" element={<DashboardSettings />} />
       <Route path="/dashboard/reviews" element={<DashboardReviews />} />
+      <Route path="/dashboard/tutorials" element={<DashboardTutorials />} />
 
       {/* Dashboard Admins */}
       <Route

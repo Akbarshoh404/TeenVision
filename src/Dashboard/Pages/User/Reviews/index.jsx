@@ -3,7 +3,8 @@ import { useTransition, animated } from "@react-spring/web";
 import DashboardNavbar from "../../../Layoutes/Navbar";
 import DashboardTopBar from "../../../Layoutes/TopBar";
 import styles from "../Home/style.module.scss";
-import img from "../../../../Components/images/cardexample.png";
+import programImg from "../../../../Components/images/program sample.png";
+import tutorialImg from "../../../../Components/images/tutorial sample.png";
 import axios from "axios";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 
@@ -16,6 +17,7 @@ const DashboardReviews = () => {
     country: "",
     major: "",
     format: "",
+    type: "",
   });
   const [likedPrograms, setLikedPrograms] = useState(() => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -43,22 +45,29 @@ const DashboardReviews = () => {
       const storedPrograms = JSON.parse(
         localStorage.getItem("programs") || "[]"
       );
-      const liked = storedPrograms
-        .filter((program) => likedPrograms.includes(program.id))
-        .map((program) => ({
-          ...program,
-          photo: program.photo || img,
-          desc: program.desc || "No description available",
-          date: program.created_at,
-          type: program.type || "Program",
-          major: program.major || [],
+      const storedTutorials = JSON.parse(
+        localStorage.getItem("tutorials") || "[]"
+      );
+      const allItems = [...storedPrograms, ...storedTutorials];
+
+      const liked = allItems
+        .filter((item) => likedPrograms.includes(item.id))
+        .map((item) => ({
+          ...item,
+          photo:
+            item.photo || (item.type === "tutorial" ? tutorialImg : programImg),
+          desc: item.desc || "No description available",
+          date: item.created_at,
+          type: item.type || "Program",
+          major: item.major || [],
           gender:
-            program.gender === "any"
+            item.gender === "any"
               ? "All"
-              : program.gender.charAt(0).toUpperCase() +
-                program.gender.slice(1),
-          format: program.format
-            ? program.format.charAt(0).toUpperCase() + program.format.slice(1)
+              : item.gender
+              ? item.gender.charAt(0).toUpperCase() + item.gender.slice(1)
+              : "Unknown",
+          format: item.format
+            ? item.format.charAt(0).toUpperCase() + item.format.slice(1)
             : "Unknown",
         }));
 
@@ -82,25 +91,83 @@ const DashboardReviews = () => {
     setSortCriteria((prev) => ({ ...prev, [name]: value }));
 
     const storedPrograms = JSON.parse(localStorage.getItem("programs") || "[]");
-    let programs = storedPrograms
-      .filter((program) => likedPrograms.includes(program.id))
-      .map((program) => ({
-        ...program,
-        photo: program.photo || img,
-        desc: program.desc || "No description available",
-        date: program.created_at,
-        type: program.type || "Program",
-        major: program.major || [],
+    const storedTutorials = JSON.parse(
+      localStorage.getItem("tutorials") || "[]"
+    );
+    let allItems = [...storedPrograms, ...storedTutorials];
+
+    let programs = allItems
+      .filter((item) => likedPrograms.includes(item.id))
+      .map((item) => ({
+        ...item,
+        photo:
+          item.photo || (item.type === "tutorial" ? tutorialImg : programImg),
+        desc: item.desc || "No description available",
+        date: item.created_at,
+        type: item.type || "Program",
+        major: item.major || [],
         gender:
-          program.gender === "any"
+          item.gender === "any"
             ? "All"
-            : program.gender.charAt(0).toUpperCase() + program.gender.slice(1),
-        format: program.format
-          ? program.format.charAt(0).toUpperCase() + program.format.slice(1)
+            : item.gender
+            ? item.gender.charAt(0).toUpperCase() + item.gender.slice(1)
+            : "Unknown",
+        format: item.format
+          ? item.format.charAt(0).toUpperCase() + item.format.slice(1)
           : "Unknown",
       }));
 
     let filtered = [...programs];
+
+    // Apply filters cumulatively
+    if (sortCriteria.start_age || (name === "start_age" && value)) {
+      const startAge = name === "start_age" ? value : sortCriteria.start_age;
+      if (startAge) {
+        filtered = filtered.filter(
+          (p) => !p.start_age || p.start_age >= parseInt(startAge)
+        );
+      }
+    }
+    if (sortCriteria.end_age || (name === "end_age" && value)) {
+      const endAge = name === "end_age" ? value : sortCriteria.end_age;
+      if (endAge) {
+        filtered = filtered.filter(
+          (p) => !p.end_age || p.end_age <= parseInt(endAge)
+        );
+      }
+    }
+    if (sortCriteria.gender || (name === "gender" && value)) {
+      const gender = name === "gender" ? value : sortCriteria.gender;
+      if (gender) {
+        filtered = filtered.filter(
+          (p) => p.gender === gender || p.gender === "All"
+        );
+      }
+    }
+    if (sortCriteria.country || (name === "country" && value)) {
+      const country = name === "country" ? value : sortCriteria.country;
+      if (country) {
+        filtered = filtered.filter((p) => p.country === country);
+      }
+    }
+    if (sortCriteria.major || (name === "major" && value)) {
+      const major = name === "major" ? value : sortCriteria.major;
+      if (major) {
+        filtered = filtered.filter((p) => p.major.includes(parseInt(major)));
+      }
+    }
+    if (sortCriteria.format || (name === "format" && value)) {
+      const format = name === "format" ? value : sortCriteria.format;
+      if (format) {
+        filtered = filtered.filter((p) => p.format === format);
+      }
+    }
+    if (sortCriteria.type || (name === "type" && value)) {
+      const type = name === "type" ? value : sortCriteria.type;
+      if (type) {
+        filtered = filtered.filter((p) => p.type === type);
+      }
+    }
 
     if (value === "reset") {
       setSortCriteria({
@@ -110,29 +177,10 @@ const DashboardReviews = () => {
         country: "",
         major: "",
         format: "",
+        type: "",
       });
       setFilteredPrograms(programs);
       return;
-    }
-
-    if (name === "start_age" && value) {
-      filtered = filtered.filter(
-        (p) => !p.start_age || p.start_age >= parseInt(value)
-      );
-    } else if (name === "end_age" && value) {
-      filtered = filtered.filter(
-        (p) => !p.end_age || p.end_age <= parseInt(value)
-      );
-    } else if (name === "gender" && value) {
-      filtered = filtered.filter(
-        (p) => p.gender === value || p.gender === "All"
-      );
-    } else if (name === "country" && value) {
-      filtered = filtered.filter((p) => p.country === value);
-    } else if (name === "major" && value) {
-      filtered = filtered.filter((p) => p.major.includes(parseInt(value)));
-    } else if (name === "format" && value) {
-      filtered = filtered.filter((p) => p.format === value);
     }
 
     setFilteredPrograms(filtered);
@@ -154,7 +202,6 @@ const DashboardReviews = () => {
         }
       );
 
-      // Toggle like status locally
       let updatedLikedPrograms;
       if (likedPrograms.includes(programId)) {
         updatedLikedPrograms = likedPrograms.filter((id) => id !== programId);
@@ -168,7 +215,6 @@ const DashboardReviews = () => {
         JSON.stringify(updatedLikedPrograms)
       );
 
-      // Update user object in localStorage
       const user = JSON.parse(localStorage.getItem("user") || "{}");
       if (user.id) {
         localStorage.setItem(
@@ -177,30 +223,67 @@ const DashboardReviews = () => {
         );
       }
 
-      // Update filteredPrograms
       const storedPrograms = JSON.parse(
         localStorage.getItem("programs") || "[]"
       );
-      const updatedFiltered = storedPrograms
-        .filter((program) => updatedLikedPrograms.includes(program.id))
-        .map((program) => ({
-          ...program,
-          photo: program.photo || img,
-          desc: program.desc || "No description available",
-          date: program.created_at,
-          type: program.type || "Program",
-          major: program.major || [],
+      const storedTutorials = JSON.parse(
+        localStorage.getItem("tutorials") || "[]"
+      );
+      const allItems = [...storedPrograms, ...storedTutorials];
+
+      const updatedFiltered = allItems
+        .filter((item) => updatedLikedPrograms.includes(item.id))
+        .map((item) => ({
+          ...item,
+          photo:
+            item.photo || (item.type === "tutorial" ? tutorialImg : programImg),
+          desc: item.desc || "No description available",
+          date: item.created_at,
+          type: item.type || "Program",
+          major: item.major || [],
           gender:
-            program.gender === "any"
+            item.gender === "any"
               ? "All"
-              : program.gender.charAt(0).toUpperCase() +
-                program.gender.slice(1),
-          format: program.format
-            ? program.format.charAt(0).toUpperCase() + program.format.slice(1)
+              : item.gender
+              ? item.gender.charAt(0).toUpperCase() + item.gender.slice(1)
+              : "Unknown",
+          format: item.format
+            ? item.format.charAt(0).toUpperCase() + item.format.slice(1)
             : "Unknown",
         }));
 
-      setFilteredPrograms(updatedFiltered);
+      let filtered = [...updatedFiltered];
+      if (sortCriteria.start_age) {
+        filtered = filtered.filter(
+          (p) => !p.start_age || p.start_age >= parseInt(sortCriteria.start_age)
+        );
+      }
+      if (sortCriteria.end_age) {
+        filtered = filtered.filter(
+          (p) => !p.end_age || p.end_age <= parseInt(sortCriteria.end_age)
+        );
+      }
+      if (sortCriteria.gender) {
+        filtered = filtered.filter(
+          (p) => p.gender === sortCriteria.gender || p.gender === "All"
+        );
+      }
+      if (sortCriteria.country) {
+        filtered = filtered.filter((p) => p.country === sortCriteria.country);
+      }
+      if (sortCriteria.major) {
+        filtered = filtered.filter((p) =>
+          p.major.includes(parseInt(sortCriteria.major))
+        );
+      }
+      if (sortCriteria.format) {
+        filtered = filtered.filter((p) => p.format === sortCriteria.format);
+      }
+      if (sortCriteria.type) {
+        filtered = filtered.filter((p) => p.type === sortCriteria.type);
+      }
+
+      setFilteredPrograms(filtered);
     } catch (error) {
       console.error("Error liking/unliking program:", error);
       if (error.response?.status === 401) {
@@ -223,16 +306,20 @@ const DashboardReviews = () => {
 
   const uniqueCountries = [
     ...new Set(
-      JSON.parse(localStorage.getItem("programs") || "[]")
+      [
+        ...JSON.parse(localStorage.getItem("programs") || "[]"),
+        ...JSON.parse(localStorage.getItem("tutorials") || "[]"),
+      ]
         .map((p) => p.country)
         .filter((c) => c)
     ),
   ];
   const uniqueMajors = [
     ...new Set(
-      JSON.parse(localStorage.getItem("programs") || "[]").flatMap(
-        (p) => p.major || []
-      )
+      [
+        ...JSON.parse(localStorage.getItem("programs") || "[]"),
+        ...JSON.parse(localStorage.getItem("tutorials") || "[]"),
+      ].flatMap((p) => p.major || [])
     ),
   ];
 
@@ -247,135 +334,151 @@ const DashboardReviews = () => {
       <main className={styles.mainContent}>
         <section className={styles.section}>
           <div className={styles.container}>
-            <h2 className={styles.cardTitle}>Liked Programs</h2>
+            <h2 className={styles.cardTitle}>Liked Programs and Tutorials</h2>
+            {likedPrograms.length > 0 && (
+              <div className={styles.sortSection}>
+                <select
+                  name="start_age"
+                  value={sortCriteria.start_age}
+                  onChange={handleSortChange}
+                >
+                  <option value="">Start Age</option>
+                  {[12, 13, 14, 15, 16, 17, 18].map((age) => (
+                    <option key={age} value={age}>
+                      {age}
+                    </option>
+                  ))}
+                  <option value="reset">Reset</option>
+                </select>
+                <select
+                  name="end_age"
+                  value={sortCriteria.end_age}
+                  onChange={handleSortChange}
+                >
+                  <option value="">End Age</option>
+                  {[12, 13, 14, 15, 16, 17, 18].map((age) => (
+                    <option key={age} value={age}>
+                      {age}
+                    </option>
+                  ))}
+                  <option value="reset">Reset</option>
+                </select>
+                <select
+                  name="gender"
+                  value={sortCriteria.gender}
+                  onChange={handleSortChange}
+                >
+                  <option value="">Gender</option>
+                  <option value="All">All</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="reset">Reset</option>
+                </select>
+                <select
+                  name="country"
+                  value={sortCriteria.country}
+                  onChange={handleSortChange}
+                >
+                  <option value="">Country</option>
+                  {uniqueCountries.map((country) => (
+                    <option key={country} value={country}>
+                      {country}
+                    </option>
+                  ))}
+                  <option value="reset">Reset</option>
+                </select>
+                <select
+                  name="major"
+                  value={sortCriteria.major}
+                  onChange={handleSortChange}
+                >
+                  <option value="">Major</option>
+                  {uniqueMajors.map((majorId) => (
+                    <option key={majorId} value={majorId}>
+                      {majors[majorId] || majorId}
+                    </option>
+                  ))}
+                  <option value="reset">Reset</option>
+                </select>
+                <select
+                  name="format"
+                  value={sortCriteria.format}
+                  onChange={handleSortChange}
+                >
+                  <option value="">Format</option>
+                  <option value="Offline">Offline</option>
+                  <option value="Online">Online</option>
+                  <option value="Hybrid">Hybrid</option>
+                  <option value="reset">Reset</option>
+                </select>
+                <select
+                  name="type"
+                  value={sortCriteria.type}
+                  onChange={handleSortChange}
+                >
+                  <option value="">Type</option>
+                  <option value="program">Program</option>
+                  <option value="tutorial">Tutorial</option>
+                  <option value="reset">Reset</option>
+                </select>
+              </div>
+            )}
             {filteredPrograms.length > 0 ? (
-              <>
-                <div className={styles.sortSection}>
-                  <select
-                    name="start_age"
-                    value={sortCriteria.start_age}
-                    onChange={handleSortChange}
+              <div className={styles.cards}>
+                {transitions((style, program) => (
+                  <animated.div
+                    key={program.id}
+                    style={style}
+                    className={styles.card}
                   >
-                    <option value="">Start Age</option>
-                    {[12, 13, 14, 15, 16, 17, 18].map((age) => (
-                      <option key={age} value={age}>
-                        {age}
-                      </option>
-                    ))}
-                    <option value="reset">Reset</option>
-                  </select>
-                  <select
-                    name="end_age"
-                    value={sortCriteria.end_age}
-                    onChange={handleSortChange}
-                  >
-                    <option value="">End Age</option>
-                    {[12, 13, 14, 15, 16, 17, 18].map((age) => (
-                      <option key={age} value={age}>
-                        {age}
-                      </option>
-                    ))}
-                    <option value="reset">Reset</option>
-                  </select>
-                  <select
-                    name="gender"
-                    value={sortCriteria.gender}
-                    onChange={handleSortChange}
-                  >
-                    <option value="">Gender</option>
-                    <option value="All">All</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="reset">Reset</option>
-                  </select>
-                  <select
-                    name="country"
-                    value={sortCriteria.country}
-                    onChange={handleSortChange}
-                  >
-                    <option value="">Country</option>
-                    {uniqueCountries.map((country) => (
-                      <option key={country} value={country}>
-                        {country}
-                      </option>
-                    ))}
-                    <option value="reset">Reset</option>
-                  </select>
-                  <select
-                    name="major"
-                    value={sortCriteria.major}
-                    onChange={handleSortChange}
-                  >
-                    <option value="">Major</option>
-                    {uniqueMajors.map((majorId) => (
-                      <option key={majorId} value={majorId}>
-                        {majors[majorId] || majorId}
-                      </option>
-                    ))}
-                    <option value="reset">Reset</option>
-                  </select>
-                  <select
-                    name="format"
-                    value={sortCriteria.format}
-                    onChange={handleSortChange}
-                  >
-                    <option value="">Format</option>
-                    <option value="Offline">Offline</option>
-                    <option value="Online">Online</option>
-                    <option value="Hybrid">Hybrid</option>
-                    <option value="reset">Reset</option>
-                  </select>
-                </div>
-                <div className={styles.cards}>
-                  {transitions((style, program) => (
-                    <animated.div
-                      key={program.id}
-                      style={style}
-                      className={styles.card}
-                    >
-                      <div className={styles.cardImage}>
-                        <img src={img} alt={program.title} />
-                        <button
-                          className={`${styles.likeIcon} ${
-                            likedPrograms.includes(program.id)
-                              ? styles.liked
-                              : ""
-                          }`}
-                          onClick={() => handleLike(program.id, program.slug)}
-                        >
-                          {likedPrograms.includes(program.id) ? (
-                            <AiFillHeart size={24} />
-                          ) : (
-                            <AiOutlineHeart size={24} />
-                          )}
-                        </button>
-                      </div>
-                      <div className={styles.cardMajors}>
-                        {program.major.map((majorId, index) => (
+                    <div className={styles.cardImage}>
+                      <img src={program.photo} alt={program.title} />
+                      <button
+                        className={`${styles.likeIcon} ${
+                          likedPrograms.includes(program.id) ? styles.liked : ""
+                        }`}
+                        onClick={() => handleLike(program.id, program.slug)}
+                      >
+                        {likedPrograms.includes(program.id) ? (
+                          <AiFillHeart size={24} />
+                        ) : (
+                          <AiOutlineHeart size={24} />
+                        )}
+                      </button>
+                    </div>
+                    <div className={styles.cardMajors}>
+                      {program.major.length > 0 ? (
+                        program.major.map((majorId, index) => (
                           <span key={index} className={styles.majorButton}>
                             {majors[majorId] || majorId}
                           </span>
-                        ))}
-                      </div>
-                      <h3 className={styles.cardTitle}>{program.title}</h3>
-                      <div className={styles.cardInfoRow}>
-                        <span className={styles.cardCountry}>
-                          {program.country || "N/A"}
-                        </span>
-                        <span className={styles.separator}>|</span>
-                        <span className={styles.cardType}>{program.type}</span>
-                        <span className={styles.separator}>|</span>
-                        <span className={styles.cardDate}>
-                          {new Date(program.date).toLocaleDateString()}
-                        </span>
-                      </div>
-                      <p className={styles.cardDescription}>{program.desc}</p>
-                    </animated.div>
-                  ))}
-                </div>
-              </>
+                        ))
+                      ) : (
+                        <span className={styles.majorButton}>No Majors</span>
+                      )}
+                    </div>
+                    <h3 className={styles.cardTitle}>{program.title}</h3>
+                    <div className={styles.cardInfoRow}>
+                      <span className={styles.cardCountry}>
+                        {program.country || "N/A"}
+                      </span>
+                      <span className={styles.separator}>|</span>
+                      <span className={styles.cardType}>{program.type}</span>
+                      <span className={styles.separator}>|</span>
+                      <span className={styles.cardDate}>
+                        {new Date(program.date).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <p className={styles.cardDescription}>{program.desc}</p>
+                  </animated.div>
+                ))}
+              </div>
             ) : (
-              <p className={styles.noPrograms}>No liked programs yet</p>
+              <p className={styles.noPrograms}>
+                {likedPrograms.length > 0
+                  ? "No matching programs or tutorials"
+                  : "No liked programs or tutorials yet"}
+              </p>
             )}
           </div>
         </section>
