@@ -47,7 +47,7 @@ const DashboardAdminProgramEdit = () => {
         }
 
         // Fetch majors
-        const majorsResponse = await fetch("http://127.0.0.1:8000/api/v1/majors/", {
+        const majorsResponse = await fetch("http://16.16.211.35:8000/api/v1/majors/", {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
@@ -65,7 +65,7 @@ const DashboardAdminProgramEdit = () => {
         setMajors(majorsData.results || []);
 
         // Fetch program
-        const response = await fetch(`http://127.0.0.1:8000/api/v1/programs/${slug}/`, {
+        const response = await fetch(`http://16.16.211.35:8000/api/v1/programs/${slug}/`, {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
@@ -229,7 +229,7 @@ const DashboardAdminProgramEdit = () => {
         }
       });
 
-      const response = await fetch(`http://127.0.0.1:8000/api/v1/programs/${slug}/`, {
+      const response = await fetch(`http://16.16.211.35:8000/api/v1/programs/${slug}/`, {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}` },
         body: programData,

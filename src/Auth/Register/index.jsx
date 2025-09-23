@@ -25,7 +25,7 @@ const Register = () => {
 
       // Make API request to register endpoint
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/v1/api/v1/auth/register/",
+        "http://16.16.211.35:8000/api/v1/api/v1/auth/register/",
         formData,
         {
           headers: {

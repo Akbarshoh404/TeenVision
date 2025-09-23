@@ -66,7 +66,7 @@ const LandingNavbar = () => {
               Home
               <span className={styles.line}></span>
             </p>
-            <p
+            {/* <p
               onClick={() => {
                 navigate("/about");
                 setIsDrawerOpen(false);
@@ -92,7 +92,7 @@ const LandingNavbar = () => {
             >
               Exchange Programs
               <span className={styles.line}></span>
-            </p>
+            </p> */}
             <button
               type="button"
               onClick={() => {
@@ -120,7 +120,7 @@ const LandingNavbar = () => {
             <p onClick={() => navigate("/")}>
               Home <span className={styles.line}></span>
             </p>
-            <p onClick={() => navigate("/about")}>
+            {/* <p onClick={() => navigate("/about")}>
               About us <span className={styles.line}></span>
             </p>
             <p onClick={() => navigate("/majors")}>
@@ -128,7 +128,7 @@ const LandingNavbar = () => {
             </p>
             <p onClick={() => navigate("/exchangeprograms")}>
               Exchange Programs <span className={styles.line}></span>
-            </p>
+            </p> */}
             <button type="button" onClick={() => navigate("/register")}>
               Registration
             </button>

@@ -1,18 +1,28 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./styles.module.scss";
 import DashboardTopBar from "../../../Layoutes/TopBar";
 import DashboardAdminNavbar from "../../../Layoutes/AdminNavbar";
-import img from "../../../../Components/images/cardexample.png";
+import programImg from "../../../../Components/images/program sample.png";
+import tutorialImg from "../../../../Components/images/tutorial sample.png";
 
 const DashboardAdminNewPrograms = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
-  const [programs, setPrograms] = useState([]);
+  const [items, setItems] = useState([]);
+  const [allItems, setAllItems] = useState([]);
   const [majors, setMajors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [sortBy, setSortBy] = useState("title");
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortCriteria, setSortCriteria] = useState({
+    start_age: "",
+    end_age: "",
+    gender: "",
+    country: "",
+    major: "",
+    format: "",
+    type: "",
+    funding: "",
+  });
   const navigate = useNavigate();
 
   const fetchData = async () => {
@@ -20,133 +30,217 @@ const DashboardAdminNewPrograms = () => {
     setError(null);
     try {
       const token = localStorage.getItem("access_token");
-      console.log("NewPrograms Token:", token ? "Found" : "Not found");
-
       if (!token) {
-        setError("No authentication token found. Redirecting to login...");
-        setTimeout(() => navigate("/login"), 3000);
-        return;
-      }
-
-      // Fetch majors
-      const majorsResponse = await fetch(
-        "http://127.0.0.1:8000/api/v1/majors/",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        }
-      );
-
-      if (!majorsResponse.ok) {
-        if (majorsResponse.status === 401) {
-          setError("Unauthorized. Redirecting to login...");
-          setTimeout(() => navigate("/login"), 3000);
-          return;
-        }
-        throw new Error(`Failed to fetch majors: ${majorsResponse.status}`);
-      }
-
-      const majorsData = await majorsResponse.json();
-      setMajors(majorsData.results || []);
-
-      // Fetch programs
-      const programsResponse = await fetch(
-        "http://127.0.0.1:8000/api/v1/programs/",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        }
-      );
-
-      console.log("NewPrograms API Response Status:", programsResponse.status);
-      if (!programsResponse.ok) {
-        const errorText = await programsResponse.text();
-        console.error("NewPrograms API Error Response:", errorText);
-        if (programsResponse.status === 401) {
-          setError("Unauthorized. Redirecting to login...");
-          setTimeout(() => navigate("/login"), 3000);
-          return;
-        }
         throw new Error(
-          `Failed to fetch programs: ${programsResponse.status} ${errorText}`
+          "No authentication token found. Redirecting to login..."
         );
       }
 
-      const programsData = await programsResponse.json();
-      console.log("NewPrograms API Data:", programsData);
-      const fetchedPrograms = programsData.results || [];
-      localStorage.setItem("programs", JSON.stringify(fetchedPrograms));
-      setPrograms(fetchedPrograms);
+      const [majorsResponse, programsResponse, tutorialsResponse] =
+        await Promise.all([
+          fetch("http://16.16.211.35:8000/api/v1/majors/", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          }),
+          fetch("http://16.16.211.35:8000/api/v1/programs/", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          }),
+          fetch("http://16.16.211.35:8000/api/v1/programs/tutorials/", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          }),
+        ]);
+
+      if (!majorsResponse.ok || !programsResponse.ok || !tutorialsResponse.ok) {
+        if (
+          majorsResponse.status === 401 ||
+          programsResponse.status === 401 ||
+          tutorialsResponse.status === 401
+        ) {
+          throw new Error("Unauthorized. Redirecting to login...");
+        }
+        throw new Error(
+          `Failed to fetch data: Majors ${majorsResponse.status}, Programs ${programsResponse.status}, Tutorials ${tutorialsResponse.status}`
+        );
+      }
+
+      const [majorsData, programsData, tutorialsData] = await Promise.all([
+        majorsResponse.json(),
+        programsResponse.json(),
+        tutorialsResponse.json(),
+      ]);
+
+      const programItems = (programsData.results || []).map((item) => ({
+        ...item,
+        type: item.type.charAt(0).toUpperCase() + item.type.slice(1),
+      }));
+      const tutorialItems = (tutorialsData.results || []).map((item) => ({
+        ...item,
+        type: item.type.charAt(0).toUpperCase() + item.type.slice(1),
+      }));
+      const uniqueItems = [
+        ...programItems,
+        ...tutorialItems.filter(
+          (t) => !programItems.some((p) => p.slug === t.slug)
+        ),
+      ];
+
+      setMajors(majorsData.results || []);
+      setAllItems(uniqueItems);
+      setItems(uniqueItems);
+      localStorage.setItem("programs", JSON.stringify(uniqueItems));
     } catch (err) {
-      console.error("NewPrograms Fetch Error:", err);
       setError(err.message);
-      const storedPrograms = JSON.parse(localStorage.getItem("programs")) || [];
-      setPrograms(storedPrograms);
+      const storedItems = JSON.parse(localStorage.getItem("programs") || "[]");
+      setAllItems(storedItems);
+      setItems(storedItems);
+      if (
+        err.message.includes("Unauthorized") ||
+        err.message.includes("token")
+      ) {
+        setTimeout(() => navigate("/login"), 3000);
+      }
     } finally {
       setLoading(false);
     }
   };
 
+  const handleDelete = useCallback(
+    async (item, e) => {
+      e.stopPropagation();
+      try {
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+          throw new Error("No authentication token found.");
+        }
+
+        const formData = new FormData();
+        formData.append("status", "off");
+
+        const response = await fetch(
+          `http://16.16.211.35:8000/api/v1/programs/${item.slug}/`,
+          {
+            method: "PATCH",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+            body: formData,
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(
+            `Failed to delete ${item.type.toLowerCase()}: ${response.status}`
+          );
+        }
+
+        const updatedItems = items.filter((i) => i.slug !== item.slug);
+        const updatedAllItems = allItems.filter((i) => i.slug !== item.slug);
+        setItems(updatedItems);
+        setAllItems(updatedAllItems);
+        localStorage.setItem("programs", JSON.stringify(updatedAllItems));
+      } catch (err) {
+        setError(err.message);
+      }
+    },
+    [items, allItems]
+  );
+
   useEffect(() => {
     fetchData();
-  }, []); // Removed navigate from dependency array
-
-  // Sort programs
-  const sortedPrograms = [...programs].sort((a, b) => {
-    let fieldA, fieldB;
-    if (sortBy === "title") {
-      fieldA = (a.title || "").toLowerCase();
-      fieldB = (b.title || "").toLowerCase();
-    } else if (sortBy === "deadline") {
-      fieldA = a.deadline || "9999-12-31";
-      fieldB = b.deadline || "9999-12-31";
-    } else if (sortBy === "country") {
-      fieldA = (a.country || "").toLowerCase();
-      fieldB = (b.country || "").toLowerCase();
-    }
-    return sortOrder === "asc"
-      ? fieldA < fieldB
-        ? -1
-        : fieldA > fieldB
-        ? 1
-        : 0
-      : fieldA > fieldB
-      ? -1
-      : fieldA < fieldB
-      ? 1
-      : 0;
-  });
-
-  const toggleNav = useCallback(() => {
-    setIsNavOpen((prev) => !prev);
   }, []);
 
-  const closeNav = useCallback(() => {
-    setIsNavOpen(false);
-  }, []);
+  const handleSortChange = useCallback(
+    (e) => {
+      const { name, value } = e.target;
+      setSortCriteria((prev) => {
+        const newCriteria = { ...prev, [name]: value };
+        if (value === "reset") {
+          setItems(allItems);
+          return {
+            start_age: "",
+            end_age: "",
+            gender: "",
+            country: "",
+            major: "",
+            format: "",
+            type: "",
+            funding: "",
+          };
+        }
 
-  const getMajorNames = (majorIds) => {
-    if (!Array.isArray(majorIds)) return [];
-    return majorIds
-      .map((id) => {
-        const major = majors.find((m) => m.id === id);
-        return major ? major.name : null;
-      })
-      .filter((name) => name);
-  };
+        let filtered = [...allItems];
+        if (newCriteria.start_age) {
+          filtered = filtered.filter(
+            (p) =>
+              !p.start_age || p.start_age >= parseInt(newCriteria.start_age)
+          );
+        }
+        if (newCriteria.end_age) {
+          filtered = filtered.filter(
+            (p) => !p.end_age || p.end_age <= parseInt(newCriteria.end_age)
+          );
+        }
+        if (newCriteria.gender) {
+          filtered = filtered.filter(
+            (p) => p.gender === newCriteria.gender || p.gender === "any"
+          );
+        }
+        if (newCriteria.country) {
+          filtered = filtered.filter((p) => p.country === newCriteria.country);
+        }
+        if (newCriteria.major) {
+          filtered = filtered.filter((p) =>
+            p.major?.includes(parseInt(newCriteria.major))
+          );
+        }
+        if (newCriteria.format) {
+          filtered = filtered.filter((p) => p.format === newCriteria.format);
+        }
+        if (newCriteria.type) {
+          filtered = filtered.filter((p) => p.type === newCriteria.type);
+        }
+        if (newCriteria.funding) {
+          filtered = filtered.filter((p) => p.funding === newCriteria.funding);
+        }
 
-  const handleSortChange = (field) => {
-    if (sortBy === field) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
-      setSortBy(field);
-      setSortOrder("asc");
-    }
-  };
+        setItems(filtered);
+        return newCriteria;
+      });
+    },
+    [allItems]
+  );
+
+  const toggleNav = useCallback(() => setIsNavOpen((prev) => !prev), []);
+  const closeNav = useCallback(() => setIsNavOpen(false), []);
+
+  const getMajorNames = useCallback(
+    (majorIds) => {
+      if (!Array.isArray(majorIds)) return [];
+      return majorIds
+        .map((id) => majors.find((m) => m.id === id)?.name)
+        .filter(Boolean);
+    },
+    [majors]
+  );
+
+  const { uniqueCountries, uniqueMajors } = useMemo(
+    () => ({
+      uniqueCountries: [
+        ...new Set(allItems.map((p) => p.country).filter(Boolean)),
+      ],
+      uniqueMajors: [...new Set(allItems.flatMap((p) => p.major || []))],
+    }),
+    [allItems]
+  );
 
   if (loading) {
     return (
@@ -162,7 +256,9 @@ const DashboardAdminNewPrograms = () => {
         >
           <section className={styles.section}>
             <div className={styles.container}>
-              <h2 className={styles.sectionTitle}>Loading Programs...</h2>
+              <h2 className={styles.sectionTitle}>
+                Loading Programs and Tutorials...
+              </h2>
             </div>
           </section>
         </main>
@@ -184,39 +280,111 @@ const DashboardAdminNewPrograms = () => {
         <section className={styles.section}>
           <div className={styles.container}>
             <div className={styles.header}>
-              <h2 className={styles.sectionTitle}>Manage Programs</h2>
-              <div className={styles.sortControls}>
-                <span className={styles.sortLabel}>Sort by:</span>
-                <button
-                  className={`${styles.sortButton} ${
-                    sortBy === "title" ? styles.active : ""
-                  }`}
-                  onClick={() => handleSortChange("title")}
-                >
-                  Title{" "}
-                  {sortBy === "title" && (sortOrder === "asc" ? "↑" : "↓")}
-                </button>
-                <button
-                  className={`${styles.sortButton} ${
-                    sortBy === "deadline" ? styles.active : ""
-                  }`}
-                  onClick={() => handleSortChange("deadline")}
-                >
-                  Deadline{" "}
-                  {sortBy === "deadline" && (sortOrder === "asc" ? "↑" : "↓")}
-                </button>
-                <button
-                  className={`${styles.sortButton} ${
-                    sortBy === "country" ? styles.active : ""
-                  }`}
-                  onClick={() => handleSortChange("country")}
-                >
-                  Country{" "}
-                  {sortBy === "country" && (sortOrder === "asc" ? "↑" : "↓")}
-                </button>
-              </div>
+              <h2 className={styles.sectionTitle}>
+                Manage Programs and Tutorials
+              </h2>
             </div>
             {error && <p className={styles.error}>{error}</p>}
+            {allItems.length > 0 && (
+              <div className={styles.sortSection}>
+                <select
+                  name="start_age"
+                  value={sortCriteria.start_age}
+                  onChange={handleSortChange}
+                >
+                  <option value="">Start Age</option>
+                  {[12, 13, 14, 15, 16, 17, 18].map((age) => (
+                    <option key={age} value={age}>
+                      {age}
+                    </option>
+                  ))}
+                  <option value="reset">Reset</option>
+                </select>
+                <select
+                  name="end_age"
+                  value={sortCriteria.end_age}
+                  onChange={handleSortChange}
+                >
+                  <option value="">End Age</option>
+                  {[12, 13, 14, 15, 16, 17, 18].map((age) => (
+                    <option key={age} value={age}>
+                      {age}
+                    </option>
+                  ))}
+                  <option value="reset">Reset</option>
+                </select>
+                <select
+                  name="gender"
+                  value={sortCriteria.gender}
+                  onChange={handleSortChange}
+                >
+                  <option value="">Gender</option>
+                  <option value="any">Any</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="reset">Reset</option>
+                </select>
+                <select
+                  name="country"
+                  value={sortCriteria.country}
+                  onChange={handleSortChange}
+                >
+                  <option value="">Country</option>
+                  {uniqueCountries.map((country) => (
+                    <option key={country} value={country}>
+                      {country}
+                    </option>
+                  ))}
+                  <option value="reset">Reset</option>
+                </select>
+                <select
+                  name="major"
+                  value={sortCriteria.major}
+                  onChange={handleSortChange}
+                >
+                  <option value="">Major</option>
+                  {uniqueMajors.map((majorId) => (
+                    <option key={majorId} value={majorId}>
+                      {majors.find((m) => m.id === majorId)?.name || majorId}
+                    </option>
+                  ))}
+                  <option value="reset">Reset</option>
+                </select>
+                <select
+                  name="format"
+                  value={sortCriteria.format}
+                  onChange={handleSortChange}
+                >
+                  <option value="">Format</option>
+                  <option value="online">Online</option>
+                  <option value="offline">Offline</option>
+                  <option value="hybrid">Hybrid</option>
+                  <option value="reset">Reset</option>
+                </select>
+                <select
+                  name="type"
+                  value={sortCriteria.type}
+                  onChange={handleSortChange}
+                >
+                  <option value="">Type</option>
+                  <option value="Program">Program</option>
+                  <option value="Tutorial">Tutorial</option>
+                  <option value="reset">Reset</option>
+                </select>
+                <select
+                  name="funding"
+                  value={sortCriteria.funding}
+                  onChange={handleSortChange}
+                >
+                  <option value="">Funding</option>
+                  <option value="full">Full</option>
+                  <option value="partial">Partial</option>
+                  <option value="self">Self</option>
+                  <option value="sponsorship">Sponsorship</option>
+                  <option value="reset">Reset</option>
+                </select>
+              </div>
+            )}
             <div className={styles.cards}>
               <div className={styles.card}>
                 <div className={styles.addCard}>
@@ -230,63 +398,87 @@ const DashboardAdminNewPrograms = () => {
                   </button>
                 </div>
               </div>
-              {sortedPrograms.length === 0 ? (
-                <p className={styles.noPrograms}>No programs available.</p>
+              {items.length === 0 ? (
+                <p className={styles.noPrograms}>
+                  {allItems.length > 0
+                    ? "No matching programs or tutorials."
+                    : "No programs or tutorials available."}
+                </p>
               ) : (
-                sortedPrograms.map((program) => (
+                items.map((item) => (
                   <div
-                    key={program.slug || program.id}
+                    key={item.slug || item.id}
                     className={styles.card}
                     onClick={() =>
-                      navigate(`/dashboard/admin/new-programs/${program.slug}`)
+                      navigate(`/dashboard/admin/new-programs/${item.slug}`)
                     }
                     style={{ cursor: "pointer" }}
                   >
                     <div className={styles.cardImage}>
                       <img
-                        src={program.photos?.[0] || program.photo || img}
-                        alt={program.title || "Program"}
+                        src={
+                          item.photo ||
+                          (item.type === "Tutorial" ? tutorialImg : programImg)
+                        }
+                        alt={item.title || "Item"}
                         className={styles.photoImage}
-                        onError={(e) => (e.target.src = img)}
+                        onError={(e) =>
+                          (e.target.src =
+                            item.type === "Tutorial" ? tutorialImg : programImg)
+                        }
                       />
                     </div>
                     <div className={styles.cardMajors}>
-                      {getMajorNames(program.major).map((majorName, index) => (
-                        <span key={index} className={styles.majorButton}>
-                          {majorName}
-                        </span>
-                      ))}
+                      {getMajorNames(item.major).length > 0 ? (
+                        getMajorNames(item.major).map((majorName, index) => (
+                          <span key={index} className={styles.majorButton}>
+                            {majorName}
+                          </span>
+                        ))
+                      ) : (
+                        <span className={styles.majorButton}>No Majors</span>
+                      )}
                     </div>
                     <h3 className={styles.cardTitle}>
-                      {program.title || "Untitled"}
+                      {item.title || "Untitled"}
                     </h3>
                     <div className={styles.cardInfoRow}>
                       <span className={styles.cardCountry}>
-                        {program.country || "Unknown"}
+                        {item.country || "Unknown"}
                       </span>
                       <span className={styles.separator}>|</span>
                       <span className={styles.cardType}>
-                        {program.type || "Unknown"}
+                        {item.type || "Unknown"}
                       </span>
                       <span className={styles.separator}>|</span>
                       <span className={styles.cardDate}>
-                        {program.deadline || "No Deadline"}
+                        {item.deadline
+                          ? new Date(item.deadline).toLocaleDateString()
+                          : "No Deadline"}
                       </span>
                     </div>
                     <p className={styles.cardDescription}>
-                      {program.desc || "No description available."}
+                      {item.desc || "No description available."}
                     </p>
-                    <button
-                      className={styles.editButton}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(
-                          `/dashboard/admin/new-programs/${program.slug}`
-                        );
-                      }}
-                    >
-                      Edit
-                    </button>
+                    <div className={styles.buttonGroup}>
+                      <button
+                        className={styles.editButton}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(
+                            `/dashboard/admin/new-programs/${item.slug}`
+                          );
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className={styles.deleteButton}
+                        onClick={(e) => handleDelete(item, e)}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 ))
               )}

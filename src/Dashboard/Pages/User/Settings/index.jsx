@@ -143,7 +143,7 @@ const DashboardSettings = () => {
       formData.append("notification_status", settings.notification_status);
 
       const response = await axios.patch(
-        "http://127.0.0.1:8000/api/v1/api/v1/auth/profile/update/",
+        "http://16.16.211.35:8000/api/v1/api/v1/auth/profile/update/",
         formData,
         {
           headers: {

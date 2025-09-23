@@ -44,11 +44,45 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   gap: 48px;
 }
 
+.header {
+  width: 100%;
+}
+
 .sectionTitle {
   font-family: Poppins, sans-serif;
   font-weight: 600;
   font-size: 24px;
   color: $text-color;
+}
+
+.sortSection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 24px;
+
+  select {
+    font-family: Poppins, sans-serif;
+    font-size: 14px;
+    padding: 8px 12px;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    background-color: white;
+    color: $text-color;
+    cursor: pointer;
+    transition: border-color 0.2s ease-in-out;
+
+    &:hover {
+      border-color: $primary-color;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 5px rgba($primary-color, 0.3);
+    }
+  }
 }
 
 .noPrograms {
@@ -88,29 +122,35 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 }
 
+.addCard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  border: 2px dashed $border-color;
+  border-radius: 20px;
+  background-color: #f9fafb;
+}
+
+.addButton {
+  font-family: Poppins, sans-serif;
+  font-size: 48px;
+  font-weight: 300;
+  color: $primary-color;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: darken($primary-color, 10%);
+  }
+}
+
 .cardImage {
   width: 100%;
   border-radius: 20px 20px 0 0;
   overflow: hidden;
-}
-
-.photoCarousel {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  gap: 8px;
-  scrollbar-width: thin;
-  scrollbar-color: $secondary-color transparent;
-
-  &::-webkit-scrollbar {
-    height: 8px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: $secondary-color;
-    border-radius: 4px;
-  }
 }
 
 .photoImage {
@@ -118,8 +158,6 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   height: 200px;
   object-fit: cover;
   border-radius: 20px 20px 0 0;
-  flex: 0 0 100%;
-  scroll-snap-align: center;
 }
 
 .cardMajors {
@@ -271,6 +309,15 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   .sectionTitle {
     font-size: 22px;
   }
+
+  .sortSection {
+    gap: 8px;
+
+    select {
+      padding: 6px 10px;
+      font-size: 13px;
+    }
+  }
 }
 
 @media screen and (max-width: 1200px) {
@@ -324,6 +371,16 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   .cardDescription {
     font-size: 14px;
     line-height: 20px;
+  }
+
+  .sortSection {
+    flex-direction: column;
+    gap: 6px;
+
+    select {
+      width: 100%;
+      padding: 8px;
+    }
   }
 }
 

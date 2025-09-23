@@ -18,7 +18,7 @@ const Login = () => {
     try {
       // Make API request to the correct login endpoint
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/v1/api/v1/auth/login/",
+        "http://16.16.211.35:8000/api/v1/api/v1/auth/login/",
         { email, password },
         {
           headers: {
@@ -40,7 +40,7 @@ const Login = () => {
       // Attempt to fetch admin status
       try {
         const adminResponse = await axios.get(
-          "http://127.0.0.1:8000/api/v1/admins/", // Adjust the URL if needed
+          "http://16.16.211.35:8000/api/v1/admins/", // Adjust the URL if needed
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -84,7 +84,7 @@ const Login = () => {
   const fetchAllPrograms = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/v1/programs/",
+        "http://16.16.211.35:8000/api/v1/programs/",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,

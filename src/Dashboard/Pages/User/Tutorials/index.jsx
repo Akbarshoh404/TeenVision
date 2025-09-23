@@ -29,7 +29,7 @@ const DashboardTutorials = () => {
     const fetchTutorials = async () => {
       try {
         const response = await fetch(
-          "http://127.0.0.1:8000/api/v1/programs/tutorials/"
+          "http://16.16.211.35:8000/api/v1/programs/tutorials/"
         );
         const data = await response.json();
         const tutorials = (data.results || []).filter(
@@ -62,7 +62,7 @@ const DashboardTutorials = () => {
 
     const fetchMajors = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/v1/majors/");
+        const response = await fetch("http://16.16.211.35:8000/api/v1/majors/");
         const data = await response.json();
         const majorMap = {};
         data.results.forEach((major) => {
@@ -156,7 +156,7 @@ const DashboardTutorials = () => {
       if (!token) throw new Error("No access token found");
 
       await axios.post(
-        `http://127.0.0.1:8000/api/v1/programs/${slug}/like/`,
+        `http://16.16.211.35:8000/api/v1/programs/${slug}/like/`,
         {},
         {
           headers: {

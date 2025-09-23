@@ -6,6 +6,8 @@ $secondary-color: #555;
 $text-color: #222;
 $border-color: #e2e8f0;
 $shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+$delete-color: #ef4444;
+$restore-color: #22c55e;
 
 * {
   margin: 0;
@@ -71,45 +73,29 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 .error {
   font-family: Poppins, sans-serif;
   font-size: 14px;
-  color: #ef4444;
+  color: $delete-color;
   margin-bottom: 16px;
 }
 
-.sortControls {
+.sortSection {
   display: flex;
-  align-items: center;
-  gap: 8px;
   flex-wrap: wrap;
-}
+  gap: 8px;
+  margin-bottom: 16px;
 
-.sortLabel {
-  font-family: Poppins, sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  color: $secondary-color;
-}
+  select {
+    font-family: Poppins, sans-serif;
+    font-size: 14px;
+    padding: 6px 12px;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    background-color: white;
+    color: $text-color;
+    cursor: pointer;
 
-.sortButton {
-  font-family: Poppins, sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  color: $primary-color;
-  background-color: lighten($primary-color, 40%);
-  border: 1px solid $primary-color;
-  border-radius: 8px;
-  padding: 6px 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &.active {
-    background-color: $primary-color;
-    color: white;
-  }
-
-  &:hover {
-    background-color: $primary-color;
-    color: white;
-    transform: translateY(-1px);
+    &:hover {
+      border-color: $primary-color;
+    }
   }
 }
 
@@ -137,62 +123,10 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 }
 
-.addCard {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  background-color: #eae7e7;
-  border-radius: 20px;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: lighten($primary-color, 40%);
-  }
-}
-
-.addButton {
-  font-family: Poppins, sans-serif;
-  font-weight: 400;
-  font-size: 100px;
-  color: $primary-color;
-  background-color: transparent;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: color 0.3s ease;
-
-  &:hover {
-    color: darken($primary-color, 10%);
-  }
-}
-
 .cardImage {
   width: 100%;
   border-radius: 20px 20px 0 0;
   overflow: hidden;
-}
-
-.photoCarousel {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  gap: 8px;
-  scrollbar-width: thin;
-  scrollbar-color: $secondary-color transparent;
-
-  &::-webkit-scrollbar {
-    height: 8px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: $secondary-color;
-    border-radius: 4px;
-  }
 }
 
 .photoImage {
@@ -283,6 +217,13 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   flex-grow: 1;
 }
 
+.buttonGroup {
+  display: flex;
+  gap: 8px;
+  margin: 0 24px 24px;
+  align-self: flex-start;
+}
+
 .editButton {
   font-family: Poppins, sans-serif;
   font-weight: 500;
@@ -298,14 +239,38 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 8px 16px;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin: 0 24px 24px;
-  align-self: flex-start;
 
   &:hover {
     background: linear-gradient(
       135deg,
       darken($primary-color, 10%),
       $primary-color
+    );
+    transform: translateY(-2px);
+  }
+}
+
+.restoreButton {
+  font-family: Poppins, sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: white;
+  background: linear-gradient(
+    135deg,
+    $restore-color,
+    lighten($restore-color, 10%)
+  );
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: linear-gradient(
+      135deg,
+      darken($restore-color, 10%),
+      $restore-color
     );
     transform: translateY(-2px);
   }
@@ -345,7 +310,8 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 3px 10px;
   }
 
-  .editButton {
+  .editButton,
+  .restoreButton {
     font-size: 13px;
     padding: 6px 12px;
   }
@@ -354,9 +320,11 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     font-size: 22px;
   }
 
-  .sortButton {
-    font-size: 13px;
-    padding: 5px 10px;
+  .sortSection {
+    select {
+      font-size: 13px;
+      padding: 5px 10px;
+    }
   }
 }
 
@@ -364,6 +332,7 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   .mainContent {
     margin-left: 0;
   }
+
   .container {
     width: 95%;
     gap: 16px;
@@ -418,9 +387,11 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     line-height: 20px;
   }
 
-  .sortButton {
-    font-size: 12px;
-    padding: 4px 8px;
+  .sortSection {
+    select {
+      font-size: 12px;
+      padding: 4px 8px;
+    }
   }
 }
 
@@ -467,7 +438,8 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 2px 8px;
   }
 
-  .editButton {
+  .editButton,
+  .restoreButton {
     font-size: 12px;
     padding: 4px 8px;
   }
@@ -476,8 +448,10 @@ $shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     font-size: 20px;
   }
 
-  .sortButton {
-    font-size: 11px;
-    padding: 3px 6px;
+  .sortSection {
+    select {
+      font-size: 11px;
+      padding: 3px 6px;
+    }
   }
 }
