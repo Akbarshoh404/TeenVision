@@ -38,19 +38,19 @@ const DashboardAdminNewPrograms = () => {
 
       const [majorsResponse, programsResponse, tutorialsResponse] =
         await Promise.all([
-          fetch("http://16.16.211.35:8000/api/v1/majors/", {
+          fetch("https://b289d2ea-54ff-4085-8113-53fa6fd9c036-00-1l5nlstizz77u.spock.replit.dev/api/v1/majors/", {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",
             },
           }),
-          fetch("http://16.16.211.35:8000/api/v1/programs/", {
+          fetch("https://b289d2ea-54ff-4085-8113-53fa6fd9c036-00-1l5nlstizz77u.spock.replit.dev/api/v1/programs/", {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",
             },
           }),
-          fetch("http://16.16.211.35:8000/api/v1/programs/tutorials/", {
+          fetch("https://b289d2ea-54ff-4085-8113-53fa6fd9c036-00-1l5nlstizz77u.spock.replit.dev/api/v1/programs/tutorials/", {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",
@@ -125,7 +125,7 @@ const DashboardAdminNewPrograms = () => {
         formData.append("status", "off");
 
         const response = await fetch(
-          `http://16.16.211.35:8000/api/v1/programs/${item.slug}/`,
+          `https://b289d2ea-54ff-4085-8113-53fa6fd9c036-00-1l5nlstizz77u.spock.replit.dev/api/v1/programs/${item.slug}/`,
           {
             method: "PATCH",
             headers: {

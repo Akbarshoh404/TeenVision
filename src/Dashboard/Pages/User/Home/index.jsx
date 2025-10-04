@@ -29,7 +29,7 @@ const DashboardHome = () => {
     const fetchPrograms = async () => {
       try {
         const response = await fetch(
-          "http://16.16.211.35:8000/api/v1/programs/"
+          "https://b289d2ea-54ff-4085-8113-53fa6fd9c036-00-1l5nlstizz77u.spock.replit.dev/api/v1/programs/"
         );
         const data = await response.json();
         const programs = (data.results || []).filter(
@@ -62,7 +62,7 @@ const DashboardHome = () => {
 
     const fetchMajors = async () => {
       try {
-        const response = await fetch("http://16.16.211.35:8000/api/v1/majors/");
+        const response = await fetch("https://b289d2ea-54ff-4085-8113-53fa6fd9c036-00-1l5nlstizz77u.spock.replit.dev/api/v1/majors/");
         const data = await response.json();
         const majorMap = {};
         data.results.forEach((major) => {
@@ -153,7 +153,7 @@ const DashboardHome = () => {
       if (!token) throw new Error("No access token found");
 
       await axios.post(
-        `http://16.16.211.35:8000/api/v1/programs/${slug}/like/`,
+        `https://b289d2ea-54ff-4085-8113-53fa6fd9c036-00-1l5nlstizz77u.spock.replit.dev/api/v1/programs/${slug}/like/`,
         {},
         {
           headers: {

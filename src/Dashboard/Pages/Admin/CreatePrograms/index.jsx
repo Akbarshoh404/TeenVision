@@ -43,7 +43,7 @@ const DashboardAdminCreatePrograms = () => {
           setTimeout(() => navigate("/login"), 3000);
           return;
         }
-        const response = await fetch("http://16.16.211.35:8000/api/v1/majors/", {
+        const response = await fetch("https://b289d2ea-54ff-4085-8113-53fa6fd9c036-00-1l5nlstizz77u.spock.replit.dev/api/v1/majors/", {
           headers: {
             Authorization: `Bearer ${token}`,
             Accept: "application/json",
@@ -208,7 +208,7 @@ const DashboardAdminCreatePrograms = () => {
         console.log(`FormData ${key}:`, value);
       }
 
-      const response = await fetch("http://16.16.211.35:8000/api/v1/programs/", {
+      const response = await fetch("https://b289d2ea-54ff-4085-8113-53fa6fd9c036-00-1l5nlstizz77u.spock.replit.dev/api/v1/programs/", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
