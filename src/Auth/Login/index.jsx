@@ -16,19 +16,24 @@ const Login = () => {
     setError("");
 
     try {
-      // Make API request to the correct login endpoint
+      // Use the URL you confirmed as working
       const response = await axios.post(
         "http://16.16.211.35:8000/api/v1/api/v1/auth/login/",
         { email, password },
         {
           headers: {
-            "Content-Type": "application/x-www-form-urlencoded", // Updated to match schema
+            "Content-Type": "application/x-www-form-urlencoded",
           },
         }
       );
 
-      // Log user information to the console
-      console.log("User Information:", response.data);
+      // Log full response to debug
+      console.log("Login Response:", response.data);
+
+      // Check if response contains expected data (user, access, refresh tokens)
+      if (!response.data.access || !response.data.refresh || !response.data.user) {
+        throw new Error("Invalid response format: Missing tokens or user data");
+      }
 
       // Save user data and tokens to localStorage
       localStorage.setItem("user", JSON.stringify(response.data.user));
@@ -40,20 +45,18 @@ const Login = () => {
       // Attempt to fetch admin status
       try {
         const adminResponse = await axios.get(
-          "http://16.16.211.35:8000/api/v1/admins/", // Adjust the URL if needed
+          "http://16.16.211.35:8000/api/v1/admins/",
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+              Authorization: `Bearer ${response.data.access}`,
             },
           }
         );
 
         console.log("Admin Response:", adminResponse.data);
 
-        // If the admin endpoint returns successfully, navigate to the admin page
         navigate("/dashboard/admin/new-programs");
       } catch (adminErr) {
-        // If the admin endpoint fails, it's likely not an admin user.
         console.warn(
           "Not an admin user:",
           adminErr.response?.data || adminErr.message
@@ -62,18 +65,20 @@ const Login = () => {
         // Fetch all programs for non-admin users
         await fetchAllPrograms();
 
-        // Navigate to the regular dashboard
         navigate("/dashboard/home");
       }
     } catch (err) {
+      // Enhanced error handling
       if (err.response) {
-        setError(err.response.data.detail || "Invalid email or password");
-      } else if (err.request) {
         setError(
-          "Unable to connect to the server. Please check if the backend is running."
+          err.response.data.detail ||
+            err.response.data.message ||
+            "Invalid email or password"
         );
+      } else if (err.request) {
+        setError("Unable to connect to the server. Please check if the backend is running.");
       } else {
-        setError("An unexpected error occurred.");
+        setError(err.message || "An unexpected error occurred.");
       }
       console.error("Login error:", err.response?.data || err.message);
     } finally {
@@ -92,10 +97,8 @@ const Login = () => {
         }
       );
 
-      // Log all programs to the console
       console.log("All Programs:", response.data);
 
-      // Save programs data to localStorage
       localStorage.setItem("programs", JSON.stringify(response.data.results));
       console.log(
         "Programs data saved to localStorage:",
