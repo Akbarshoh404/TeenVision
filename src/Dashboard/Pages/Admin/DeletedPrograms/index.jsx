@@ -39,19 +39,19 @@ const DashboardAdminDeletedPrograms = () => {
 
       const [majorsResponse, programsResponse, tutorialsResponse] =
         await Promise.all([
-          fetch("https://b289d2ea-54ff-4085-8113-53fa6fd9c036-00-1l5nlstizz77u.spock.replit.dev/api/v1/majors/", {
+          fetch("https://teenvision-1.onrender.com/api/v1majors/", {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",
             },
           }),
-          fetch("https://b289d2ea-54ff-4085-8113-53fa6fd9c036-00-1l5nlstizz77u.spock.replit.dev/api/v1/programs/", {
+          fetch("https://teenvision-1.onrender.com/api/v1programs/", {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",
             },
           }),
-          fetch("https://b289d2ea-54ff-4085-8113-53fa6fd9c036-00-1l5nlstizz77u.spock.replit.dev/api/v1/programs/tutorials/", {
+          fetch("https://teenvision-1.onrender.com/api/v1programs/tutorials/", {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",
@@ -128,7 +128,7 @@ const DashboardAdminDeletedPrograms = () => {
         formData.append("status", "on");
 
         const response = await fetch(
-          `https://b289d2ea-54ff-4085-8113-53fa6fd9c036-00-1l5nlstizz77u.spock.replit.dev/api/v1/programs/${item.slug}/`,
+          `https://teenvision-1.onrender.com/api/v1programs/${item.slug}/`,
           {
             method: "PATCH",
             headers: {

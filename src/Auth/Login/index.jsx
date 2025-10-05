@@ -18,7 +18,7 @@ const Login = () => {
     try {
       // Use the URL you confirmed as working
       const response = await axios.post(
-        "https://b289d2ea-54ff-4085-8113-53fa6fd9c036-00-1l5nlstizz77u.spock.replit.dev/api/v1/auth/login/",
+        "https://teenvision-1.onrender.com/api/v1/auth/login/",
         { email, password },
         {
           headers: {
@@ -45,7 +45,7 @@ const Login = () => {
       // Attempt to fetch admin status
       try {
         const adminResponse = await axios.get(
-          "https://b289d2ea-54ff-4085-8113-53fa6fd9c036-00-1l5nlstizz77u.spock.replit.dev/api/v1/admins/",
+          "https://teenvision-1.onrender.com/api/v1/api/v1/admins/",
           {
             headers: {
               Authorization: `Bearer ${response.data.access}`,
@@ -89,7 +89,7 @@ const Login = () => {
   const fetchAllPrograms = async () => {
     try {
       const response = await axios.get(
-        "https://b289d2ea-54ff-4085-8113-53fa6fd9c036-00-1l5nlstizz77u.spock.replit.dev/api/v1/programs/",
+        "https://teenvision-1.onrender.com/api/v1programs/",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
