@@ -12,6 +12,7 @@ $primary-bg: #f9f9f9;
   display: flex;
   flex-direction: column;
   background-color: $primary-bg;
+  animation: fadeIn 0.8s ease-out, hideScroll 0.8s forwards;
 }
 
 .mainContent {
@@ -23,6 +24,7 @@ $primary-bg: #f9f9f9;
   width: 100%;
   padding-top: 30px;
   padding-bottom: 100px;
+  overflow: auto;
 }
 
 .container {
@@ -87,6 +89,23 @@ $primary-bg: #f9f9f9;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  transition: transform 0.4s ease;
+
+  &:hover {
+    animation: float 2s ease-in-out infinite;
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
 .cardImage {
@@ -100,6 +119,11 @@ $primary-bg: #f9f9f9;
   width: 100%;
   height: auto;
   object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.cardImage:hover img {
+  transform: scale(1.05);
 }
 
 .cardMajors {
@@ -122,6 +146,19 @@ $primary-bg: #f9f9f9;
   text-align: center;
 }
 
+.csMajor {
+  font-weight: 600;
+  border-width: 2px;
+}
+
+.mathMajor {
+  border-style: dashed;
+}
+
+.scienceMajor {
+  border-color: #225d5a;
+}
+
 .cardTitle {
   font-family: Poppins, sans-serif;
   font-weight: 600;
@@ -130,6 +167,22 @@ $primary-bg: #f9f9f9;
   color: #222;
   text-align: left;
   padding: 0 24px;
+  position: relative;
+}
+
+.cardTitle::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 24px;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(to right, #6236f5, #00ddeb);
+  transition: width 0.3s ease;
+}
+
+.cardTitle:hover::after {
+  width: calc(100% - 48px);
 }
 
 .cardInfoRow {
@@ -146,9 +199,13 @@ $primary-bg: #f9f9f9;
   font-family: Poppins, sans-serif;
   font-weight: 400;
   font-size: 14px;
-  line-height: 20px;
-  color: #555;
-  text-align: left;
+  line-height: 18px;
+  color: #297379;
+  background-color: #e6f0f1;
+  border: 1px solid #297379;
+  border-radius: 16px;
+  padding: 4px 12px;
+  text-align: center;
 }
 
 .cardCountry {
@@ -216,6 +273,27 @@ $primary-bg: #f9f9f9;
   }
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes hideScroll {
+  0% {
+    overflow: hidden;
+  }
+  99% {
+    overflow: hidden;
+  }
+  100% {
+    overflow: auto;
+  }
+}
+
 .noPrograms {
   font-family: Poppins, sans-serif;
   font-weight: 600;
@@ -227,7 +305,6 @@ $primary-bg: #f9f9f9;
   margin: 100px 0;
 }
 
-/* Responsive Design */
 @media screen and (max-width: 1500px) {
   .container {
     width: 90%;
@@ -246,10 +323,15 @@ $primary-bg: #f9f9f9;
 
   .cardCountry,
   .cardType,
-  .cardDate,
+  .cardDate {
+    font-size: 12px;
+    line-height: 16px;
+    padding: 3px 10px;
+  }
+
   .separator {
-    font-size: 13px;
-    line-height: 18px;
+    font-size: 12px;
+    line-height: 16px;
   }
 
   .cardDescription {
@@ -326,12 +408,22 @@ $primary-bg: #f9f9f9;
     line-height: 24px;
   }
 
+  .cardTitle::after {
+    left: 16px;
+    width: calc(100% - 32px);
+  }
+
   .cardCountry,
   .cardType,
-  .cardDate,
+  .cardDate {
+    font-size: 12px;
+    line-height: 16px;
+    padding: 3px 10px;
+  }
+
   .separator {
-    font-size: 13px;
-    line-height: 18px;
+    font-size: 12px;
+    line-height: 16px;
   }
 
   .cardDescription {
@@ -387,12 +479,22 @@ $primary-bg: #f9f9f9;
     line-height: 22px;
   }
 
+  .cardTitle::after {
+    left: 12px;
+    width: calc(100% - 24px);
+  }
+
   .cardCountry,
   .cardType,
-  .cardDate,
+  .cardDate {
+    font-size: 11px;
+    line-height: 14px;
+    padding: 2px 8px;
+  }
+
   .separator {
-    font-size: 12px;
-    line-height: 16px;
+    font-size: 11px;
+    line-height: 14px;
   }
 
   .cardDescription {

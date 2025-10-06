@@ -29,7 +29,7 @@ const DashboardHome = () => {
     const fetchPrograms = async () => {
       try {
         const response = await fetch(
-          "https://teenvision-1.onrender.com/api/v1programs/"
+          "https://teenvision-1.onrender.com/api/v1/programs/"
         );
         const data = await response.json();
         const programs = (data.results || []).filter(
@@ -62,7 +62,9 @@ const DashboardHome = () => {
 
     const fetchMajors = async () => {
       try {
-        const response = await fetch("https://teenvision-1.onrender.com/api/v1majors/");
+        const response = await fetch(
+          "https://teenvision-1.onrender.com/api/v1majors/"
+        );
         const data = await response.json();
         const majorMap = {};
         data.results.forEach((major) => {
@@ -153,7 +155,7 @@ const DashboardHome = () => {
       if (!token) throw new Error("No access token found");
 
       await axios.post(
-        `https://teenvision-1.onrender.com/api/v1programs/${slug}/like/`,
+        `https://teenvision-1.onrender.com/api/v1/programs/${slug}/like/`,
         {},
         {
           headers: {
@@ -163,7 +165,6 @@ const DashboardHome = () => {
         }
       );
 
-      // Toggle like status locally
       let updatedLikedPrograms;
       if (likedPrograms.includes(programId)) {
         updatedLikedPrograms = likedPrograms.filter((id) => id !== programId);
@@ -177,7 +178,6 @@ const DashboardHome = () => {
         JSON.stringify(updatedLikedPrograms)
       );
 
-      // Update user object in localStorage
       const user = JSON.parse(localStorage.getItem("user") || "{}");
       if (user.id) {
         localStorage.setItem(
@@ -315,7 +315,13 @@ const DashboardHome = () => {
                   className={styles.card}
                 >
                   <div className={styles.cardImage}>
-                    <img src={program.photo} alt={program.img} />
+                    <img
+                      src={program.photo}
+                      alt={program.title}
+                      onError={(e) => {
+                        e.target.src = img; // Fallback to default image
+                      }}
+                    />
                     <button
                       className={`${styles.likeIcon} ${
                         likedPrograms.includes(program.id) ? styles.liked : ""
@@ -331,7 +337,12 @@ const DashboardHome = () => {
                   </div>
                   <div className={styles.cardMajors}>
                     {program.major.map((majorId, index) => (
-                      <span key={index} className={styles.majorButton}>
+                      <span
+                        key={index}
+                        className={`${styles.majorButton} ${
+                          styles[majors[majorId]?.toLowerCase() + "Major"] || ""
+                        }`}
+                      >
                         {majors[majorId] || majorId}
                       </span>
                     ))}

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useTransition, animated } from "@react-spring/web";
 import DashboardNavbar from "../../../Layoutes/Navbar";
 import DashboardTopBar from "../../../Layoutes/TopBar";
-import styles from "../Home/style.module.scss";
+import styles from "./style.module.scss";
 import programImg from "../../../../Components/images/program sample.png";
 import tutorialImg from "../../../../Components/images/tutorial sample.png";
 import axios from "axios";
@@ -29,7 +29,9 @@ const DashboardReviews = () => {
   useEffect(() => {
     const fetchMajors = async () => {
       try {
-        const response = await fetch("https://teenvision-1.onrender.com/api/v1majors/");
+        const response = await fetch(
+          "https://teenvision-1.onrender.com/api/v1/majors/"
+        );
         const data = await response.json();
         const majorMap = {};
         data.results.forEach((major) => {
@@ -119,7 +121,6 @@ const DashboardReviews = () => {
 
     let filtered = [...programs];
 
-    // Apply filters cumulatively
     if (sortCriteria.start_age || (name === "start_age" && value)) {
       const startAge = name === "start_age" ? value : sortCriteria.start_age;
       if (startAge) {
@@ -192,7 +193,7 @@ const DashboardReviews = () => {
       if (!token) throw new Error("No access token found");
 
       await axios.post(
-        `https://teenvision-1.onrender.com/api/v1programs/${slug}/like/`,
+        `https://teenvision-1.onrender.com/api/v1/programs/${slug}/like/`,
         {},
         {
           headers: {
@@ -222,68 +223,6 @@ const DashboardReviews = () => {
           JSON.stringify({ ...user, liked_programs: updatedLikedPrograms })
         );
       }
-
-      const storedPrograms = JSON.parse(
-        localStorage.getItem("programs") || "[]"
-      );
-      const storedTutorials = JSON.parse(
-        localStorage.getItem("tutorials") || "[]"
-      );
-      const allItems = [...storedPrograms, ...storedTutorials];
-
-      const updatedFiltered = allItems
-        .filter((item) => updatedLikedPrograms.includes(item.id))
-        .map((item) => ({
-          ...item,
-          photo:
-            item.photo || (item.type === "tutorial" ? tutorialImg : programImg),
-          desc: item.desc || "No description available",
-          date: item.created_at,
-          type: item.type || "Program",
-          major: item.major || [],
-          gender:
-            item.gender === "any"
-              ? "All"
-              : item.gender
-              ? item.gender.charAt(0).toUpperCase() + item.gender.slice(1)
-              : "Unknown",
-          format: item.format
-            ? item.format.charAt(0).toUpperCase() + item.format.slice(1)
-            : "Unknown",
-        }));
-
-      let filtered = [...updatedFiltered];
-      if (sortCriteria.start_age) {
-        filtered = filtered.filter(
-          (p) => !p.start_age || p.start_age >= parseInt(sortCriteria.start_age)
-        );
-      }
-      if (sortCriteria.end_age) {
-        filtered = filtered.filter(
-          (p) => !p.end_age || p.end_age <= parseInt(sortCriteria.end_age)
-        );
-      }
-      if (sortCriteria.gender) {
-        filtered = filtered.filter(
-          (p) => p.gender === sortCriteria.gender || p.gender === "All"
-        );
-      }
-      if (sortCriteria.country) {
-        filtered = filtered.filter((p) => p.country === sortCriteria.country);
-      }
-      if (sortCriteria.major) {
-        filtered = filtered.filter((p) =>
-          p.major.includes(parseInt(sortCriteria.major))
-        );
-      }
-      if (sortCriteria.format) {
-        filtered = filtered.filter((p) => p.format === sortCriteria.format);
-      }
-      if (sortCriteria.type) {
-        filtered = filtered.filter((p) => p.type === sortCriteria.type);
-      }
-
-      setFilteredPrograms(filtered);
     } catch (error) {
       console.error("Error liking/unliking program:", error);
       if (error.response?.status === 401) {
@@ -334,7 +273,9 @@ const DashboardReviews = () => {
       <main className={styles.mainContent}>
         <section className={styles.section}>
           <div className={styles.container}>
-            <h2 className={styles.cardTitle}>Liked Programs and Tutorials</h2>
+            <h2 className={styles.sectionTitle}>
+              Liked Programs and Tutorials
+            </h2>
             {likedPrograms.length > 0 && (
               <div className={styles.sortSection}>
                 <select
@@ -432,7 +373,16 @@ const DashboardReviews = () => {
                     className={styles.card}
                   >
                     <div className={styles.cardImage}>
-                      <img src={program.photo} alt={program.title} />
+                      <img
+                        src={program.photo}
+                        alt={program.title}
+                        onError={(e) => {
+                          e.target.src =
+                            program.type === "tutorial"
+                              ? tutorialImg
+                              : programImg;
+                        }}
+                      />
                       <button
                         className={`${styles.likeIcon} ${
                           likedPrograms.includes(program.id) ? styles.liked : ""
@@ -449,7 +399,14 @@ const DashboardReviews = () => {
                     <div className={styles.cardMajors}>
                       {program.major.length > 0 ? (
                         program.major.map((majorId, index) => (
-                          <span key={index} className={styles.majorButton}>
+                          <span
+                            key={index}
+                            className={`${styles.majorButton} ${
+                              styles[
+                                majors[majorId]?.toLowerCase() + "Major"
+                              ] || ""
+                            }`}
+                          >
                             {majors[majorId] || majorId}
                           </span>
                         ))
