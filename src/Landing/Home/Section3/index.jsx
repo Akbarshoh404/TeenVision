@@ -144,16 +144,19 @@ const HomeSection3 = () => {
               </div>
               <div className={styles.cardMajors}>
                 {program.major.map((major, index) => (
-                  <span key={index} className={styles.majorButton}>
+                  <span
+                    key={index}
+                    className={`${styles.majorButton} ${
+                      styles[major.toLowerCase() + "Major"]
+                    }`}
+                  >
                     {major}
                   </span>
                 ))}
               </div>
               <h3 className={styles.cardTitle}>{program.title}</h3>
               <div className={styles.cardInfoRow}>
-                <span className={styles.cardCountry}>
-                  {program.country}
-                </span>
+                <span className={styles.cardCountry}>{program.country}</span>
                 <span className={styles.separator}>|</span>
                 <span className={styles.cardType}>{program.type}</span>
                 <span className={styles.separator}>|</span>

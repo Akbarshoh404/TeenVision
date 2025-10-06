@@ -100,7 +100,7 @@ const HomeSection2 = () => {
   useEffect(() => {
     const updateCardsPerPage = () => {
       setCardsPerPage(window.innerWidth <= 800 ? 1 : 3);
-      setCurrentIndex(0); // Reset index on resize to avoid invalid scroll
+      setCurrentIndex(0);
     };
 
     window.addEventListener("resize", updateCardsPerPage);
@@ -114,7 +114,7 @@ const HomeSection2 = () => {
     (index) => {
       if (carouselRef.current) {
         const container = carouselRef.current;
-        const cardWidth = container.offsetWidth / cardsPerPage; // No partial card offset
+        const cardWidth = container.offsetWidth / cardsPerPage;
         container.scrollTo({
           left: cardWidth * index,
           behavior: "smooth",
@@ -126,7 +126,7 @@ const HomeSection2 = () => {
   );
 
   useEffect(() => {
-    scrollToIndex(0); // Initialize scroll position
+    scrollToIndex(0);
   }, [scrollToIndex, cardsPerPage]);
 
   const handleNext = () => {

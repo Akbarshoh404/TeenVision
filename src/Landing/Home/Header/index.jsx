@@ -1,7 +1,10 @@
 import React from "react";
 import styles from "./style.module.scss";
 
+import { useNavigate } from "react-router-dom";
+
 const Home_Header = () => {
+  const navigate = useNavigate();
   const floatingComments = [
     {
       author: "John Ripkey",
@@ -49,7 +52,7 @@ const Home_Header = () => {
             </p>
           </div>
 
-          <button className={styles.seeMore}>See more</button>
+          <button className={styles.seeMore} onClick={()=> {navigate("/login")}}>See more</button>
 
           <div className={styles.numbers}>
             <div className={styles.centerCard}>

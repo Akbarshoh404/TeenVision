@@ -25,7 +25,7 @@ const Register = () => {
 
       // Make API request to register endpoint
       const response = await axios.post(
-        "https://teenvision-1.onrender.com/api/v1/api/v1/auth/register/",
+        "https://teenvision-1.onrender.com/api/v1/auth/register/",
         formData,
         {
           headers: {
