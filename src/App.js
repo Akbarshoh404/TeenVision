@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import "./global.scss"
 
 // Landing
 import LandingHome from "./Landing/Home";
