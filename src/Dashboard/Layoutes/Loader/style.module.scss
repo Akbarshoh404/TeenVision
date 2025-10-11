@@ -1,0 +1,145 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100..900&display=swap");
+
+$primary-bg: #f9f9f9;
+$text-color: #333333;
+$accent-color: #297379;
+$gradient-start: #6236f5;
+$gradient-end: #00ddeb;
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: $primary-bg;
+  font-family: "Poppins", sans-serif;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.loader {
+  width: clamp(40px, 6vw, 60px);
+  height: clamp(40px, 6vw, 60px);
+  border: clamp(4px, 0.5vw, 6px) solid $accent-color;
+  border-top: clamp(4px, 0.5vw, 6px) solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite, pulse 1.5s ease-in-out infinite;
+  position: relative;
+  background: linear-gradient(45deg, $gradient-start, $gradient-end);
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - clamp(4px, 0.5vw, 6px)),
+    #fff calc(100% - clamp(3px, 0.4vw, 5px))
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - clamp(4px, 0.5vw, 6px)),
+    #fff calc(100% - clamp(3px, 0.4vw, 5px))
+  );
+}
+
+.loader::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(6px, 1vw, 10px);
+  height: clamp(6px, 1vw, 10px);
+  background-color: $accent-color;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.loadingText {
+  margin-top: clamp(15px, 2vw, 20px);
+  font-size: clamp(16px, 2vw, 20px);
+  font-weight: 500;
+  color: $text-color;
+  letter-spacing: 0.5px;
+  animation: textPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes textPulse {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 1024px) {
+  .loader {
+    width: clamp(35px, 5vw, 50px);
+    height: clamp(35px, 5vw, 50px);
+    border-width: clamp(3px, 0.4vw, 5px);
+  }
+  .loader::before {
+    width: clamp(5px, 0.8vw, 8px);
+    height: clamp(5px, 0.8vw, 8px);
+  }
+  .loadingText {
+    font-size: clamp(14px, 1.8vw, 18px);
+  }
+}
+
+@media (max-width: 600px) {
+  .loader {
+    width: clamp(30px, 4vw, 40px);
+    height: clamp(30px, 4vw, 40px);
+    border-width: clamp(2px, 0.3vw, 4px);
+  }
+  .loader::before {
+    width: clamp(4px, 0.6vw, 6px);
+    height: clamp(4px, 0.6vw, 6px);
+  }
+  .loadingText {
+    font-size: clamp(12px, 1.6vw, 16px);
+  }
+}
+
+@media (max-width: 360px) {
+  .loader {
+    width: clamp(25px, 3.5vw, 35px);
+    height: clamp(25px, 3.5vw, 35px);
+    border-width: clamp(2px, 0.3vw, 3px);
+  }
+  .loader::before {
+    width: clamp(3px, 0.5vw, 5px);
+    height: clamp(3px, 0.5vw, 5px);
+  }
+  .loadingText {
+    font-size: clamp(11px, 1.5vw, 14px);
+  }
+}

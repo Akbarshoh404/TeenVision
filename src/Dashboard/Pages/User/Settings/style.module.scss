@@ -1,8 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100..900&display=swap");
 
-$background-color: #ffffff;
-$text-color: #333333;
-$card-bg: #ffffff;
+$primary-bg: #f9f9f9;
 $input-bg: #ffffff;
 $input-border: #cccccc;
 $input-text: #333333;
@@ -14,10 +12,10 @@ $cancel-text: #000000;
 $cancel-hover: #e0e0e0;
 $disabled-bg: #e9ecef;
 $label-text: #232360;
-$upload-text: #666666;
-$border-color: #cccccc;
-$border-radius: 8px;
-$upload-icon-color: #232360;
+$border-color: #297379;
+$border-radius: 12px;
+$gradient-start: #6236f5;
+$gradient-end: #00ddeb;
 
 * {
   margin: 0;
@@ -28,78 +26,106 @@ $upload-icon-color: #232360;
 .dashboard {
   display: flex;
   flex-direction: column;
-  background-color: $background-color;
+  background-color: $primary-bg;
   font-family: "Poppins", sans-serif;
-  color: $text-color;
+  color: $input-text;
   min-height: 100vh;
+  animation: fadeIn 0.8s ease-out, hideScroll 0.8s forwards;
 }
 
 .mainContent {
-  margin-left: 350px;
+  margin-left: clamp(200px, 20vw, 250px);
   transition: margin-left 0.3s ease-in-out;
 }
 
 .headerImage {
   width: 100%;
-  height: 250px;
+  height: clamp(150px, 15vw, 250px);
   display: block;
   object-fit: cover;
 }
 
 .section {
   width: 100%;
-  background-color: $card-bg;
-  padding: 30px;
-  margin-top: 20px;
-  position: relative;
+  padding: clamp(20px, 3vw, 30px);
+}
+
+.container {
+  width: clamp(80%, 85%, 90%);
+  margin: 0 auto;
+  padding: 0 clamp(12px, 2vw, 24px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(24px, 4vw, 48px);
 }
 
 .settingsSection {
-  margin-bottom: 30px;
+  margin-bottom: clamp(20px, 3vw, 30px);
   position: relative;
+  width: 100%;
 }
 
 .profileHeader {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: clamp(10px, 1.5vw, 15px);
+  margin-bottom: clamp(15px, 2vw, 20px);
 }
 
-.profileImage {
-  width: 100px;
-  height: 100px;
+.avatar {
+  width: clamp(60px, 8vw, 100px);
+  height: clamp(60px, 8vw, 100px);
   border-radius: 50%;
   object-fit: cover;
+  border: 2px solid $border-color;
 }
 
 .profileName {
-  font-weight: bold;
-  font-size: 1.2rem;
-  color: $label-text;
+  font-family: Poppins, sans-serif;
+  font-weight: 600;
+  font-size: clamp(16px, 2vw, 20px);
+  line-height: clamp(20px, 2.5vw, 26px);
+  color: #222;
+  position: relative;
+}
+
+.profileName::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(to right, $gradient-start, $gradient-end);
+  transition: width 0.3s ease;
+}
+
+.profileName:hover::after {
+  width: 100%;
 }
 
 .profileEmail {
-  font-size: 0.9rem;
-  color: $upload-text;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+  font-family: Poppins, sans-serif;
+  font-weight: 400;
+  font-size: clamp(14px, 1.6vw, 16px);
+  line-height: clamp(18px, 2.2vw, 24px);
+  color: #777;
 }
 
 .settingsForm {
   display: flex;
   flex-direction: column;
-  width: 70%;
+  width: clamp(60%, 70%, 80%);
 }
 
 .formGroup {
-  margin-bottom: 20px;
+  margin-bottom: clamp(15px, 2vw, 20px);
 }
 
 .nameFields {
   display: flex;
-  gap: 15px;
+  gap: clamp(10px, 1.5vw, 15px);
 }
 
 .formField {
@@ -107,24 +133,28 @@ $upload-icon-color: #232360;
 }
 
 label {
+  font-family: Poppins, sans-serif;
   font-weight: 600;
-  margin-bottom: 10px;
+  font-size: clamp(14px, 1.6vw, 16px);
+  margin-bottom: clamp(8px, 1vw, 10px);
   color: $label-text;
 }
 
 .input {
-  padding: 15px;
+  padding: clamp(10px, 1.5vw, 15px);
   border: 1px solid $input-border;
   border-radius: $border-radius;
   width: 100%;
   background-color: $input-bg;
   color: $input-text;
-  font-size: 1rem;
-  transition: border-color 0.3s;
+  font-family: Poppins, sans-serif;
+  font-size: clamp(13px, 1.6vw, 16px);
+  transition: border-color 0.3s, box-shadow 0.3s;
 
   &:focus {
-    border-color: $button-bg;
+    border-color: $border-color;
     outline: none;
+    box-shadow: 0 0 0 3px rgba(41, 115, 121, 0.2);
   }
 
   &[disabled] {
@@ -133,58 +163,49 @@ label {
   }
 }
 
-.passwordWrapper {
-  position: relative;
+.checkboxGroup {
   display: flex;
   align-items: center;
+  gap: clamp(8px, 1vw, 10px);
+  margin-bottom: clamp(15px, 2vw, 20px);
 }
 
-.passwordToggle {
-  position: absolute;
-  right: 10px;
-  cursor: pointer;
+.checkboxLabel {
+  font-family: Poppins, sans-serif;
+  font-size: clamp(13px, 1.6vw, 16px);
   color: $label-text;
-}
-
-.uploadArea {
-  padding: 25px;
-  border: 2px dashed $border-color;
-  border-radius: $border-radius;
-  text-align: center;
-  background-color: $input-bg;
-  color: $input-text;
-  cursor: pointer;
-  height: 150px;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
   align-items: center;
-  gap: 10px;
+  gap: clamp(8px, 1vw, 10px);
 }
 
-.uploadInput {
-  display: none;
+input[type="checkbox"] {
+  transform: scale(clamp(1.2, 1.4, 1.5));
 }
 
-.uploadIcon {
-  font-size: 2.5rem;
-  color: $upload-icon-color;
+.buttonGroup {
+  position: absolute;
+  top: clamp(20px, 2vw, 30px);
+  right: clamp(20px, 2vw, 30px);
+  display: flex;
+  gap: clamp(8px, 1vw, 10px);
 }
 
-.uploadText {
-  font-size: 1rem;
-  color: $upload-text;
-  white-space: normal;
-}
-
-.saveButton {
-  padding: 12px 25px;
-  background-color: $button-bg;
-  color: $button-text;
-  border: none;
+.saveButton,
+.cancelButton {
+  padding: clamp(10px, 1.5vw, 12px) clamp(20px, 2.5vw, 25px);
   border-radius: $border-radius;
   cursor: pointer;
   transition: background-color 0.3s;
+  font-family: Poppins, sans-serif;
+  font-size: clamp(13px, 1.6vw, 16px);
+}
+
+.saveButton {
+  background-color: $button-bg;
+  color: $button-text;
+  border: none;
 
   &:hover {
     background-color: $button-hover;
@@ -192,85 +213,125 @@ label {
 }
 
 .cancelButton {
-  padding: 12px 25px;
   background-color: $cancel-bg;
   color: $cancel-text;
   border: 1px solid $cancel-text;
-  border-radius: $border-radius;
-  cursor: pointer;
-  transition: background-color 0.3s;
 
   &:hover {
     background-color: $cancel-hover;
   }
 }
 
-.checkboxGroup {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-.checkboxLabel {
-  font-size: 1rem;
-  color: $label-text;
-  white-space: normal;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
+@keyframes hideScroll {
+  0% {
+    overflow: hidden;
+  }
+  99% {
+    overflow: hidden;
+  }
+  100% {
+    overflow: auto;
+  }
 }
 
-input[type="checkbox"] {
-  transform: scale(1.5);
+@keyframes toastFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.buttonGroup {
-  position: absolute;
-  top: 30px;
-  right: 30px;
-  display: flex;
-  gap: 10px;
-}
-
-/* Responsiveness */
-@media (max-width: 1200px) {
+@media (max-width: 2560px) {
   .mainContent {
-    margin-left: 0px;
+    margin-left: clamp(220px, 18vw, 260px);
+  }
+  .container {
+    width: 88%;
+  }
+  .settingsForm {
+    width: 75%;
+  }
+}
+
+@media (max-width: 1920px) {
+  .mainContent {
+    margin-left: clamp(200px, 16vw, 240px);
+  }
+  .container {
+    width: 90%;
+    padding: 0 18px;
+  }
+  .settingsForm {
+    width: 80%;
+  }
+}
+
+@media (max-width: 1600px) {
+  .container {
+    width: 92%;
+    padding: 0 16px;
   }
   .settingsForm {
     width: 85%;
   }
-  .profileImage {
-    width: 80px;
-    height: 80px;
+}
+
+@media (max-width: 1366px) {
+  .mainContent {
+    margin-left: clamp(180px, 15vw, 220px);
   }
-  .headerImage {
-    height: 120px;
+  .container {
+    width: 94%;
+    padding: 0 14px;
+  }
+  .settingsForm {
+    width: 90%;
+  }
+}
+
+@media (max-width: 1024px) {
+  .mainContent {
+    margin-left: 0;
+    margin-top: 64px;
+  }
+  .container {
+    width: 96%;
+    padding: 0 12px;
+    gap: 32px;
+  }
+  .settingsForm {
+    width: 95%;
   }
 }
 
 @media (max-width: 768px) {
+  .container {
+    width: 100%;
+    padding: 0 10px;
+    gap: 28px;
+  }
   .settingsForm {
     width: 100%;
   }
   .nameFields {
     flex-direction: column;
   }
-  .formField {
-    width: 100%;
-  }
   .profileHeader {
     flex-direction: column;
     text-align: center;
-  }
-  .profileImage {
-    width: 60px;
-    height: 60px;
-  }
-  .headerImage {
-    height: 100px;
   }
   .buttonGroup {
     position: static;
@@ -279,36 +340,35 @@ input[type="checkbox"] {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .section {
     padding: 15px;
   }
-  .formGroup {
-    margin-bottom: 15px;
+  .container {
+    padding: 0 8px;
+    gap: 24px;
   }
-  .input {
-    padding: 10px;
-    font-size: 0.9rem;
+  .headerImage {
+    height: clamp(100px, 12vw, 150px);
   }
-  .uploadArea {
-    height: 120px;
-    padding: 15px;
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 6px;
+    gap: 20px;
   }
-  .uploadIcon {
-    font-size: 2rem;
+  .headerImage {
+    height: clamp(80px, 10vw, 120px);
   }
-  .uploadText {
-    font-size: 0.9rem;
+}
+
+@media (max-width: 360px) {
+  .container {
+    padding: 0 4px;
+    gap: 16px;
   }
-  .saveButton,
-  .cancelButton {
-    padding: 10px 20px;
-    font-size: 0.9rem;
-  }
-  .checkboxLabel {
-    font-size: 0.9rem;
-  }
-  input[type="checkbox"] {
-    transform: scale(1.3);
+  .headerImage {
+    height: clamp(70px, 9vw, 100px);
   }
 }

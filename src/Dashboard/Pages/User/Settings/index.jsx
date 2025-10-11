@@ -2,12 +2,15 @@ import React, { useCallback, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import DashboardNavbar from "../../../Layoutes/Navbar";
 import DashboardTopBar from "../../../Layoutes/TopBar";
+import Loading from "../../../Layoutes/Loader/index"; // Adjust path as provided
 import styles from "./style.module.scss";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 
 import bg from "../../../../Components/images/settings.png";
-import profileFallback from "../../../../Components/icons/pofile.png";
+import maleAvatar from "../../../../Components/icons/pofile.png";
+import femaleAvatar from "../../../../Components/icons/pofile.png";
+import defaultAvatar from "../../../../Components/icons/pofile.png";
 
 const DashboardSettings = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -18,7 +21,6 @@ const DashboardSettings = () => {
     age: "",
     gender: "",
     country: "",
-    profileImageUrl: profileFallback,
     notification_status: false,
     loading: false,
     error: null,
@@ -78,7 +80,6 @@ const DashboardSettings = () => {
         age: user.age || "",
         gender: user.gender || "",
         country: user.country || "",
-        profileImageUrl: user.profile_image || profileFallback,
         notification_status: user.notification_status || false,
         loading: false,
       }));
@@ -143,7 +144,7 @@ const DashboardSettings = () => {
       formData.append("notification_status", settings.notification_status);
 
       const response = await axios.patch(
-        "https://teenvision-1.onrender.com/api/v1api/v1/auth/profile/update/",
+        "https://teenvision-1.onrender.com/api/v1/auth/profile/update/",
         formData,
         {
           headers: {
@@ -200,14 +201,24 @@ const DashboardSettings = () => {
       age: user.age || "",
       gender: user.gender || "",
       country: user.country || "",
-      profileImageUrl: user.profile_image || profileFallback,
       notification_status: user.notification_status || false,
       error: null,
       warning: null,
     }));
   };
 
-  if (settings.loading) return <div className={styles.loading}>Loading...</div>;
+  const getAvatar = () => {
+    switch (settings.gender.toLowerCase()) {
+      case "male":
+        return maleAvatar;
+      case "female":
+        return femaleAvatar;
+      default:
+        return defaultAvatar;
+    }
+  };
+
+  if (settings.loading) return <Loading />;
 
   return (
     <div className={styles.dashboard}>
@@ -219,11 +230,13 @@ const DashboardSettings = () => {
             background: "#ffffff",
             color: "#333333",
             border: "1px solid #cccccc",
-            borderRadius: "8px",
+            borderRadius: "12px",
             padding: "10px 15px",
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+            animation: "toastFadeIn 0.3s ease-out",
           },
-          success: { style: { border: "1px solid #000000" } },
-          error: { style: { border: "1px solid #ff4d4f" } },
+          success: { style: { border: "1px solid #297379" } },
+          error: { style: { border: "1px solid #e0245e" } },
         }}
       />
       <DashboardNavbar
@@ -238,11 +251,7 @@ const DashboardSettings = () => {
           <div className={styles.container}>
             <div className={styles.settingsSection}>
               <div className={styles.profileHeader}>
-                <img
-                  src={settings.profileImageUrl}
-                  alt="Profile"
-                  className={styles.profileImage}
-                />
+                <img src={getAvatar()} alt="Avatar" className={styles.avatar} />
                 <div>
                   <div className={styles.profileName}>
                     {settings.firstName} {settings.lastName}
