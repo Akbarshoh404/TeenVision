@@ -38,24 +38,27 @@ const DashboardAdminNewPrograms = () => {
 
       const [majorsResponse, programsResponse, tutorialsResponse] =
         await Promise.all([
-          fetch("https://teenvision-1.onrender.com/api/v1majors/", {
+          fetch("https://teenvision-1.onrender.com/api/v1/majors/", {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",
             },
           }),
-          fetch("https://teenvision-1.onrender.com/api/v1programs/", {
+          fetch("https://teenvision-1.onrender.com/api/v1/programs/", {
             headers: {
               Authorization: `Bearer ${token}`,
               Accept: "application/json",
             },
           }),
-          fetch("https://teenvision-1.onrender.com/api/v1programs/tutorials/", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-            },
-          }),
+          fetch(
+            "https://teenvision-1.onrender.com/api/v1/programs/tutorials/",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+              },
+            }
+          ),
         ]);
 
       if (!majorsResponse.ok || !programsResponse.ok || !tutorialsResponse.ok) {
@@ -125,7 +128,7 @@ const DashboardAdminNewPrograms = () => {
         formData.append("status", "off");
 
         const response = await fetch(
-          `https://teenvision-1.onrender.com/api/v1programs/${item.slug}/`,
+          `https://teenvision-1.onrender.com/api/v1/programs/${item.slug}/`,
           {
             method: "PATCH",
             headers: {

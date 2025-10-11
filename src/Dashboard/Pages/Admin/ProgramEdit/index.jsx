@@ -47,12 +47,15 @@ const DashboardAdminProgramEdit = () => {
         }
 
         // Fetch majors
-        const majorsResponse = await fetch("https://teenvision-1.onrender.com/api/v1majors/", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        });
+        const majorsResponse = await fetch(
+          "https://teenvision-1.onrender.com/api/v1/majors/",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          }
+        );
         if (!majorsResponse.ok) {
           if (majorsResponse.status === 401) {
             setError("Unauthorized. Redirecting to login...");
@@ -65,12 +68,15 @@ const DashboardAdminProgramEdit = () => {
         setMajors(majorsData.results || []);
 
         // Fetch program
-        const response = await fetch(`https://teenvision-1.onrender.com/api/v1programs/${slug}/`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        });
+        const response = await fetch(
+          `https://teenvision-1.onrender.com/api/v1/programs/${slug}/`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          }
+        );
 
         if (!response.ok) {
           const errorText = await response.text();
@@ -82,11 +88,17 @@ const DashboardAdminProgramEdit = () => {
           if (response.status === 404) {
             throw new Error(`Program not found with slug: ${slug}`);
           }
-          throw new Error(`Failed to fetch program: ${response.status} ${errorText}`);
+          throw new Error(
+            `Failed to fetch program: ${response.status} ${errorText}`
+          );
         }
 
         const foundProgram = await response.json();
-        const photos = Array.isArray(foundProgram.photos) ? foundProgram.photos : foundProgram.photo ? [foundProgram.photo] : [];
+        const photos = Array.isArray(foundProgram.photos)
+          ? foundProgram.photos
+          : foundProgram.photo
+          ? [foundProgram.photo]
+          : [];
 
         setProgram(foundProgram);
         setFormData({
@@ -117,10 +129,15 @@ const DashboardAdminProgramEdit = () => {
         localStorage.setItem("programs", JSON.stringify(updatedPrograms));
       } catch (error) {
         setError(error.message);
-        const localPrograms = JSON.parse(localStorage.getItem("programs")) || [];
+        const localPrograms =
+          JSON.parse(localStorage.getItem("programs")) || [];
         const localProgram = localPrograms.find((p) => p.slug === slug);
         if (localProgram) {
-          const photos = Array.isArray(localProgram.photos) ? localProgram.photos : localProgram.photo ? [localProgram.photo] : [];
+          const photos = Array.isArray(localProgram.photos)
+            ? localProgram.photos
+            : localProgram.photo
+            ? [localProgram.photo]
+            : [];
           setProgram(localProgram);
           setFormData({
             title: localProgram.title || "",
@@ -156,25 +173,17 @@ const DashboardAdminProgramEdit = () => {
 
   const handleInputChange = (event) => {
     const { name, value, files } = event.target;
-    if (name === "add_photo" && files.length > 0) {
+    if (name === "add_photo" && files && files.length > 0) {
       const newFiles = Array.from(files);
       setFormData((prev) => ({
         ...prev,
         photos: [...prev.photos, ...newFiles],
       }));
-      const newPreviews = newFiles.map((file) => {
-        const reader = new FileReader();
-        return new Promise((resolve) => {
-          reader.onloadend = () => resolve(reader.result);
-          reader.readAsDataURL(file);
-        });
-      });
-      Promise.all(newPreviews).then((results) => {
-        setPhotoPreviews((prev) => [...prev, ...results]);
-      });
+      const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
+      setPhotoPreviews((prev) => [...prev, ...newPreviews]);
     } else if (name === "major") {
-      const selectedIds = Array.from(event.target.selectedOptions).map((option) =>
-        parseInt(option.value, 10)
+      const selectedIds = Array.from(event.target.selectedOptions).map(
+        (option) => parseInt(option.value, 10)
       );
       setFormData((prev) => ({ ...prev, major: selectedIds }));
     } else {
@@ -211,29 +220,37 @@ const DashboardAdminProgramEdit = () => {
       programData.append("title", formData.title);
       if (formData.slug) programData.append("slug", formData.slug);
       if (formData.desc) programData.append("desc", formData.desc);
-      if (formData.full_info) programData.append("full_info", formData.full_info);
+      if (formData.full_info)
+        programData.append("full_info", formData.full_info);
       if (formData.deadline) programData.append("deadline", formData.deadline);
       programData.append("link", formData.link);
       if (formData.country) programData.append("country", formData.country);
       if (formData.format) programData.append("format", formData.format);
       programData.append("type", formData.type);
       if (formData.funding) programData.append("funding", formData.funding);
-      if (formData.start_age) programData.append("start_age", parseInt(formData.start_age, 10));
-      if (formData.end_age) programData.append("end_age", parseInt(formData.end_age, 10));
+      if (formData.start_age)
+        programData.append("start_age", parseInt(formData.start_age, 10));
+      if (formData.end_age)
+        programData.append("end_age", parseInt(formData.end_age, 10));
       if (formData.gender) programData.append("gender", formData.gender);
       if (formData.status) programData.append("status", formData.status);
       formData.major.forEach((id) => programData.append("major", id));
       formData.photos.forEach((photo, index) => {
-        if (photo && typeof photo !== "string") {
+        if (typeof photo === "string") {
+          // Skip existing URLs; handle new files only
+        } else if (photo instanceof File) {
           programData.append(`photos[${index}]`, photo);
         }
       });
 
-      const response = await fetch(`https://teenvision-1.onrender.com/api/v1programs/${slug}/`, {
-        method: "PUT",
-        headers: { Authorization: `Bearer ${token}` },
-        body: programData,
-      });
+      const response = await fetch(
+        `https://teenvision-1.onrender.com/api/v1/programs/${slug}/`,
+        {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${token}` },
+          body: programData,
+        }
+      );
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -242,12 +259,16 @@ const DashboardAdminProgramEdit = () => {
           setTimeout(() => navigate("/login"), 3000);
           return;
         }
-        throw new Error(`Failed to update program: ${response.status} ${errorText}`);
+        throw new Error(
+          `Failed to update program: ${response.status} ${errorText}`
+        );
       }
 
       const updatedProgram = await response.json();
       const programs = JSON.parse(localStorage.getItem("programs")) || [];
-      const updatedPrograms = programs.map((p) => (p.slug === slug ? updatedProgram : p));
+      const updatedPrograms = programs.map((p) =>
+        p.slug === slug ? updatedProgram : p
+      );
       localStorage.setItem("programs", JSON.stringify(updatedPrograms));
       navigate("/dashboard/admin/new-programs");
     } catch (err) {
@@ -258,9 +279,15 @@ const DashboardAdminProgramEdit = () => {
   if (loading) {
     return (
       <div className={styles.dashboard}>
-        <DashboardAdminNavbar isNavOpen={isNavOpen} toggleNav={toggleNav} closeNav={closeNav} />
+        <DashboardAdminNavbar
+          isNavOpen={isNavOpen}
+          toggleNav={toggleNav}
+          closeNav={closeNav}
+        />
         <DashboardTopBar isNavOpen={isNavOpen} toggleNav={toggleNav} />
-        <main className={`${styles.mainContent} ${isNavOpen ? styles.navOpen : ""}`}>
+        <main
+          className={`${styles.mainContent} ${isNavOpen ? styles.navOpen : ""}`}
+        >
           <section className={styles.section}>
             <div className={styles.container}>
               <h2 className={styles.sectionTitle}>Loading...</h2>
@@ -274,9 +301,15 @@ const DashboardAdminProgramEdit = () => {
   if (error && !program) {
     return (
       <div className={styles.dashboard}>
-        <DashboardAdminNavbar isNavOpen={isNavOpen} toggleNav={toggleNav} closeNav={closeNav} />
+        <DashboardAdminNavbar
+          isNavOpen={isNavOpen}
+          toggleNav={toggleNav}
+          closeNav={closeNav}
+        />
         <DashboardTopBar isNavOpen={isNavOpen} toggleNav={toggleNav} />
-        <main className={`${styles.mainContent} ${isNavOpen ? styles.navOpen : ""}`}>
+        <main
+          className={`${styles.mainContent} ${isNavOpen ? styles.navOpen : ""}`}
+        >
           <section className={styles.section}>
             <div className={styles.container}>
               <h2 className={styles.sectionTitle}>Program Not Found</h2>
@@ -296,9 +329,15 @@ const DashboardAdminProgramEdit = () => {
 
   return (
     <div className={styles.dashboard}>
-      <DashboardAdminNavbar isNavOpen={isNavOpen} toggleNav={toggleNav} closeNav={closeNav} />
+      <DashboardAdminNavbar
+        isNavOpen={isNavOpen}
+        toggleNav={toggleNav}
+        closeNav={closeNav}
+      />
       <DashboardTopBar isNavOpen={isNavOpen} toggleNav={toggleNav} />
-      <main className={`${styles.mainContent} ${isNavOpen ? styles.navOpen : ""}`}>
+      <main
+        className={`${styles.mainContent} ${isNavOpen ? styles.navOpen : ""}`}
+      >
         <section className={styles.section}>
           <div className={styles.container}>
             <h2 className={styles.sectionTitle}>Edit Program</h2>
@@ -470,44 +509,46 @@ const DashboardAdminProgramEdit = () => {
                   <label>Photos</label>
                   <div className={styles.carouselContainer}>
                     <div className={styles.photoCarousel}>
-                      {photoPreviews.length > 0 ? (
-                        photoPreviews.map((preview, index) => (
-                          <div key={index} className={styles.photoCard}>
-                            <img
-                              src={preview || img}
-                              alt={`Photo ${index + 1}`}
-                              className={styles.photoImage}
-                              onError={(e) => (e.target.src = img)}
-                            />
-                            <button
-                              type="button"
-                              className={styles.removeButton}
-                              onClick={() => removePhoto(index)}
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="16"
-                                height="16"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="white"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
+                      {photoPreviews.length > 0
+                        ? photoPreviews.map((preview, index) => (
+                            <div key={index} className={styles.photoCard}>
+                              <img
+                                src={preview || img}
+                                alt={`Photo ${index + 1}`}
+                                className={styles.photoImage}
+                                onError={(e) => (e.target.src = img)}
+                              />
+                              <button
+                                type="button"
+                                className={styles.removeButton}
+                                onClick={() => removePhoto(index)}
                               >
-                                <path d="M18 6L12 12M6 18L12 12M6 6L12 12 18 18" />
-                              </svg>
-                            </button>
-                          </div>
-                        ))
-                      ) : null}
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="white"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <path d="M18 6L12 12M6 18L12 12M6 6L12 12 18 18" />
+                                </svg>
+                              </button>
+                            </div>
+                          ))
+                        : null}
                       {photoPreviews.length < 10 && (
                         <div
                           className={`${styles.photoCard} ${styles.addPhotoCard}`}
                           onClick={triggerAddPhotoInput}
                         >
                           <div className={styles.emptyPhotoCard}>
-                            <span className={styles.addPhotoText}>Add Photo</span>
+                            <span className={styles.addPhotoText}>
+                              Add Photo
+                            </span>
                           </div>
                         </div>
                       )}

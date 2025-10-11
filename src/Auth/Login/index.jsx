@@ -28,7 +28,11 @@ const Login = () => {
         }
       );
 
-      if (!response.data.access || !response.data.refresh || !response.data.user) {
+      if (
+        !response.data.access ||
+        !response.data.refresh ||
+        !response.data.user
+      ) {
         throw new Error("Invalid response format: Missing tokens or user data");
       }
 
@@ -41,9 +45,10 @@ const Login = () => {
         autoClose: 3000,
       });
 
+      // Fetch user details to check is_staff
       try {
         const adminResponse = await axios.get(
-          "https://teenvision-1.onrender.com/api/v1/api/v1/admins/",
+          `https://teenvision-1.onrender.com/api/v1/admins/${response.data.user.id}/`,
           {
             headers: {
               Authorization: `Bearer ${response.data.access}`,
@@ -51,16 +56,21 @@ const Login = () => {
           }
         );
 
-        navigate("/dashboard/admin/new-programs");
+        const { is_staff } = adminResponse.data;
+
+        if (is_staff) {
+          navigate("/dashboard/admin/new-programs");
+        } else {
+          await fetchAllPrograms();
+          navigate("/dashboard/home");
+        }
       } catch (adminErr) {
         await fetchAllPrograms();
         navigate("/dashboard/home");
       }
     } catch (err) {
       const errorMessage =
-        err.response?.data?.detail ||
-        err.response?.data?.message ||
-        err.request
+        err.response?.data?.detail || err.response?.data?.message || err.request
           ? "Unable to connect to the server. Please check if the backend is running."
           : err.message || "An unexpected error occurred.";
 
@@ -77,7 +87,7 @@ const Login = () => {
   const fetchAllPrograms = async () => {
     try {
       const response = await axios.get(
-        "https://teenvision-1.onrender.com/api/v1programs/",
+        "https://teenvision-1.onrender.com/api/v1/programs/",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -127,11 +137,7 @@ const Login = () => {
           {error && <p className={styles.error}>{error}</p>}
 
           <button className={styles.button} type="submit" disabled={loading}>
-            {loading ? (
-              <span className={styles.loader}></span>
-            ) : (
-              "Continue"
-            )}
+            {loading ? <span className={styles.loader}></span> : "Continue"}
           </button>
         </form>
 

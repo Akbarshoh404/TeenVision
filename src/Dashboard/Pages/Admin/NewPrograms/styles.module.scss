@@ -19,6 +19,7 @@ $restore-color: #22c55e;
   display: flex;
   flex-direction: column;
   background-color: $primary-bg;
+  font-family: Poppins, sans-serif;
 }
 
 .mainContent {
@@ -38,12 +39,13 @@ $restore-color: #22c55e;
 
 .container {
   width: 85%;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 clamp(16px, 2vw, 24px);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 24px;
+  gap: clamp(16px, 2vw, 24px);
 }
 
 .header {
@@ -56,25 +58,24 @@ $restore-color: #22c55e;
 }
 
 .sectionTitle {
-  font-family: Poppins, sans-serif;
   font-weight: 600;
-  font-size: 24px;
+  font-size: clamp(20px, 2.5vw, 24px);
   color: $text-color;
 }
 
 .noPrograms {
-  font-family: Poppins, sans-serif;
-  font-size: 16px;
+  font-size: clamp(14px, 1.8vw, 16px);
   color: $secondary-color;
   grid-column: 1 / -1;
   text-align: center;
+  padding: 16px;
 }
 
 .error {
-  font-family: Poppins, sans-serif;
-  font-size: 14px;
+  font-size: clamp(12px, 1.5vw, 14px);
   color: $delete-color;
   margin-bottom: 16px;
+  text-align: center;
 }
 
 .sortSection {
@@ -84,17 +85,19 @@ $restore-color: #22c55e;
   margin-bottom: 16px;
 
   select {
-    font-family: Poppins, sans-serif;
-    font-size: 14px;
-    padding: 6px 12px;
+    font-size: clamp(12px, 1.5vw, 14px);
+    padding: 8px 12px;
     border: 1px solid $border-color;
     border-radius: 8px;
     background-color: white;
     color: $text-color;
     cursor: pointer;
+    transition: border-color 0.3s ease;
 
-    &:hover {
+    &:hover,
+    &:focus {
       border-color: $primary-color;
+      outline: none;
     }
   }
 }
@@ -102,9 +105,9 @@ $restore-color: #22c55e;
 .cards {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 50px;
-  padding-bottom: 100px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: clamp(24px, 3vw, 32px);
+  padding-bottom: 60px;
 }
 
 .card {
@@ -123,6 +126,55 @@ $restore-color: #22c55e;
   }
 }
 
+.addCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: $shadow;
+  height: 100%;
+  min-height: 200px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.addButton {
+  font-family: Poppins, sans-serif;
+  font-weight: 600;
+  font-size: clamp(24px, 3vw, 32px);
+  color: white;
+  background: linear-gradient(
+    135deg,
+    $primary-color,
+    lighten($primary-color, 10%)
+  );
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover,
+  &:focus {
+    background: linear-gradient(
+      135deg,
+      darken($primary-color, 10%),
+      $primary-color
+    );
+    transform: scale(1.1);
+    outline: none;
+  }
+}
+
 .cardImage {
   width: 100%;
   border-radius: 20px 20px 0 0;
@@ -134,8 +186,6 @@ $restore-color: #22c55e;
   height: 200px;
   object-fit: cover;
   border-radius: 20px 20px 0 0;
-  flex: 0 0 100%;
-  scroll-snap-align: center;
 }
 
 .cardMajors {
@@ -146,16 +196,14 @@ $restore-color: #22c55e;
 }
 
 .majorButton {
-  font-family: Poppins, sans-serif;
   font-weight: 500;
-  font-size: 12px;
+  font-size: clamp(10px, 1.2vw, 12px);
   line-height: 18px;
   color: $primary-color;
   background-color: lighten($primary-color, 40%);
   border: 1px solid $primary-color;
   border-radius: 16px;
   padding: 4px 12px;
-  text-align: center;
   transition: background-color 0.3s ease;
 
   &:hover {
@@ -164,12 +212,10 @@ $restore-color: #22c55e;
 }
 
 .cardTitle {
-  font-family: Poppins, sans-serif;
   font-weight: 600;
-  font-size: 20px;
+  font-size: clamp(18px, 2vw, 20px);
   line-height: 26px;
   color: $text-color;
-  text-align: left;
   padding: 0 24px;
 }
 
@@ -184,12 +230,10 @@ $restore-color: #22c55e;
 .cardCountry,
 .cardType,
 .cardDate {
-  font-family: Poppins, sans-serif;
   font-weight: 400;
-  font-size: 14px;
+  font-size: clamp(12px, 1.5vw, 14px);
   line-height: 20px;
   color: $secondary-color;
-  text-align: left;
 }
 
 .cardCountry {
@@ -199,20 +243,17 @@ $restore-color: #22c55e;
 }
 
 .separator {
-  font-family: Poppins, sans-serif;
   font-weight: 400;
-  font-size: 14px;
+  font-size: clamp(12px, 1.5vw, 14px);
   line-height: 20px;
   color: $secondary-color;
 }
 
 .cardDescription {
-  font-family: Poppins, sans-serif;
   font-weight: 400;
-  font-size: 16px;
+  font-size: clamp(14px, 1.8vw, 16px);
   line-height: 24px;
   color: #777;
-  text-align: left;
   padding: 0 24px 24px;
   flex-grow: 1;
 }
@@ -224,71 +265,90 @@ $restore-color: #22c55e;
   align-self: flex-start;
 }
 
-.editButton {
+.editButton,
+.deleteButton,
+.restoreButton {
   font-family: Poppins, sans-serif;
   font-weight: 500;
-  font-size: 14px;
+  font-size: clamp(12px, 1.5vw, 14px);
   color: white;
-  background: linear-gradient(
-    135deg,
-    $primary-color,
-    lighten($primary-color, 10%)
-  );
   border: none;
   border-radius: 8px;
   padding: 8px 16px;
   cursor: pointer;
   transition: all 0.3s ease;
+}
 
-  &:hover {
+.editButton {
+  background: linear-gradient(
+    135deg,
+    $primary-color,
+    lighten($primary-color, 10%)
+  );
+
+  &:hover,
+  &:focus {
     background: linear-gradient(
       135deg,
       darken($primary-color, 10%),
       $primary-color
     );
     transform: translateY(-2px);
+    outline: none;
+  }
+}
+
+.deleteButton {
+  background: linear-gradient(
+    135deg,
+    $delete-color,
+    lighten($delete-color, 10%)
+  );
+
+  &:hover,
+  &:focus {
+    background: linear-gradient(
+      135deg,
+      darken($delete-color, 10%),
+      $delete-color
+    );
+    transform: translateY(-2px);
+    outline: none;
   }
 }
 
 .restoreButton {
-  font-family: Poppins, sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  color: white;
   background: linear-gradient(
     135deg,
     $restore-color,
     lighten($restore-color, 10%)
   );
-  border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
 
-  &:hover {
+  &:hover,
+  &:focus {
     background: linear-gradient(
       135deg,
       darken($restore-color, 10%),
       $restore-color
     );
     transform: translateY(-2px);
+    outline: none;
   }
 }
 
 @media screen and (max-width: 1500px) {
   .container {
     width: 90%;
-    padding: 0 20px;
+    padding: 0 clamp(12px, 1.5vw, 20px);
     gap: 20px;
   }
 
   .cards {
-    gap: 20px;
+    gap: clamp(20px, 2.5vw, 24px);
   }
 
   .cardTitle {
-    font-size: 18px;
+    font-size: clamp(16px, 1.8vw, 18px);
     line-height: 24px;
   }
 
@@ -296,34 +356,35 @@ $restore-color: #22c55e;
   .cardType,
   .cardDate,
   .separator {
-    font-size: 13px;
+    font-size: clamp(11px, 1.3vw, 13px);
     line-height: 18px;
   }
 
   .cardDescription {
-    font-size: 15px;
+    font-size: clamp(13px, 1.6vw, 15px);
     line-height: 22px;
   }
 
   .majorButton {
-    font-size: 11px;
+    font-size: clamp(9px, 1.1vw, 11px);
     padding: 3px 10px;
   }
 
   .editButton,
+  .deleteButton,
   .restoreButton {
-    font-size: 13px;
+    font-size: clamp(11px, 1.3vw, 13px);
     padding: 6px 12px;
   }
 
   .sectionTitle {
-    font-size: 22px;
+    font-size: clamp(18px, 2.2vw, 22px);
   }
 
   .sortSection {
     select {
-      font-size: 13px;
-      padding: 5px 10px;
+      font-size: clamp(11px, 1.3vw, 13px);
+      padding: 6px 10px;
     }
   }
 }
@@ -339,15 +400,15 @@ $restore-color: #22c55e;
   }
 
   .cards {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: clamp(16px, 2vw, 20px);
   }
 }
 
 @media screen and (max-width: 768px) {
   .container {
     width: 100%;
-    padding: 0 16px;
+    padding: 0 clamp(10px, 1.5vw, 16px);
     gap: 12px;
   }
 
@@ -370,7 +431,7 @@ $restore-color: #22c55e;
   }
 
   .cardTitle {
-    font-size: 18px;
+    font-size: clamp(16px, 2vw, 18px);
     line-height: 24px;
   }
 
@@ -378,18 +439,18 @@ $restore-color: #22c55e;
   .cardType,
   .cardDate,
   .separator {
-    font-size: 13px;
+    font-size: clamp(11px, 1.3vw, 13px);
     line-height: 18px;
   }
 
   .cardDescription {
-    font-size: 14px;
+    font-size: clamp(12px, 1.6vw, 14px);
     line-height: 20px;
   }
 
   .sortSection {
     select {
-      font-size: 12px;
+      font-size: clamp(10px, 1.3vw, 12px);
       padding: 4px 8px;
     }
   }
@@ -397,7 +458,7 @@ $restore-color: #22c55e;
 
 @media screen and (max-width: 480px) {
   .container {
-    padding: 0 12px;
+    padding: 0 clamp(8px, 1.2vw, 12px);
     gap: 8px;
   }
 
@@ -416,7 +477,7 @@ $restore-color: #22c55e;
   }
 
   .cardTitle {
-    font-size: 16px;
+    font-size: clamp(14px, 1.8vw, 16px);
     line-height: 22px;
   }
 
@@ -424,33 +485,34 @@ $restore-color: #22c55e;
   .cardType,
   .cardDate,
   .separator {
-    font-size: 12px;
+    font-size: clamp(10px, 1.2vw, 12px);
     line-height: 16px;
   }
 
   .cardDescription {
-    font-size: 13px;
+    font-size: clamp(11px, 1.4vw, 13px);
     line-height: 18px;
   }
 
   .majorButton {
-    font-size: 10px;
+    font-size: clamp(8px, 1vw, 10px);
     padding: 2px 8px;
   }
 
   .editButton,
+  .deleteButton,
   .restoreButton {
-    font-size: 12px;
+    font-size: clamp(10px, 1.2vw, 12px);
     padding: 4px 8px;
   }
 
   .sectionTitle {
-    font-size: 20px;
+    font-size: clamp(16px, 2vw, 20px);
   }
 
   .sortSection {
     select {
-      font-size: 11px;
+      font-size: clamp(9px, 1.1vw, 11px);
       padding: 3px 6px;
     }
   }
