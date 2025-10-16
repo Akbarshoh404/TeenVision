@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./style.module.scss";
 import DashboardTopBar from "../../../Layoutes/TopBar";
@@ -18,7 +18,7 @@ const DashboardAdminCreatePrograms = () => {
     link: "",
     country: "",
     format: "",
-    photos: [],
+    photo: "", // Single photo URL
     type: "",
     funding: "",
     start_age: "",
@@ -27,9 +27,6 @@ const DashboardAdminCreatePrograms = () => {
     status: "on",
     major: [],
   });
-  const [photoPreviews, setPhotoPreviews] = useState([]);
-  const [isDragging, setIsDragging] = useState(false);
-  const addPhotoInputRef = useRef(null);
 
   const toggleNav = useCallback(() => setIsNavOpen((prev) => !prev), []);
   const closeNav = useCallback(() => setIsNavOpen(false), []);
@@ -43,12 +40,15 @@ const DashboardAdminCreatePrograms = () => {
           setTimeout(() => navigate("/login"), 3000);
           return;
         }
-        const response = await fetch("https://teenvision-1.onrender.com/api/v1majors/", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        });
+        const response = await fetch(
+          "https://teenvision-1.onrender.com/api/v1/majors/",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          }
+        );
         if (!response.ok) {
           if (response.status === 401) {
             setError("Unauthorized. Redirecting to login...");
@@ -68,30 +68,8 @@ const DashboardAdminCreatePrograms = () => {
   }, [navigate]);
 
   const handleInputChange = (event) => {
-    const { name, value, files } = event.target;
-    if (name === "photos" && files.length > 0) {
-      const newFiles = Array.from(files).filter((file) =>
-        file.type.startsWith("image/")
-      );
-      if (newFiles.length === 0) {
-        setError("Please select valid image files.");
-        return;
-      }
-      setFormData((prev) => ({
-        ...prev,
-        photos: [...prev.photos, ...newFiles],
-      }));
-      const newPreviews = newFiles.map((file) => {
-        const reader = new FileReader();
-        return new Promise((resolve) => {
-          reader.onloadend = () => resolve(reader.result);
-          reader.readAsDataURL(file);
-        });
-      });
-      Promise.all(newPreviews).then((results) => {
-        setPhotoPreviews((prev) => [...prev, ...results]);
-      });
-    } else if (name === "major") {
+    const { name, value } = event.target;
+    if (name === "major") {
       const selectedIds = Array.from(event.target.selectedOptions).map(
         (option) => parseInt(option.value, 10)
       );
@@ -101,55 +79,6 @@ const DashboardAdminCreatePrograms = () => {
         ...prev,
         [name]: value === "" ? "" : value,
       }));
-    }
-  };
-
-  const handleDrop = (event) => {
-    event.preventDefault();
-    setIsDragging(false);
-    const newFiles = Array.from(event.dataTransfer.files).filter((file) =>
-      file.type.startsWith("image/")
-    );
-    if (newFiles.length === 0) {
-      setError("Please drop valid image files.");
-      return;
-    }
-    setFormData((prev) => ({
-      ...prev,
-      photos: [...prev.photos, ...newFiles],
-    }));
-    const newPreviews = newFiles.map((file) => {
-      const reader = new FileReader();
-      return new Promise((resolve) => {
-        reader.onloadend = () => resolve(reader.result);
-        reader.readAsDataURL(file);
-      });
-    });
-    Promise.all(newPreviews).then((results) => {
-      setPhotoPreviews((prev) => [...prev, ...results]);
-    });
-  };
-
-  const handleDragOver = (event) => {
-    event.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  const removePhoto = (index) => {
-    setFormData((prev) => ({
-      ...prev,
-      photos: prev.photos.filter((_, i) => i !== index),
-    }));
-    setPhotoPreviews((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const triggerAddPhotoInput = () => {
-    if (addPhotoInputRef.current) {
-      addPhotoInputRef.current.click();
     }
   };
 
@@ -165,12 +94,6 @@ const DashboardAdminCreatePrograms = () => {
         return;
       }
 
-      // Validate photos (optional, uncomment if photos are required)
-      // if (formData.photos.length === 0) {
-      //   setError("Please upload at least one photo.");
-      //   return;
-      // }
-
       const programData = new FormData();
       programData.append("title", formData.title);
       if (formData.slug) programData.append("slug", formData.slug);
@@ -181,6 +104,7 @@ const DashboardAdminCreatePrograms = () => {
       programData.append("link", formData.link);
       if (formData.country) programData.append("country", formData.country);
       if (formData.format) programData.append("format", formData.format);
+      if (formData.photo) programData.append("photo", formData.photo); // Single photo URL
       programData.append("type", formData.type);
       if (formData.funding) programData.append("funding", formData.funding);
       if (formData.start_age)
@@ -189,35 +113,24 @@ const DashboardAdminCreatePrograms = () => {
         programData.append("end_age", parseInt(formData.end_age, 10));
       if (formData.gender) programData.append("gender", formData.gender);
       programData.append("status", formData.status);
-      formData.major.forEach((id) => programData.append("major", id));
 
-      // Log photos for debugging
-      console.log("Photos to be sent:", formData.photos);
-      formData.photos.forEach((photo, index) => {
-        if (photo instanceof File) {
-          programData.append(`photos[${index}]`, photo);
-        }
-      });
-
-      // Alternative photo field names (uncomment one if backend expects a different key)
-      // formData.photos.forEach((photo) => programData.append("photos", photo)); // Try plain "photos"
-      // if (formData.photos[0]) programData.append("photo", formData.photos[0]); // Try single "photo"
-
-      // Log FormData contents for debugging
-      for (let [key, value] of programData.entries()) {
-        console.log(`FormData ${key}:`, value);
+      if (formData.major.length > 0) {
+        programData.append("major", JSON.stringify(formData.major));
       }
 
-      const response = await fetch("https://teenvision-1.onrender.com/api/v1programs/", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: programData,
-      });
+      const response = await fetch(
+        "https://teenvision-1.onrender.com/api/v1/programs/",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: programData,
+        }
+      );
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({}));
         console.error("Create Program Error Response:", errorData);
         if (response.status === 401) {
           setError("Unauthorized. Redirecting to login...");
@@ -231,7 +144,6 @@ const DashboardAdminCreatePrograms = () => {
         );
       }
 
-      const newProgram = await response.json();
       setFormData({
         title: "",
         slug: "",
@@ -241,7 +153,7 @@ const DashboardAdminCreatePrograms = () => {
         link: "",
         country: "",
         format: "",
-        photos: [],
+        photo: "",
         type: "",
         funding: "",
         start_age: "",
@@ -250,7 +162,6 @@ const DashboardAdminCreatePrograms = () => {
         status: "on",
         major: [],
       });
-      setPhotoPreviews([]);
       navigate("/dashboard/admin/new-programs");
     } catch (err) {
       console.error("Submit Error:", err);
@@ -358,74 +269,14 @@ const DashboardAdminCreatePrograms = () => {
                 </select>
               </div>
               <div className={styles.formGroup}>
-                <label>Photos</label>
-                <div
-                  className={`${styles.carouselContainer} ${
-                    isDragging ? styles.dragging : ""
-                  }`}
-                  onDrop={handleDrop}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                >
-                  <div className={styles.photoCarousel}>
-                    {photoPreviews.length > 0 ? (
-                      photoPreviews.map((preview, index) => (
-                        <div key={index} className={styles.photoCard}>
-                          <img
-                            src={preview}
-                            alt={`Preview ${index + 1}`}
-                            className={styles.photoImage}
-                          />
-                          <button
-                            type="button"
-                            className={styles.removeButton}
-                            onClick={() => removePhoto(index)}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="white"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path d="M18 6L6 18M6 6l12 12" />
-                            </svg>
-                          </button>
-                        </div>
-                      ))
-                    ) : (
-                      <div
-                        className={styles.addPhotoCard}
-                        onClick={triggerAddPhotoInput}
-                      >
-                        <span className={styles.addPhotoText}>
-                          Drag & Drop Images Here or Click to Upload
-                        </span>
-                      </div>
-                    )}
-                    {photoPreviews.length > 0 && photoPreviews.length < 10 && (
-                      <div
-                        className={styles.addPhotoCard}
-                        onClick={triggerAddPhotoInput}
-                      >
-                        <span className={styles.addPhotoText}>Add More</span>
-                      </div>
-                    )}
-                  </div>
-                  <input
-                    type="file"
-                    name="photos"
-                    accept="image/*"
-                    ref={addPhotoInputRef}
-                    onChange={handleInputChange}
-                    className={styles.hiddenInput}
-                    multiple
-                  />
-                </div>
+                <label>Photo URL</label>
+                <input
+                  type="url"
+                  name="photo"
+                  value={formData.photo}
+                  onChange={handleInputChange}
+                  placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
+                />
               </div>
               <div className={styles.formGroup}>
                 <label>Type</label>

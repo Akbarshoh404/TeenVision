@@ -9,14 +9,16 @@ import {
 } from "react-icons/fa";
 import img from "../../../Components/images/cardexample.png";
 
+import Xurshid from "../../../Components/images/Xurshidbek.jpg"
+
 const teamMembers = [
   {
     id: 1,
-    image: img,
-    name: "John Doe",
-    responsibility: "Lead Developer",
+    image: Xurshid,
+    name: "Fayzullayev Xurshidbek",
+    responsibility: "Co-Founder",
     description:
-      "John leads our tech team with innovative solutions and expertise in modern web technologies.",
+      "Tochkani egasi",
     social: {
       instagram: "https://instagram.com/johndoe",
       twitter: "https://twitter.com/johndoe",
@@ -26,10 +28,10 @@ const teamMembers = [
   {
     id: 2,
     image: img,
-    name: "Jane Smith",
-    responsibility: "UI/UX Designer",
+    name: "Akbarshoh Ismatov",
+    responsibility: "Co-Founder, Full-Stack Developer",
     description:
-      "Jane crafts intuitive and beautiful designs that enhance user experiences.",
+      "Vapshe zo'r bola",
     social: {
       instagram: "https://instagram.com/janesmith",
       twitter: "https://twitter.com/janesmith",
@@ -39,8 +41,8 @@ const teamMembers = [
   {
     id: 3,
     image: img,
-    name: "Alex Johnson",
-    responsibility: "Project Manager",
+    name: "Bexruz",
+    responsibility: "Backend Developer",
     description:
       "Alex ensures projects run smoothly and deadlines are met with precision.",
     social: {

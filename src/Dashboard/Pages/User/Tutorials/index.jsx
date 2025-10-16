@@ -30,12 +30,10 @@ const DashboardTutorials = () => {
     const fetchTutorials = async () => {
       try {
         const response = await fetch(
-          "https://teenvision-1.onrender.com/api/v1/programs/"
+          "https://teenvision-1.onrender.com/api/v1/programs/tutorials/"
         );
         const data = await response.json();
-        const tutorials = (data.results || []).filter(
-          (p) => p.type === "tutorial"
-        );
+        const tutorials = data.results || [];
 
         const normalizedTutorials = tutorials.map((tutorial) => ({
           ...tutorial,
@@ -47,8 +45,10 @@ const DashboardTutorials = () => {
           gender:
             tutorial.gender === "any"
               ? "All"
-              : tutorial.gender.charAt(0).toUpperCase() +
-                tutorial.gender.slice(1),
+              : tutorial.gender
+              ? tutorial.gender.charAt(0).toUpperCase() +
+                tutorial.gender.slice(1)
+              : "Unknown",
           format: tutorial.format
             ? tutorial.format.charAt(0).toUpperCase() + tutorial.format.slice(1)
             : "Unknown",
@@ -96,24 +96,23 @@ const DashboardTutorials = () => {
     const storedTutorials = JSON.parse(
       localStorage.getItem("tutorials") || "[]"
     );
-    let tutorials = storedTutorials
-      .filter((p) => p.type === "tutorial")
-      .map((tutorial) => ({
-        ...tutorial,
-        photo: tutorial.photo || img,
-        desc: tutorial.desc || "No description available",
-        date: tutorial.created_at,
-        type: tutorial.type || "tutorial",
-        major: tutorial.major || [],
-        gender:
-          tutorial.gender === "any"
-            ? "All"
-            : tutorial.gender.charAt(0).toUpperCase() +
-              tutorial.gender.slice(1),
-        format: tutorial.format
-          ? tutorial.format.charAt(0).toUpperCase() + tutorial.format.slice(1)
+    let tutorials = storedTutorials.map((tutorial) => ({
+      ...tutorial,
+      photo: tutorial.photo || img,
+      desc: tutorial.desc || "No description available",
+      date: tutorial.created_at,
+      type: tutorial.type || "tutorial",
+      major: tutorial.major || [],
+      gender:
+        tutorial.gender === "any"
+          ? "All"
+          : tutorial.gender
+          ? tutorial.gender.charAt(0).toUpperCase() + tutorial.gender.slice(1)
           : "Unknown",
-      }));
+      format: tutorial.format
+        ? tutorial.format.charAt(0).toUpperCase() + tutorial.format.slice(1)
+        : "Unknown",
+    }));
 
     let filtered = [...tutorials];
 
@@ -158,6 +157,7 @@ const DashboardTutorials = () => {
       const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No access token found");
 
+      console.log("Liking tutorial with slug:", slug); // Debug slug
       await axios.post(
         `https://teenvision-1.onrender.com/api/v1/programs/${slug}/like/`,
         {},
@@ -213,16 +213,15 @@ const DashboardTutorials = () => {
   const uniqueCountries = [
     ...new Set(
       JSON.parse(localStorage.getItem("tutorials") || "[]")
-        .filter((p) => p.type === "tutorial")
         .map((p) => p.country)
         .filter((c) => c)
     ),
   ];
   const uniqueMajors = [
     ...new Set(
-      JSON.parse(localStorage.getItem("tutorials") || "[]")
-        .filter((p) => p.type === "tutorial")
-        .flatMap((p) => p.major || [])
+      JSON.parse(localStorage.getItem("tutorials") || "[]").flatMap(
+        (p) => p.major || []
+      )
     ),
   ];
 
@@ -348,29 +347,42 @@ const DashboardTutorials = () => {
                       </button>
                     </div>
                     <div className={styles.cardMajors}>
-                      {tutorial.major.map((majorId, index) => (
-                        <span
-                          key={index}
-                          className={`${styles.majorButton} ${
-                            styles[majors[majorId]?.toLowerCase() + "Major"] ||
-                            ""
-                          }`}
-                        >
-                          {majors[majorId] || majorId}
-                        </span>
-                      ))}
+                      {tutorial.major.length > 0 ? (
+                        tutorial.major.map((majorId, index) => (
+                          <span
+                            key={index}
+                            className={`${styles.majorButton} ${
+                              styles[
+                                majors[majorId]?.toLowerCase() + "Major"
+                              ] || ""
+                            }`}
+                          >
+                            {majors[majorId] || majorId}
+                          </span>
+                        ))
+                      ) : (
+                        <span className={styles.majorButton}>No Majors</span>
+                      )}
                     </div>
                     <h3 className={styles.cardTitle}>{tutorial.title}</h3>
                     <div className={styles.cardInfoRow}>
-                      <span className={styles.cardCountry}>
-                        {tutorial.country || "N/A"}
-                      </span>
-                      <span className={styles.separator}>|</span>
+                      {tutorial.country && (
+                        <>
+                          <span className={styles.cardCountry}>
+                            {tutorial.country || "N/A"}
+                          </span>
+                          <span className={styles.separator}>|</span>
+                        </>
+                      )}
                       <span className={styles.cardType}>{tutorial.type}</span>
-                      <span className={styles.separator}>|</span>
-                      <span className={styles.cardDate}>
-                        {new Date(tutorial.date).toLocaleDateString()}
-                      </span>
+                      {tutorial.date && (
+                        <>
+                          <span className={styles.separator}>|</span>
+                          <span className={styles.cardDate}>
+                            {new Date(tutorial.date).toLocaleDateString()}
+                          </span>
+                        </>
+                      )}
                     </div>
                     <p className={styles.cardDescription}>{tutorial.desc}</p>
                   </animated.div>
