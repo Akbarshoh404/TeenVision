@@ -1,4 +1,3 @@
-// ProgramDetails.jsx
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -48,7 +47,6 @@ const ProgramDetails = () => {
         };
         setProgram(data);
 
-        // Fetch major names
         const majorPromises = data.major.map((id) =>
           axios.get(`https://teenvision-1.onrender.com/api/v1/majors/${id}/`)
         );
@@ -94,15 +92,15 @@ const ProgramDetails = () => {
         position="top-right"
         toastOptions={{
           style: {
-            fontFamily: '"Inter", sans-serif',
+            fontFamily: '"Montserrat", sans-serif',
             background: "#ffffff",
-            color: "#1f2937",
-            border: "1px solid #e5e7eb",
-            borderRadius: "12px",
-            padding: "10px 15px",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+            color: "#1a202c",
+            border: "1px solid #e2e8f0",
+            borderRadius: "8px",
+            padding: "8px 12px",
+            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
           },
-          error: { style: { border: "1px solid #dc2626" } },
+          error: { style: { border: "1px solid #c53030" } },
         }}
       />
       <DashboardNavbar
@@ -148,8 +146,11 @@ const ProgramDetails = () => {
               </span>
             ))}
           </div>
+          <h2 className={styles.sectionTitle}>Overview</h2>
           <p className={styles.fullInfo}>{program.full_info}</p>
+          <h2 className={styles.sectionTitle}>Details</h2>
           <p className={styles.desc}>{program.desc}</p>
+          <h2 className={styles.sectionTitle}>Additional Information</h2>
           <div className={styles.extraInfoGrid}>
             <div className={styles.extraInfoCard}>
               <span className={styles.extraLabel}>Deadline</span>

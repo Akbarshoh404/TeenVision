@@ -2,14 +2,15 @@ import React, { useRef, useState, useCallback, useEffect } from "react";
 import styles from "./style.module.scss";
 import {
   FaInstagram,
-  FaTwitter,
+  FaTelegram,
   FaLinkedin,
   FaChevronLeft,
   FaChevronRight,
 } from "react-icons/fa";
 import img from "../../../Components/images/cardexample.png";
 
-import Xurshid from "../../../Components/images/Xurshidbek.jpg"
+import Xurshid from "../../../Components/images/Xurshidbek.jpg";
+import Akbarshoh from "../../../Components/images/me.jpg"
 
 const teamMembers = [
   {
@@ -18,76 +19,49 @@ const teamMembers = [
     name: "Fayzullayev Xurshidbek",
     responsibility: "Co-Founder",
     description:
-      "Tochkani egasi",
+      "Visionary leader and strategic thinker behind the project. Xurshidbek ensures the team stays focused, organized, and always moving toward success.",
     social: {
       instagram: "https://instagram.com/johndoe",
-      twitter: "https://twitter.com/johndoe",
+      telegram: "https://twitter.com/johndoe",
       linkedin: "https://linkedin.com/in/johndoe",
     },
   },
   {
     id: 2,
-    image: img,
+    image: Akbarshoh,
     name: "Akbarshoh Ismatov",
     responsibility: "Co-Founder, Full-Stack Developer",
     description:
-      "Vapshe zo'r bola",
+      "Creative mind and full-stack developer responsible for turning ideas into reality. Akbarshoh builds robust systems with clean code and pixel-perfect design.",
     social: {
       instagram: "https://instagram.com/janesmith",
-      twitter: "https://twitter.com/janesmith",
+      telegram: "https://twitter.com/janesmith",
       linkedin: "https://linkedin.com/in/janesmith",
     },
   },
   {
     id: 3,
     image: img,
-    name: "Bexruz",
-    responsibility: "Backend Developer",
+    name: "Charos Hakimova",
+    responsibility: "Designer",
     description:
-      "Alex ensures projects run smoothly and deadlines are met with precision.",
+      "A talented designer with an eye for detail. Charos crafts intuitive user experiences and beautiful visual designs that define our brand identity.",
     social: {
-      instagram: "https://instagram.com/alexjohnson",
-      twitter: "https://twitter.com/alexjohnson",
-      linkedin: "https://linkedin.com/in/alexjohnson",
+      instagram: "https://instagram.com/janesmith",
+      telegram: "https://twitter.com/janesmith",
+      linkedin: "https://linkedin.com/in/janesmith",
     },
   },
   {
     id: 4,
     image: img,
-    name: "Emily Davis",
-    responsibility: "Marketing Specialist",
-    description:
-      "Emily develops marketing strategies that drive brand awareness and engagement.",
+    name: "Bexruz",
+    responsibility: "Backend Developer",
+    description: "Backend wizard ensuring everything runs smoothly behind the scenes. Bexruz focuses on performance, security, and reliable server-side architecture.",
     social: {
-      instagram: "https://instagram.com/emilydavis",
-      twitter: "https://twitter.com/emilydavis",
-      linkedin: "https://linkedin.com/in/emilydavis",
-    },
-  },
-  {
-    id: 5,
-    image: img,
-    name: "Michael Brown",
-    responsibility: "QA Engineer",
-    description:
-      "Michael ensures the quality and reliability of our software through rigorous testing.",
-    social: {
-      instagram: "https://instagram.com/michaelbrown",
-      twitter: "https://twitter.com/michaelbrown",
-      linkedin: "https://linkedin.com/in/michaelbrown",
-    },
-  },
-  {
-    id: 6,
-    image: img,
-    name: "Sarah Wilson",
-    responsibility: "Content Writer",
-    description:
-      "Sarah creates compelling content that resonates with our audience.",
-    social: {
-      instagram: "https://instagram.com/sarahwilson",
-      twitter: "https://twitter.com/sarahwilson",
-      linkedin: "https://linkedin.com/in/sarahwilson",
+      instagram: "https://instagram.com/janesmith",
+      telegram: "https://twitter.com/janesmith",
+      linkedin: "https://linkedin.com/in/janesmith",
     },
   },
 ];
@@ -188,12 +162,12 @@ const HomeSection2 = () => {
                     <FaInstagram />
                   </a>
                   <a
-                    href={member.social.twitter}
+                    href={member.social.telegram}
                     target="_blank"
                     rel="noreferrer"
-                    aria-label={`${member.name}'s Twitter`}
+                    aria-label={`${member.name}'s Telegram`}
                   >
-                    <FaTwitter />
+                    <FaTelegram />
                   </a>
                   <a
                     href={member.social.linkedin}
