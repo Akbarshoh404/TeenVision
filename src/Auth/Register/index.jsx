@@ -56,7 +56,7 @@ const Register = () => {
       formData.append("email", email);
       formData.append("password", password);
 
-      const response = await axios.post(
+      await axios.post(
         "https://teenvision-1.onrender.com/api/v1/auth/register/",
         formData,
         {
@@ -66,14 +66,24 @@ const Register = () => {
         }
       );
 
+      // Get JWT tokens after successful registration
+      try {
+        const tokenRes = await axios.post(
+          "https://teenvision-1.onrender.com/api/v1/auth/token/",
+          { email, password }
+        );
+        if (tokenRes.data?.access && tokenRes.data?.refresh) {
+          localStorage.setItem("access_token", tokenRes.data.access);
+          localStorage.setItem("refresh_token", tokenRes.data.refresh);
+        }
+      } catch (_) {
+        // If token acquisition fails, continue without blocking navigation
+      }
+
       localStorage.setItem(
         "user",
         JSON.stringify({ email, full_name: fullName })
       );
-      if (response.data.access && response.data.refresh) {
-        localStorage.setItem("access_token", response.data.access);
-        localStorage.setItem("refresh_token", response.data.refresh);
-      }
 
       toast.success("Registration Successful!", {
         position: "top-right",

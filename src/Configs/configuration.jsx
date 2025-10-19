@@ -13,6 +13,10 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+try {
+  getAnalytics(app);
+} catch (_err) {
+  // analytics may fail in non-browser environments; ignore
+}
 
-export default cong;
+export default app;

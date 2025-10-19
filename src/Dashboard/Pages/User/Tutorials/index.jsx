@@ -315,7 +315,7 @@ const DashboardTutorials = () => {
             <div className={styles.cards}>
               {transitions((style, tutorial) => (
                 <Link
-                  to={`/dashboard/tutorial/${tutorial.slug}`}
+                  to={`/dashboard/program/${tutorial.slug}`}
                   key={tutorial.id}
                   className={styles.cardLink}
                 >

@@ -18,7 +18,7 @@ const DashboardAdminCreatePrograms = () => {
     link: "",
     country: "",
     format: "",
-    photo: "", // Single photo URL
+    photo: "", // Will store File when chosen
     type: "",
     funding: "",
     start_age: "",
@@ -68,12 +68,14 @@ const DashboardAdminCreatePrograms = () => {
   }, [navigate]);
 
   const handleInputChange = (event) => {
-    const { name, value } = event.target;
+    const { name, value, files } = event.target;
     if (name === "major") {
       const selectedIds = Array.from(event.target.selectedOptions).map(
         (option) => parseInt(option.value, 10)
       );
       setFormData((prev) => ({ ...prev, major: selectedIds }));
+    } else if (name === "photo" && files && files.length > 0) {
+      setFormData((prev) => ({ ...prev, photo: files[0] }));
     } else {
       setFormData((prev) => ({
         ...prev,
@@ -104,7 +106,9 @@ const DashboardAdminCreatePrograms = () => {
       programData.append("link", formData.link);
       if (formData.country) programData.append("country", formData.country);
       if (formData.format) programData.append("format", formData.format);
-      if (formData.photo) programData.append("photo", formData.photo); // Single photo URL
+      if (formData.photo instanceof File) {
+        programData.append("photo", formData.photo);
+      }
       programData.append("type", formData.type);
       if (formData.funding) programData.append("funding", formData.funding);
       if (formData.start_age)
@@ -115,7 +119,7 @@ const DashboardAdminCreatePrograms = () => {
       programData.append("status", formData.status);
 
       if (formData.major.length > 0) {
-        programData.append("major", JSON.stringify(formData.major));
+        formData.major.forEach((id) => programData.append("major", id));
       }
 
       const response = await fetch(
@@ -269,13 +273,12 @@ const DashboardAdminCreatePrograms = () => {
                 </select>
               </div>
               <div className={styles.formGroup}>
-                <label>Photo URL</label>
+                <label>Photo</label>
                 <input
-                  type="url"
+                  type="file"
                   name="photo"
-                  value={formData.photo}
+                  accept="image/*"
                   onChange={handleInputChange}
-                  placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
                 />
               </div>
               <div className={styles.formGroup}>
