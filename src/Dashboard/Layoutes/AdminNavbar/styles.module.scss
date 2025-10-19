@@ -14,7 +14,7 @@ $hover-bg: #1a2130;
   top: 0;
   left: 0;
   height: 100vh;
-  width: 350px;
+  width: var(--sidebar-width, 350px);
   max-width: 100%;
   background-color: $primary-bg;
   color: #ffffff;

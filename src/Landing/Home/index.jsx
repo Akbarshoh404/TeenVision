@@ -15,11 +15,19 @@ const LandingHome = () => {
   return (
     <>
       <LandingNavbar />
-      <Home_Header />
-      <HomeSection2 />
-      <HomeSection1 />
-      <HomeSection3 />
-      <HomeSection4 />
+      <div id="home">
+        <Home_Header />
+      </div>
+      <div id="about">
+        <HomeSection2 />
+      </div>
+      <div id="programs">
+        <HomeSection1 />
+      </div>
+      <div id="reviews">
+        <HomeSection3 />
+        <HomeSection4 />
+      </div>
       <LandingFooter />
     </>
   );

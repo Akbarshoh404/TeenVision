@@ -200,6 +200,15 @@ const Login = () => {
           </button>
         </form>
 
+        <button
+          className={styles.buttonSecondary}
+          type="button"
+          onClick={() => navigate("/")}
+          style={{ marginTop: 12 }}
+        >
+          Go to Landing
+        </button>
+
         <p className={styles.p3}>
           Don't have an account?{" "}
           <span

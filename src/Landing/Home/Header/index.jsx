@@ -52,7 +52,15 @@ const Home_Header = () => {
             </p>
           </div>
 
-          <button className={styles.seeMore} onClick={()=> {navigate("/login")}}>See more</button>
+          <button
+            className={styles.seeMore}
+            onClick={() => {
+              const isAuthenticated = !!localStorage.getItem("access_token");
+              navigate(isAuthenticated ? "/dashboard/home" : "/login");
+            }}
+          >
+            See more
+          </button>
 
           <div className={styles.numbers}>
             <div className={styles.centerCard}>

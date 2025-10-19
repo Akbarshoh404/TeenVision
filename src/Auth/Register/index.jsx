@@ -189,6 +189,15 @@ const Register = () => {
           </button>
         </form>
 
+        <button
+          className={styles.buttonSecondary}
+          type="button"
+          onClick={() => navigate("/")}
+          style={{ marginTop: 12 }}
+        >
+          Go to Landing
+        </button>
+
         <p className={styles.p3}>
           Already have an account?{" "}
           <span
