@@ -19,6 +19,16 @@ const LandingNavbar = () => {
     navigate(isAuthenticated ? "/dashboard/home" : "/login");
   };
 
+  const goToPrograms = () => {
+    const isAuthenticated = !!localStorage.getItem("access_token");
+    navigate(isAuthenticated ? "/dashboard/home" : "/login");
+  };
+
+  const goToReviews = () => {
+    const isAuthenticated = !!localStorage.getItem("access_token");
+    navigate(isAuthenticated ? "/dashboard/reviews" : "/login");
+  };
+
   const handleSearch = (e) => {
     if (e.key === "Enter") {
       goToSearchDestination();
@@ -63,8 +73,8 @@ const LandingNavbar = () => {
             </div>
             <p onClick={() => {document.getElementById('home')?.scrollIntoView({behavior: 'smooth'}); setIsDrawerOpen(false);}}>Home<span className={styles.line}></span></p>
             <p onClick={() => {document.getElementById('about')?.scrollIntoView({behavior: 'smooth'}); setIsDrawerOpen(false);}}>About<span className={styles.line}></span></p>
-            <p onClick={() => {document.getElementById('programs')?.scrollIntoView({behavior: 'smooth'}); setIsDrawerOpen(false);}}>Programs<span className={styles.line}></span></p>
-            <p onClick={() => {document.getElementById('reviews')?.scrollIntoView({behavior: 'smooth'}); setIsDrawerOpen(false);}}>Reviews<span className={styles.line}></span></p>
+            <p onClick={() => { goToPrograms(); setIsDrawerOpen(false); }}>Programs<span className={styles.line}></span></p>
+            <p onClick={() => { goToReviews(); setIsDrawerOpen(false); }}>Reviews<span className={styles.line}></span></p>
             <button
               type="button"
               onClick={() => {
@@ -96,10 +106,10 @@ const LandingNavbar = () => {
             <p onClick={()=> document.getElementById('about')?.scrollIntoView({behavior:'smooth'})}>
               About <span className={styles.line}></span>
             </p>
-            <p onClick={()=> document.getElementById('programs')?.scrollIntoView({behavior:'smooth'})}>
+            <p onClick={()=> goToPrograms()}>
               Programs <span className={styles.line}></span>
             </p>
-            <p onClick={()=> document.getElementById('reviews')?.scrollIntoView({behavior:'smooth'})}>
+            <p onClick={()=> goToReviews()}>
               Reviews <span className={styles.line}></span>
             </p>
             <button type="button" onClick={() => navigate("/register")}>

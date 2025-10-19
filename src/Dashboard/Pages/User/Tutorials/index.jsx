@@ -315,7 +315,7 @@ const DashboardTutorials = () => {
             <div className={styles.cards}>
               {transitions((style, tutorial) => (
                 <Link
-                  to={`/dashboard/program/${tutorial.slug}`}
+                  to={`/dashboard/tutorial/${tutorial.slug}`}
                   key={tutorial.id}
                   className={styles.cardLink}
                 >
@@ -348,18 +348,23 @@ const DashboardTutorials = () => {
                     </div>
                     <div className={styles.cardMajors}>
                       {tutorial.major.length > 0 ? (
-                        tutorial.major.map((majorId, index) => (
-                          <span
-                            key={index}
-                            className={`${styles.majorButton} ${
-                              styles[
-                                majors[majorId]?.toLowerCase() + "Major"
-                              ] || ""
-                            }`}
-                          >
-                            {majors[majorId] || majorId}
-                          </span>
-                        ))
+                        tutorial.major.map((majorId, index) => {
+                          const majorName = majors[majorId];
+                          const majorClassKey =
+                            typeof majorName === "string"
+                              ? `${majorName.toLowerCase()}Major`
+                              : "";
+                          return (
+                            <span
+                              key={index}
+                              className={`${styles.majorButton} ${
+                                styles[majorClassKey] || ""
+                              }`}
+                            >
+                              {typeof majorName === "string" ? majorName : String(majorId)}
+                            </span>
+                          );
+                        })
                       ) : (
                         <span className={styles.majorButton}>No Majors</span>
                       )}

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./style.module.scss";
 import img from "../../../Components/images/cardexample.png";
 const countryCodeMap = {
@@ -11,7 +12,9 @@ const countryCodeMap = {
 };
 
 const HomeSection3 = () => {
+  const navigate = useNavigate();
   const [programs, setPrograms] = useState([]);
+  const [majorsMap, setMajorsMap] = useState({});
 
   useEffect(() => {
     const fetchPrograms = async () => {
@@ -38,6 +41,30 @@ const HomeSection3 = () => {
     fetchPrograms();
   }, []);
 
+  useEffect(() => {
+    const fetchMajors = async () => {
+      try {
+        const res = await fetch(
+          "https://teenvision-1.onrender.com/api/v1/majors/"
+        );
+        const data = await res.json();
+        const map = {};
+        (data.results || []).forEach((m) => {
+          map[m.id] = m.name;
+        });
+        setMajorsMap(map);
+      } catch (_) {
+        setMajorsMap({});
+      }
+    };
+    fetchMajors();
+  }, []);
+
+  const goToPrograms = () => {
+    const isAuthenticated = !!localStorage.getItem("access_token");
+    navigate(isAuthenticated ? "/dashboard/home" : "/login");
+  };
+
   return (
     <section className={styles.section}>
       <div className={styles.container}>
@@ -45,21 +72,35 @@ const HomeSection3 = () => {
           <p className={styles.title}>
             <span>Latest</span> Programs
           </p>
-          <button className={styles.seeMoreButton}>See More</button>
+          <button className={styles.seeMoreButton} onClick={goToPrograms}>See More</button>
         </div>
 
         <div className={styles.cards}>
           {programs.map((program) => (
             <div key={program.id} className={styles.card}>
               <div className={styles.cardImage}>
-                <img src={program.photo} alt={program.title} />
+                <img
+                  src={program.photo}
+                  alt={program.title}
+                  onError={(e) => {
+                    e.currentTarget.src = img;
+                  }}
+                />
               </div>
               <div className={styles.cardMajors}>
-                {(program.major || []).map((major, index) => (
-                  <span key={index} className={styles.majorButton}>
-                    {typeof major === "string" ? major : String(major)}
-                  </span>
-                ))}
+                {(program.major || []).map((majorIdOrName, index) => {
+                  const isId =
+                    typeof majorIdOrName === "number" ||
+                    /^(\d+)$/.test(String(majorIdOrName));
+                  const name = isId
+                    ? majorsMap[Number(majorIdOrName)] || String(majorIdOrName)
+                    : String(majorIdOrName);
+                  return (
+                    <span key={index} className={styles.majorButton}>
+                      {name}
+                    </span>
+                  );
+                })}
               </div>
               <h3 className={styles.cardTitle}>{program.title}</h3>
               <div className={styles.cardInfoRow}>

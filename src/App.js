@@ -19,6 +19,7 @@ import DashboardSettings from "./Dashboard/Pages/User/Settings";
 import DashboardReviews from "./Dashboard/Pages/User/Reviews";
 import DashboardTutorials from "./Dashboard/Pages/User/Tutorials";
 import ProgramDetails from "./Dashboard/Pages/User/ProgramDetails";
+import TutorialDetails from "./Dashboard/Pages/User/TutorialDetails";
 
 import DashboardAdminDeletedPrograms from "./Dashboard/Pages/Admin/DeletedPrograms";
 import DashboardAdminNewPrograms from "./Dashboard/Pages/Admin/NewPrograms";
@@ -45,6 +46,7 @@ function App() {
       <Route path="/dashboard/reviews" element={<DashboardReviews />} />
       <Route path="/dashboard/tutorials" element={<DashboardTutorials />} />
       <Route path="/dashboard/program/:slug" element={<ProgramDetails />} />
+      <Route path="/dashboard/tutorial/:slug" element={<TutorialDetails />} />
 
       {/* Dashboard Admins */}
       <Route

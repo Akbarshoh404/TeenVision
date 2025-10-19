@@ -341,17 +341,23 @@ const DashboardHome = () => {
                       </button>
                     </div>
                     <div className={styles.cardMajors}>
-                      {program.major.map((majorId, index) => (
-                        <span
-                          key={index}
-                          className={`${styles.majorButton} ${
-                            styles[majors[majorId]?.toLowerCase() + "Major"] ||
-                            ""
-                          }`}
-                        >
-                          {majors[majorId] || majorId}
-                        </span>
-                      ))}
+                      {program.major.map((majorId, index) => {
+                        const majorName = majors[majorId];
+                        const majorClassKey =
+                          typeof majorName === "string"
+                            ? `${majorName.toLowerCase()}Major`
+                            : "";
+                        return (
+                          <span
+                            key={index}
+                            className={`${styles.majorButton} ${
+                              styles[majorClassKey] || ""
+                            }`}
+                          >
+                            {typeof majorName === "string" ? majorName : String(majorId)}
+                          </span>
+                        );
+                      })}
                     </div>
                     <h3 className={styles.cardTitle}>{program.title}</h3>
                     <div className={styles.cardInfoRow}>

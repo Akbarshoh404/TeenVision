@@ -430,18 +430,23 @@ const DashboardReviews = () => {
                       </div>
                       <div className={styles.cardMajors}>
                         {item.major.length > 0 ? (
-                          item.major.map((majorId, index) => (
-                            <span
-                              key={index}
-                              className={`${styles.majorButton} ${
-                                styles[
-                                  majors[majorId]?.toLowerCase() + "Major"
-                                ] || ""
-                              }`}
-                            >
-                              {majors[majorId] || majorId}
-                            </span>
-                          ))
+                          item.major.map((majorId, index) => {
+                            const majorName = majors[majorId];
+                            const majorClassKey =
+                              typeof majorName === "string"
+                                ? `${majorName.toLowerCase()}Major`
+                                : "";
+                            return (
+                              <span
+                                key={index}
+                                className={`${styles.majorButton} ${
+                                  styles[majorClassKey] || ""
+                                }`}
+                              >
+                                {typeof majorName === "string" ? majorName : String(majorId)}
+                              </span>
+                            );
+                          })
                         ) : (
                           <span className={styles.majorButton}>No Majors</span>
                         )}
