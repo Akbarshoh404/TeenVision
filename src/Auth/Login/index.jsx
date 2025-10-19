@@ -45,9 +45,14 @@ const Login = () => {
     setErrors({});
 
     try {
-      const response = await axios.post(
+      // Try primary login endpoint with form-encoded body
+      const formBody = new URLSearchParams();
+      formBody.append("email", email);
+      formBody.append("password", password);
+
+      const loginRes = await axios.post(
         "https://teenvision-1.onrender.com/api/v1/auth/login/",
-        { email, password },
+        formBody,
         {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -55,17 +60,33 @@ const Login = () => {
         }
       );
 
-      if (
-        !response.data.access ||
-        !response.data.refresh ||
-        !response.data.user
-      ) {
-        throw new Error("Invalid response format: Missing tokens or user data");
+      // Some deployments return tokens and user from /auth/login/.
+      // If they don't, fall back to /auth/token/ for JWTs.
+      let access = loginRes.data?.access;
+      let refresh = loginRes.data?.refresh;
+      let user = loginRes.data?.user;
+
+      if (!access || !refresh) {
+        const tokenRes = await axios.post(
+          "https://teenvision-1.onrender.com/api/v1/auth/token/",
+          { email, password }
+        );
+        access = tokenRes.data?.access;
+        refresh = tokenRes.data?.refresh;
       }
 
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-      localStorage.setItem("access_token", response.data.access);
-      localStorage.setItem("refresh_token", response.data.refresh);
+      if (!access || !refresh) {
+        throw new Error("Authentication failed: tokens not provided by server");
+      }
+
+      if (!user) {
+        // Persist minimal user info; detailed profile can be fetched later
+        user = { email };
+      }
+
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("access_token", access);
+      localStorage.setItem("refresh_token", refresh);
 
       toast.success("Login Successful!", {
         position: "top-right",
@@ -73,20 +94,24 @@ const Login = () => {
       });
 
       try {
-        const adminResponse = await axios.get(
-          `https://teenvision-1.onrender.com/api/v1/admins/${response.data.user.id}/`,
-          {
-            headers: {
-              Authorization: `Bearer ${response.data.access}`,
-            },
+        if (user?.id) {
+          const adminResponse = await axios.get(
+            `https://teenvision-1.onrender.com/api/v1/admins/${user.id}/`,
+            {
+              headers: {
+                Authorization: `Bearer ${access}`,
+              },
+            }
+          );
+          const { is_staff } = adminResponse.data;
+          if (is_staff) {
+            navigate("/dashboard/admin/new-programs");
+          } else {
+            await fetchAllPrograms();
+            navigate("/dashboard/home");
           }
-        );
-
-        const { is_staff } = adminResponse.data;
-
-        if (is_staff) {
-          navigate("/dashboard/admin/new-programs");
         } else {
+          // No user id to check admin; treat as normal user
           await fetchAllPrograms();
           navigate("/dashboard/home");
         }
