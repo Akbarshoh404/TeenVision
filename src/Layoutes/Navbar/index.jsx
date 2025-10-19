@@ -90,18 +90,18 @@ const LandingNavbar = () => {
             <SearchIcon className={styles.searchIcon} />
           </div>
           <div className={styles.navLinks}>
-            <a href="#home" onClick={(e)=>{e.preventDefault(); document.getElementById('home')?.scrollIntoView({behavior:'smooth'});}}>
+            <p onClick={()=> document.getElementById('home')?.scrollIntoView({behavior:'smooth'})}>
               Home <span className={styles.line}></span>
-            </a>
-            <a href="#about" onClick={(e)=>{e.preventDefault(); document.getElementById('about')?.scrollIntoView({behavior:'smooth'});}}>
+            </p>
+            <p onClick={()=> document.getElementById('about')?.scrollIntoView({behavior:'smooth'})}>
               About <span className={styles.line}></span>
-            </a>
-            <a href="#programs" onClick={(e)=>{e.preventDefault(); document.getElementById('programs')?.scrollIntoView({behavior:'smooth'});}}>
+            </p>
+            <p onClick={()=> document.getElementById('programs')?.scrollIntoView({behavior:'smooth'})}>
               Programs <span className={styles.line}></span>
-            </a>
-            <a href="#reviews" onClick={(e)=>{e.preventDefault(); document.getElementById('reviews')?.scrollIntoView({behavior:'smooth'});}}>
+            </p>
+            <p onClick={()=> document.getElementById('reviews')?.scrollIntoView({behavior:'smooth'})}>
               Reviews <span className={styles.line}></span>
-            </a>
+            </p>
             <button type="button" onClick={() => navigate("/register")}>
               Registration
             </button>

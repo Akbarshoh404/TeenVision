@@ -56,13 +56,8 @@ const HomeSection3 = () => {
               </div>
               <div className={styles.cardMajors}>
                 {(program.major || []).map((major, index) => (
-                  <span
-                    key={index}
-                    className={`${styles.majorButton} ${
-                      styles[major.toLowerCase() + "Major"]
-                    }`}
-                  >
-                    {major}
+                  <span key={index} className={styles.majorButton}>
+                    {typeof major === "string" ? major : String(major)}
                   </span>
                 ))}
               </div>

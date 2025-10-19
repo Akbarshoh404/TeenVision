@@ -166,6 +166,14 @@ const Login = () => {
     <div className={`page-root ${styles.login}`}>
       <div className={styles.left}></div>
       <div className={styles.right}>
+        <button
+          className={styles.buttonSecondary}
+          type="button"
+          onClick={() => navigate("/")}
+          style={{ alignSelf: "flex-start", marginBottom: 12 }}
+        >
+          ← Back to Landing
+        </button>
         <div className={styles.texts}>
           <p className={styles.p1}>Sign In</p>
           <p className={styles.p2}>
@@ -200,14 +208,7 @@ const Login = () => {
           </button>
         </form>
 
-        <button
-          className={styles.buttonSecondary}
-          type="button"
-          onClick={() => navigate("/")}
-          style={{ marginTop: 12 }}
-        >
-          Go to Landing
-        </button>
+        
 
         <p className={styles.p3}>
           Don't have an account?{" "}
