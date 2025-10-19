@@ -420,7 +420,7 @@ const DashboardAdminDeletedPrograms = () => {
                     key={item.slug || item.id}
                     className={styles.card}
                     onClick={() =>
-                      navigate(`/dashboard/admin/deleted-programs/${item.slug}`)
+                      navigate(`/dashboard/admin/new-programs/${item.slug}`)
                     }
                     style={{ cursor: "pointer" }}
                   >
@@ -476,7 +476,7 @@ const DashboardAdminDeletedPrograms = () => {
                         onClick={(e) => {
                           e.stopPropagation();
                           navigate(
-                            `/dashboard/admin/deleted-programs/${item.slug}`
+                            `/dashboard/admin/new-programs/${item.slug}`
                           );
                         }}
                       >

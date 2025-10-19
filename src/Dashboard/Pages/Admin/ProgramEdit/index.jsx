@@ -235,13 +235,11 @@ const DashboardAdminProgramEdit = () => {
       if (formData.gender) programData.append("gender", formData.gender);
       if (formData.status) programData.append("status", formData.status);
       formData.major.forEach((id) => programData.append("major", id));
-      formData.photos.forEach((photo, index) => {
-        if (typeof photo === "string") {
-          // Skip existing URLs; handle new files only
-        } else if (photo instanceof File) {
-          programData.append(`photos[${index}]`, photo);
-        }
-      });
+      // Include first new photo file under single 'photo' field (backend expects one)
+      const firstNewPhoto = formData.photos.find((p) => p instanceof File);
+      if (firstNewPhoto) {
+        programData.append("photo", firstNewPhoto);
+      }
 
       const response = await fetch(
         `https://teenvision-1.onrender.com/api/v1/programs/${slug}/`,
@@ -406,7 +404,7 @@ const DashboardAdminProgramEdit = () => {
                   />
                 </div>
                 <div className={styles.formGroup}>
-                  <label>Program Type</label>
+                  <label>Program Format</label>
                   <select
                     name="format"
                     value={formData.format}
@@ -414,7 +412,8 @@ const DashboardAdminProgramEdit = () => {
                   >
                     <option value="">Select Format</option>
                     <option value="online">Online</option>
-                    <option value="local">Local</option>
+                    <option value="offline">Offline</option>
+                    <option value="hybrid">Hybrid</option>
                   </select>
                 </div>
                 <div className={styles.formGroup}>
