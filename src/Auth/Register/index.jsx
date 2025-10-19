@@ -10,13 +10,45 @@ const Register = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!fullName) {
+      newErrors.fullName = "Full name is required.";
+    } else if (fullName.length < 2) {
+      newErrors.fullName = "Full name must be at least 2 characters long.";
+    }
+    if (!email) {
+      newErrors.email = "Email is required.";
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = "Please enter a valid email address.";
+    }
+    if (!password) {
+      newErrors.password = "Password is required.";
+    } else if (password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters long.";
+    }
+    return newErrors;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      Object.values(validationErrors).forEach((error) => {
+        toast.error(error, {
+          position: "top-right",
+          autoClose: 5000,
+        });
+      });
+      return;
+    }
+
     setLoading(true);
-    setError("");
+    setErrors({});
 
     try {
       const formData = new FormData();
@@ -43,27 +75,60 @@ const Register = () => {
         localStorage.setItem("refresh_token", response.data.refresh);
       }
 
-      toast.success("Registration Successful! Please sign in.", {
+      toast.success("Registration Successful!", {
         position: "top-right",
         autoClose: 3000,
       });
 
-      navigate("/login");
+      // Fetch programs and navigate to dashboard
+      await fetchAllPrograms();
+      navigate("/dashboard/home");
     } catch (err) {
-      const errorMessage =
-        err.response?.data?.detail ||
-        Object.values(err.response?.data || {}).join(" ") ||
-        err.request
-          ? "Unable to connect to the server. Please check if the backend is running."
-          : "An unexpected error occurred.";
+      let errorMessage;
+      if (err.response?.status === 400) {
+        if (err.response.data.email) {
+          errorMessage = "Email is already registered.";
+        } else if (err.response.data.password) {
+          errorMessage = "Password is too weak or invalid.";
+        } else {
+          errorMessage = "Invalid registration details.";
+        }
+      } else if (err.response?.status === 409) {
+        errorMessage = "User with this email already exists.";
+      } else if (err.request) {
+        errorMessage =
+          "Unable to connect to the server. Please check your network.";
+      } else {
+        errorMessage = "An unexpected error occurred. Please try again.";
+      }
 
-      setError(errorMessage);
+      setErrors({ general: errorMessage });
       toast.error(errorMessage, {
         position: "top-right",
         autoClose: 5000,
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchAllPrograms = async () => {
+    try {
+      const response = await axios.get(
+        "https://teenvision-1.onrender.com/api/v1/programs/",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
+
+      localStorage.setItem("programs", JSON.stringify(response.data.results));
+    } catch (err) {
+      toast.error("Failed to fetch programs", {
+        position: "top-right",
+        autoClose: 5000,
+      });
     }
   };
 
@@ -85,27 +150,29 @@ const Register = () => {
             placeholder="Full Name"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            required
-            className={error ? styles.errorInput : ""}
+            className={errors.fullName ? styles.errorInput : ""}
           />
+          {errors.fullName && <p className={styles.error}>{errors.fullName}</p>}
+
           <input
             type="email"
             placeholder="Email Address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required
-            className={error ? styles.errorInput : ""}
+            className={errors.email ? styles.errorInput : ""}
           />
+          {errors.email && <p className={styles.error}>{errors.email}</p>}
+
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
-            className={error ? styles.errorInput : ""}
+            className={errors.password ? styles.errorInput : ""}
           />
+          {errors.password && <p className={styles.error}>{errors.password}</p>}
 
-          {error && <p className={styles.error}>{error}</p>}
+          {errors.general && <p className={styles.error}>{errors.general}</p>}
 
           <button className={styles.button} type="submit" disabled={loading}>
             {loading ? <span className={styles.loader}></span> : "Continue"}

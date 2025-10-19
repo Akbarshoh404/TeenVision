@@ -25,12 +25,10 @@ const DashboardReviews = () => {
     return {
       programs: user.liked_programs || [],
       tutorials: user.liked_tutorials || [],
-      majors: user.liked_majors || [],
     };
   });
   const [majors, setMajors] = useState({});
   const [filteredItems, setFilteredItems] = useState([]);
-  const [viewMode, setViewMode] = useState("programs");
 
   useEffect(() => {
     const fetchMajors = async () => {
@@ -50,66 +48,81 @@ const DashboardReviews = () => {
     };
 
     const fetchLikedItems = () => {
-      if (viewMode === "programs") {
-        const storedPrograms = JSON.parse(
-          localStorage.getItem("programs") || "[]"
-        );
-        const storedTutorials = JSON.parse(
-          localStorage.getItem("tutorials") || "[]"
-        );
-        const allItems = [...storedPrograms, ...storedTutorials];
+      const storedPrograms = JSON.parse(
+        localStorage.getItem("programs") || "[]"
+      );
+      const storedTutorials = JSON.parse(
+        localStorage.getItem("tutorials") || "[]"
+      );
+      const allItems = [
+        ...storedPrograms.map((item) => ({ ...item, itemType: "program" })),
+        ...storedTutorials.map((item) => ({ ...item, itemType: "tutorial" })),
+      ];
 
-        const liked = allItems
-          .filter((item) =>
-            item.type === "program"
-              ? likedItems.programs.includes(item.id)
-              : likedItems.tutorials.includes(item.id)
-          )
-          .map((item) => ({
-            ...item,
-            photo:
-              item.photo ||
-              (item.type === "tutorial" ? tutorialImg : programImg),
-            desc: item.desc || "No description available",
-            date: item.created_at,
-            type: item.type || "program",
-            major: item.major || [],
-            gender:
-              item.gender === "any"
-                ? "All"
-                : item.gender
-                ? item.gender.charAt(0).toUpperCase() + item.gender.slice(1)
-                : "Unknown",
-            format: item.format
-              ? item.format.charAt(0).toUpperCase() + item.format.slice(1)
+      const liked = allItems
+        .filter((item) =>
+          item.itemType === "program"
+            ? likedItems.programs.includes(item.id)
+            : likedItems.tutorials.includes(item.id)
+        )
+        .map((item) => ({
+          ...item,
+          photo:
+            item.photo ||
+            (item.itemType === "tutorial" ? tutorialImg : programImg),
+          desc: item.desc || "No description available",
+          date: item.created_at,
+          type: item.itemType,
+          major: item.major || [],
+          gender:
+            item.gender === "any"
+              ? "All"
+              : item.gender
+              ? item.gender.charAt(0).toUpperCase() + item.gender.slice(1)
               : "Unknown",
-            itemType: item.type,
-          }));
+          format: item.format
+            ? item.format.charAt(0).toUpperCase() + item.format.slice(1)
+            : "Unknown",
+        }));
 
-        setFilteredItems(liked);
-      } else {
-        const likedMajors = Object.keys(majors)
-          .filter((majorId) => likedItems.majors.includes(parseInt(majorId)))
-          .map((majorId) => ({
-            id: majorId,
-            title: majors[majorId],
-            desc: `Explore ${majors[majorId]} opportunities`,
-            photo: null,
-            date: null,
-            type: "major",
-            major: [parseInt(majorId)],
-            gender: "All",
-            format: null,
-            itemType: "major",
-          }));
+      let filtered = [...liked];
 
-        setFilteredItems(likedMajors);
+      if (sortCriteria.start_age) {
+        filtered = filtered.filter(
+          (p) => !p.start_age || p.start_age >= parseInt(sortCriteria.start_age)
+        );
       }
+      if (sortCriteria.end_age) {
+        filtered = filtered.filter(
+          (p) => !p.end_age || p.end_age <= parseInt(sortCriteria.end_age)
+        );
+      }
+      if (sortCriteria.gender) {
+        filtered = filtered.filter(
+          (p) => p.gender === sortCriteria.gender || p.gender === "All"
+        );
+      }
+      if (sortCriteria.country) {
+        filtered = filtered.filter((p) => p.country === sortCriteria.country);
+      }
+      if (sortCriteria.major) {
+        filtered = filtered.filter((p) =>
+          p.major.includes(parseInt(sortCriteria.major))
+        );
+      }
+      if (sortCriteria.format) {
+        filtered = filtered.filter((p) => p.format === sortCriteria.format);
+      }
+      if (sortCriteria.type) {
+        filtered = filtered.filter((p) => p.type === sortCriteria.type);
+      }
+
+      setFilteredItems(filtered);
     };
 
     fetchMajors();
     fetchLikedItems();
-  }, [likedItems, viewMode, majors]);
+  }, [likedItems, sortCriteria]);
 
   const toggleNav = useCallback(() => {
     setIsNavOpen((prev) => !prev);
@@ -123,117 +136,16 @@ const DashboardReviews = () => {
     const { name, value } = e.target;
     setSortCriteria((prev) => ({ ...prev, [name]: value }));
 
-    if (viewMode === "programs") {
-      const storedPrograms = JSON.parse(
-        localStorage.getItem("programs") || "[]"
-      );
-      const storedTutorials = JSON.parse(
-        localStorage.getItem("tutorials") || "[]"
-      );
-      let allItems = [...storedPrograms, ...storedTutorials];
-
-      let items = allItems
-        .filter((item) =>
-          item.type === "program"
-            ? likedItems.programs.includes(item.id)
-            : likedItems.tutorials.includes(item.id)
-        )
-        .map((item) => ({
-          ...item,
-          photo:
-            item.photo || (item.type === "tutorial" ? tutorialImg : programImg),
-          desc: item.desc || "No description available",
-          date: item.created_at,
-          type: item.type || "program",
-          major: item.major || [],
-          gender:
-            item.gender === "any"
-              ? "All"
-              : item.gender
-              ? item.gender.charAt(0).toUpperCase() + item.gender.slice(1)
-              : "Unknown",
-          format: item.format
-            ? item.format.charAt(0).toUpperCase() + item.format.slice(1)
-            : "Unknown",
-          itemType: item.type,
-        }));
-
-      let filtered = [...items];
-
-      if (value === "reset") {
-        setSortCriteria({
-          start_age: "",
-          end_age: "",
-          gender: "",
-          country: "",
-          major: "",
-          format: "",
-          type: "",
-        });
-        setFilteredItems(items);
-        return;
-      }
-
-      if (name === "start_age" && value) {
-        filtered = filtered.filter(
-          (p) => !p.start_age || p.start_age >= parseInt(value)
-        );
-      } else if (name === "end_age" && value) {
-        filtered = filtered.filter(
-          (p) => !p.end_age || p.end_age <= parseInt(value)
-        );
-      } else if (name === "gender" && value) {
-        filtered = filtered.filter(
-          (p) => p.gender === value || p.gender === "All"
-        );
-      } else if (name === "country" && value) {
-        filtered = filtered.filter((p) => p.country === value);
-      } else if (name === "major" && value) {
-        filtered = filtered.filter((p) => p.major.includes(parseInt(value)));
-      } else if (name === "format" && value) {
-        filtered = filtered.filter((p) => p.format === value);
-      } else if (name === "type" && value) {
-        filtered = filtered.filter((p) => p.type === value);
-      }
-
-      setFilteredItems(filtered);
-    } else {
-      let majorsFiltered = Object.keys(majors)
-        .filter((majorId) => likedItems.majors.includes(parseInt(majorId)))
-        .map((majorId) => ({
-          id: majorId,
-          title: majors[majorId],
-          desc: `Explore ${majors[majorId]} opportunities`,
-          photo: null,
-          date: null,
-          type: "major",
-          major: [parseInt(majorId)],
-          gender: "All",
-          format: null,
-          itemType: "major",
-        }));
-
-      let filtered = [...majorsFiltered];
-
-      if (value === "reset") {
-        setSortCriteria({
-          start_age: "",
-          end_age: "",
-          gender: "",
-          country: "",
-          major: "",
-          format: "",
-          type: "",
-        });
-        setFilteredItems(majorsFiltered);
-        return;
-      }
-
-      if (name === "major" && value) {
-        filtered = filtered.filter((m) => m.major.includes(parseInt(value)));
-      }
-
-      setFilteredItems(filtered);
+    if (value === "reset") {
+      setSortCriteria({
+        start_age: "",
+        end_age: "",
+        gender: "",
+        country: "",
+        major: "",
+        format: "",
+        type: "",
+      });
     }
   };
 
@@ -242,81 +154,54 @@ const DashboardReviews = () => {
       const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No access token found");
 
-      if (itemType === "program" || itemType === "tutorial") {
-        await axios.post(
-          `https://teenvision-1.onrender.com/api/v1/programs/${slug}/like/`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        let updatedLikedPrograms;
-        let updatedLikedTutorials;
-        if (itemType === "program") {
-          updatedLikedPrograms = likedItems.programs.includes(itemId)
-            ? likedItems.programs.filter((id) => id !== itemId)
-            : [...new Set([...likedItems.programs, itemId])];
-          updatedLikedTutorials = likedItems.tutorials;
-        } else {
-          updatedLikedTutorials = likedItems.tutorials.includes(itemId)
-            ? likedItems.tutorials.filter((id) => id !== itemId)
-            : [...new Set([...likedItems.tutorials, itemId])];
-          updatedLikedPrograms = likedItems.programs;
+      await axios.post(
+        `https://teenvision-1.onrender.com/api/v1/programs/${slug}/like/`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
+      );
 
-        setLikedItems((prev) => ({
-          ...prev,
-          programs: updatedLikedPrograms,
-          tutorials: updatedLikedTutorials,
-        }));
+      let updatedLikedPrograms = likedItems.programs;
+      let updatedLikedTutorials = likedItems.tutorials;
+
+      if (itemType === "program") {
+        updatedLikedPrograms = likedItems.programs.includes(itemId)
+          ? likedItems.programs.filter((id) => id !== itemId)
+          : [...new Set([...likedItems.programs, itemId])];
+      } else if (itemType === "tutorial") {
+        updatedLikedTutorials = likedItems.tutorials.includes(itemId)
+          ? likedItems.tutorials.filter((id) => id !== itemId)
+          : [...new Set([...likedItems.tutorials, itemId])];
+      }
+
+      setLikedItems((prev) => ({
+        ...prev,
+        programs: updatedLikedPrograms,
+        tutorials: updatedLikedTutorials,
+      }));
+      localStorage.setItem(
+        "liked_programs",
+        JSON.stringify(updatedLikedPrograms)
+      );
+      localStorage.setItem(
+        "liked_tutorials",
+        JSON.stringify(updatedLikedTutorials)
+      );
+
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      if (user.id) {
         localStorage.setItem(
-          "liked_programs",
-          JSON.stringify(updatedLikedPrograms)
+          "user",
+          JSON.stringify({
+            ...user,
+            liked_programs: updatedLikedPrograms,
+            liked_tutorials: updatedLikedTutorials,
+          })
         );
-        localStorage.setItem(
-          "liked_tutorials",
-          JSON.stringify(updatedLikedTutorials)
-        );
-
-        const user = JSON.parse(localStorage.getItem("user") || "{}");
-        if (user.id) {
-          localStorage.setItem(
-            "user",
-            JSON.stringify({
-              ...user,
-              liked_programs: updatedLikedPrograms,
-              liked_tutorials: updatedLikedTutorials,
-            })
-          );
-        }
-      } else if (itemType === "major") {
-        let updatedLikedMajors = likedItems.majors.includes(itemId)
-          ? likedItems.majors.filter((id) => id !== itemId)
-          : [...new Set([...likedItems.majors, itemId])];
-
-        setLikedItems((prev) => ({
-          ...prev,
-          majors: updatedLikedMajors,
-        }));
-        localStorage.setItem(
-          "liked_majors",
-          JSON.stringify(updatedLikedMajors)
-        );
-
-        const user = JSON.parse(localStorage.getItem("user") || "{}");
-        if (user.id) {
-          localStorage.setItem(
-            "user",
-            JSON.stringify({
-              ...user,
-              liked_majors: updatedLikedMajors,
-            })
-          );
-        }
       }
     } catch (error) {
       console.error(`Error liking/unliking ${itemType}:`, error);
@@ -328,19 +213,6 @@ const DashboardReviews = () => {
         alert(`Failed to like/unlike ${itemType}. Please try again.`);
       }
     }
-  };
-
-  const toggleViewMode = () => {
-    setViewMode((prev) => (prev === "programs" ? "majors" : "programs"));
-    setSortCriteria({
-      start_age: "",
-      end_age: "",
-      gender: "",
-      country: "",
-      major: "",
-      format: "",
-      type: "",
-    });
   };
 
   const transitions = useTransition(filteredItems, {
@@ -383,92 +255,83 @@ const DashboardReviews = () => {
           <div className={styles.container}>
             <div className={styles.header}>
               <h2 className={styles.sectionTitle}>
-                Liked{" "}
-                {viewMode === "programs" ? "Programs and Tutorials" : "Majors"}
+                Liked Programs and Tutorials
               </h2>
-              <button className={styles.toggleButton} onClick={toggleViewMode}>
-                Switch to {viewMode === "programs" ? "Majors" : "Programs"}
-              </button>
             </div>
             {(likedItems.programs.length > 0 ||
-              likedItems.tutorials.length > 0 ||
-              likedItems.majors.length > 0) && (
+              likedItems.tutorials.length > 0) && (
               <div className={styles.sortSection}>
-                {viewMode === "programs" && (
-                  <>
-                    <select
-                      name="start_age"
-                      value={sortCriteria.start_age}
-                      onChange={handleSortChange}
-                    >
-                      <option value="">Start Age</option>
-                      {[12, 13, 14, 15, 16, 17, 18].map((age) => (
-                        <option key={age} value={age}>
-                          {age}
-                        </option>
-                      ))}
-                      <option value="reset">Reset</option>
-                    </select>
-                    <select
-                      name="end_age"
-                      value={sortCriteria.end_age}
-                      onChange={handleSortChange}
-                    >
-                      <option value="">End Age</option>
-                      {[12, 13, 14, 15, 16, 17, 18].map((age) => (
-                        <option key={age} value={age}>
-                          {age}
-                        </option>
-                      ))}
-                      <option value="reset">Reset</option>
-                    </select>
-                    <select
-                      name="gender"
-                      value={sortCriteria.gender}
-                      onChange={handleSortChange}
-                    >
-                      <option value="">Gender</option>
-                      <option value="All">All</option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="reset">Reset</option>
-                    </select>
-                    <select
-                      name="country"
-                      value={sortCriteria.country}
-                      onChange={handleSortChange}
-                    >
-                      <option value="">Country</option>
-                      {uniqueCountries.map((country) => (
-                        <option key={country} value={country}>
-                          {country}
-                        </option>
-                      ))}
-                      <option value="reset">Reset</option>
-                    </select>
-                    <select
-                      name="format"
-                      value={sortCriteria.format}
-                      onChange={handleSortChange}
-                    >
-                      <option value="">Format</option>
-                      <option value="Offline">Offline</option>
-                      <option value="Online">Online</option>
-                      <option value="Hybrid">Hybrid</option>
-                      <option value="reset">Reset</option>
-                    </select>
-                    <select
-                      name="type"
-                      value={sortCriteria.type}
-                      onChange={handleSortChange}
-                    >
-                      <option value="">Type</option>
-                      <option value="program">Program</option>
-                      <option value="tutorial">Tutorial</option>
-                      <option value="reset">Reset</option>
-                    </select>
-                  </>
-                )}
+                <select
+                  name="start_age"
+                  value={sortCriteria.start_age}
+                  onChange={handleSortChange}
+                >
+                  <option value="">Start Age</option>
+                  {[12, 13, 14, 15, 16, 17, 18].map((age) => (
+                    <option key={age} value={age}>
+                      {age}
+                    </option>
+                  ))}
+                  <option value="reset">Reset</option>
+                </select>
+                <select
+                  name="end_age"
+                  value={sortCriteria.end_age}
+                  onChange={handleSortChange}
+                >
+                  <option value="">End Age</option>
+                  {[12, 13, 14, 15, 16, 17, 18].map((age) => (
+                    <option key={age} value={age}>
+                      {age}
+                    </option>
+                  ))}
+                  <option value="reset">Reset</option>
+                </select>
+                <select
+                  name="gender"
+                  value={sortCriteria.gender}
+                  onChange={handleSortChange}
+                >
+                  <option value="">Gender</option>
+                  <option value="All">All</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="reset">Reset</option>
+                </select>
+                <select
+                  name="country"
+                  value={sortCriteria.country}
+                  onChange={handleSortChange}
+                >
+                  <option value="">Country</option>
+                  {uniqueCountries.map((country) => (
+                    <option key={country} value={country}>
+                      {country}
+                    </option>
+                  ))}
+                  <option value="reset">Reset</option>
+                </select>
+                <select
+                  name="format"
+                  value={sortCriteria.format}
+                  onChange={handleSortChange}
+                >
+                  <option value="">Format</option>
+                  <option value="Offline">Offline</option>
+                  <option value="Online">Online</option>
+                  <option value="Hybrid">Hybrid</option>
+                  <option value="reset">Reset</option>
+                </select>
+                <select
+                  name="type"
+                  value={sortCriteria.type}
+                  onChange={handleSortChange}
+                >
+                  <option value="">Type</option>
+                  <option value="program">Program</option>
+                  <option value="tutorial">Tutorial</option>
+                  <option value="reset">Reset</option>
+                </select>
                 <select
                   name="major"
                   value={sortCriteria.major}
@@ -488,11 +351,7 @@ const DashboardReviews = () => {
               <div className={styles.cards}>
                 {transitions((style, item) => (
                   <Link
-                    to={
-                      item.itemType === "major"
-                        ? `/dashboard/major/${item.id}`
-                        : `/dashboard/${item.type}/${item.slug}`
-                    }
+                    to={`/dashboard/${item.itemType}/${item.slug}`}
                     key={item.id}
                     className={styles.cardLink}
                   >
@@ -504,7 +363,7 @@ const DashboardReviews = () => {
                             alt={item.title}
                             onError={(e) => {
                               e.target.src =
-                                item.type === "tutorial"
+                                item.itemType === "tutorial"
                                   ? tutorialImg
                                   : programImg;
                             }}
@@ -518,9 +377,7 @@ const DashboardReviews = () => {
                           className={`${styles.likeIcon} ${
                             (item.itemType === "program"
                               ? likedItems.programs
-                              : item.itemType === "tutorial"
-                              ? likedItems.tutorials
-                              : likedItems.majors
+                              : likedItems.tutorials
                             ).includes(item.id)
                               ? styles.liked
                               : ""
@@ -532,9 +389,7 @@ const DashboardReviews = () => {
                         >
                           {(item.itemType === "program"
                             ? likedItems.programs
-                            : item.itemType === "tutorial"
-                            ? likedItems.tutorials
-                            : likedItems.majors
+                            : likedItems.tutorials
                           ).includes(item.id) ? (
                             <AiFillHeart size={24} />
                           ) : (
@@ -587,9 +442,10 @@ const DashboardReviews = () => {
               </div>
             ) : (
               <p className={styles.noPrograms}>
-                {likedItems[viewMode].length > 0
-                  ? `No matching ${viewMode}`
-                  : `No liked ${viewMode} yet`}
+                {likedItems.programs.length > 0 ||
+                likedItems.tutorials.length > 0
+                  ? "No matching programs or tutorials"
+                  : "No liked programs or tutorials yet"}
               </p>
             )}
           </div>

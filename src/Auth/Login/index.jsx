@@ -9,13 +9,40 @@ const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!email) {
+      newErrors.email = "Email is required.";
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = "Please enter a valid email address.";
+    }
+    if (!password) {
+      newErrors.password = "Password is required.";
+    } else if (password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters long.";
+    }
+    return newErrors;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      Object.values(validationErrors).forEach((error) => {
+        toast.error(error, {
+          position: "top-right",
+          autoClose: 5000,
+        });
+      });
+      return;
+    }
+
     setLoading(true);
-    setError("");
+    setErrors({});
 
     try {
       const response = await axios.post(
@@ -45,7 +72,6 @@ const Login = () => {
         autoClose: 3000,
       });
 
-      // Fetch user details to check is_staff
       try {
         const adminResponse = await axios.get(
           `https://teenvision-1.onrender.com/api/v1/admins/${response.data.user.id}/`,
@@ -69,12 +95,19 @@ const Login = () => {
         navigate("/dashboard/home");
       }
     } catch (err) {
-      const errorMessage =
-        err.response?.data?.detail || err.response?.data?.message || err.request
-          ? "Unable to connect to the server. Please check if the backend is running."
-          : err.message || "An unexpected error occurred.";
+      let errorMessage;
+      if (err.response?.status === 400) {
+        errorMessage = "Invalid email or password.";
+      } else if (err.response?.status === 401) {
+        errorMessage = "Unauthorized: Incorrect credentials.";
+      } else if (err.request) {
+        errorMessage =
+          "Unable to connect to the server. Please check your network.";
+      } else {
+        errorMessage = "An unexpected error occurred. Please try again.";
+      }
 
-      setError(errorMessage);
+      setErrors({ general: errorMessage });
       toast.error(errorMessage, {
         position: "top-right",
         autoClose: 5000,
@@ -122,19 +155,20 @@ const Login = () => {
             placeholder="Email Address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required
-            className={error ? styles.errorInput : ""}
+            className={errors.email ? styles.errorInput : ""}
           />
+          {errors.email && <p className={styles.error}>{errors.email}</p>}
+
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
-            className={error ? styles.errorInput : ""}
+            className={errors.password ? styles.errorInput : ""}
           />
+          {errors.password && <p className={styles.error}>{errors.password}</p>}
 
-          {error && <p className={styles.error}>{error}</p>}
+          {errors.general && <p className={styles.error}>{errors.general}</p>}
 
           <button className={styles.button} type="submit" disabled={loading}>
             {loading ? <span className={styles.loader}></span> : "Continue"}

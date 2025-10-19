@@ -4,47 +4,17 @@ import { Link } from "react-router-dom";
 import styles from "./style.module.scss";
 import { FiSearch, FiUser, FiMenu, FiX, FiLogOut } from "react-icons/fi";
 
-// Mock data (replace with your actual programs and tutorials arrays from localhost)
-const programs = [
-  {
-    id: 1,
-    title: "Coding Basics",
-    desc: "Learn coding basics",
-    link: "https://example.com/program1",
-    slug: "coding-basics",
-  },
-  {
-    id: 2,
-    title: "Advanced Algorithms",
-    desc: "Master algorithms",
-    link: "https://example.com/program2",
-    slug: "advanced-algorithms",
-  },
-];
-const tutorials = [
-  {
-    id: 3,
-    title: "JavaScript Guide",
-    desc: "JavaScript essentials",
-    link: "https://example.com/tutorial1",
-    slug: "javascript-guide",
-  },
-  {
-    id: 4,
-    title: "React Basics",
-    desc: "React fundamentals",
-    link: "https://example.com/tutorial2",
-    slug: "react-basics",
-  },
-];
-
 const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
-  const user = JSON.parse(localStorage.getItem("user"));
-  const userName = user?.full_name || "User";
-  const userEmail = user?.email || "user@example.com";
+  const user = JSON.parse(localStorage.getItem("user")) || {};
+  const userName = user.full_name || "User";
+  const userEmail = user.email || "user@example.com";
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Retrieve programs and tutorials from localStorage
+  const programs = JSON.parse(localStorage.getItem("programs")) || [];
+  const tutorials = JSON.parse(localStorage.getItem("tutorials")) || [];
 
   const handleSearch = (e) => {
     const query = e.target.value.toLowerCase();
@@ -56,18 +26,19 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
           .filter(
             (item) =>
               item.title.toLowerCase().includes(query) ||
-              (item.desc && item.desc.toLowerCase().includes(query))
+              (item.desc && item.desc.toLowerCase().includes(query)) ||
+              (item.country && item.country.toLowerCase().includes(query))
           )
           .map((item) => ({ ...item, type: "program" })),
         ...tutorials
           .filter(
             (item) =>
               item.title.toLowerCase().includes(query) ||
-              (item.desc && item.desc.toLowerCase().includes(query))
+              (item.desc && item.desc.toLowerCase().includes(query)) ||
+              (item.country && item.country.toLowerCase().includes(query))
           )
           .map((item) => ({ ...item, type: "tutorial" })),
       ];
-      console.log("Filtered results:", filteredResults);
       setSearchResults(filteredResults);
     } else {
       setSearchResults([]);
@@ -76,8 +47,6 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
 
   const openModal = () => {
     setIsModalOpen(true);
-    console.log("Programs:", programs);
-    console.log("Tutorials:", tutorials);
   };
 
   const closeModal = () => {
@@ -88,6 +57,10 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("programs");
+    localStorage.removeItem("tutorials");
     window.location.href = "/login";
   };
 
@@ -170,7 +143,10 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
                     {searchResults.map((item) => (
                       <div key={item.id} className={styles.resultItem}>
                         <h3>{item.title}</h3>
-                        <p>{item.desc || "No description available"}</p>
+                        <p>
+                          {item.desc || "No description available"} -{" "}
+                          {item.country || "N/A"}
+                        </p>
                         <Link
                           to={`/dashboard/${item.type}/${item.slug}`}
                           className={styles.cardLink}
@@ -190,7 +166,10 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
                     programs.map((program) => (
                       <div key={program.id} className={styles.resultItem}>
                         <h3>{program.title}</h3>
-                        <p>{program.desc || "No description available"}</p>
+                        <p>
+                          {program.desc || "No description available"} -{" "}
+                          {program.country || "N/A"}
+                        </p>
                         <Link
                           to={`/dashboard/program/${program.slug}`}
                           className={styles.cardLink}
@@ -207,7 +186,10 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
                     tutorials.map((tutorial) => (
                       <div key={tutorial.id} className={styles.resultItem}>
                         <h3>{tutorial.title}</h3>
-                        <p>{tutorial.desc || "No description available"}</p>
+                        <p>
+                          {tutorial.desc || "No description available"} -{" "}
+                          {tutorial.country || "N/A"}
+                        </p>
                         <Link
                           to={`/dashboard/tutorial/${tutorial.slug}`}
                           className={styles.cardLink}
