@@ -146,6 +146,14 @@ const Register = () => {
     <div className={`page-root ${styles.register}`}>
       <div className={styles.left}></div>
       <div className={styles.right}>
+        <button
+          className={styles.buttonSecondary}
+          type="button"
+          onClick={() => navigate("/")}
+          style={{ alignSelf: "flex-start", marginBottom: 12 }}
+        >
+          ← Back to Landing
+        </button>
         <div className={styles.texts}>
           <p className={styles.p1}>Sign Up</p>
           <p className={styles.p2}>
@@ -188,6 +196,8 @@ const Register = () => {
             {loading ? <span className={styles.loader}></span> : "Continue"}
           </button>
         </form>
+
+        
 
         <p className={styles.p3}>
           Already have an account?{" "}

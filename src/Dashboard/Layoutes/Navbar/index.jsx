@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styles from "./style.module.scss";
 import {
@@ -15,6 +15,16 @@ import { useNavigate } from "react-router-dom";
 
 const DashboardNavbar = ({ isNavOpen, toggleNav, closeNav }) => {
   const navigate = useNavigate();
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    return localStorage.getItem("sidebar_collapsed") === "true";
+  });
+
+  useEffect(() => {
+    document.documentElement.style.setProperty(
+      "--sidebar-width",
+      isCollapsed ? "80px" : "350px"
+    );
+  }, [isCollapsed]);
   return (
     <nav className={`${styles.navbar} ${isNavOpen ? styles.open : ""}`}>
       <button
@@ -35,6 +45,15 @@ const DashboardNavbar = ({ isNavOpen, toggleNav, closeNav }) => {
           TeenVision
         </span>
       </div>
+      {/* Collapsible toggle visible on wider screens */}
+      <button
+        className={styles.closeBtn}
+        onClick={() => setIsCollapsed((v) => !v)}
+        aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        style={{ top: 60 }}
+      >
+        {isCollapsed ? "»" : "«"}
+      </button>
       <ul className={styles.navList}>
         <li className={styles.navItem}>
           <a

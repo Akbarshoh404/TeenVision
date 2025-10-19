@@ -15,7 +15,7 @@ $secondary-text: #b0b8c4;
 
 .topBar {
   width: 100%;
-  padding-left: 350px;
+  padding-left: var(--sidebar-width, 350px);
   height: 80px;
   background-color: $primary-bg;
   display: flex;

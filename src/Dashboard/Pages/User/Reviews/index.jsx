@@ -22,9 +22,21 @@ const DashboardReviews = () => {
   });
   const [likedItems, setLikedItems] = useState(() => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const storedLikedPrograms = JSON.parse(
+      localStorage.getItem("liked_programs") || "[]"
+    );
+    const storedLikedTutorials = JSON.parse(
+      localStorage.getItem("liked_tutorials") || "[]"
+    );
     return {
-      programs: user.liked_programs || [],
-      tutorials: user.liked_tutorials || [],
+      programs:
+        (user.liked_programs && user.liked_programs.length > 0
+          ? user.liked_programs
+          : storedLikedPrograms) || [],
+      tutorials:
+        (user.liked_tutorials && user.liked_tutorials.length > 0
+          ? user.liked_tutorials
+          : storedLikedTutorials) || [],
     };
   });
   const [majors, setMajors] = useState({});
@@ -47,13 +59,33 @@ const DashboardReviews = () => {
       }
     };
 
-    const fetchLikedItems = () => {
-      const storedPrograms = JSON.parse(
-        localStorage.getItem("programs") || "[]"
-      );
-      const storedTutorials = JSON.parse(
-        localStorage.getItem("tutorials") || "[]"
-      );
+    const fetchLikedItems = async () => {
+      let storedPrograms = JSON.parse(localStorage.getItem("programs") || "[]");
+      let storedTutorials = JSON.parse(localStorage.getItem("tutorials") || "[]");
+
+      // Fallback: if local caches are empty (e.g., after re-login), fetch them
+      try {
+        if (!Array.isArray(storedPrograms) || storedPrograms.length === 0) {
+          const resPrograms = await fetch(
+            "https://teenvision-1.onrender.com/api/v1/programs/"
+          );
+          const dataPrograms = await resPrograms.json();
+          storedPrograms = (dataPrograms.results || []).filter(
+            (p) => p.type === "program"
+          );
+          localStorage.setItem("programs", JSON.stringify(storedPrograms));
+        }
+        if (!Array.isArray(storedTutorials) || storedTutorials.length === 0) {
+          const resTutorials = await fetch(
+            "https://teenvision-1.onrender.com/api/v1/programs/tutorials/"
+          );
+          const dataTutorials = await resTutorials.json();
+          storedTutorials = dataTutorials.results || [];
+          localStorage.setItem("tutorials", JSON.stringify(storedTutorials));
+        }
+      } catch (e) {
+        console.error("Failed to refresh caches for reviews:", e);
+      }
       const allItems = [
         ...storedPrograms.map((item) => ({ ...item, itemType: "program" })),
         ...storedTutorials.map((item) => ({ ...item, itemType: "tutorial" })),
@@ -193,16 +225,15 @@ const DashboardReviews = () => {
       );
 
       const user = JSON.parse(localStorage.getItem("user") || "{}");
-      if (user.id) {
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            ...user,
-            liked_programs: updatedLikedPrograms,
-            liked_tutorials: updatedLikedTutorials,
-          })
-        );
-      }
+      // Persist likes into user object for future sessions regardless of user id
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          ...user,
+          liked_programs: updatedLikedPrograms,
+          liked_tutorials: updatedLikedTutorials,
+        })
+      );
     } catch (error) {
       console.error(`Error liking/unliking ${itemType}:`, error);
       if (error.response?.status === 401) {

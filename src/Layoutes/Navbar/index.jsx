@@ -14,11 +14,14 @@ const LandingNavbar = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
+  const goToSearchDestination = () => {
+    const isAuthenticated = !!localStorage.getItem("access_token");
+    navigate(isAuthenticated ? "/dashboard/home" : "/login");
+  };
+
   const handleSearch = (e) => {
     if (e.key === "Enter") {
-      console.log("Searching for:", searchQuery);
-      // Implement your search logic here
-      // navigate(`/search?q=${searchQuery}`);
+      goToSearchDestination();
     }
   };
 
@@ -54,45 +57,14 @@ const LandingNavbar = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={handleSearch}
+                onFocus={goToSearchDestination}
               />
               <SearchIcon className={styles.searchIcon} />
             </div>
-            <p
-              onClick={() => {
-                navigate("/");
-                setIsDrawerOpen(false);
-              }}
-            >
-              Home
-              <span className={styles.line}></span>
-            </p>
-            {/* <p
-              onClick={() => {
-                navigate("/about");
-                setIsDrawerOpen(false);
-              }}
-            >
-              About us
-              <span className={styles.line}></span>
-            </p>
-            <p
-              onClick={() => {
-                navigate("/majors");
-                setIsDrawerOpen(false);
-              }}
-            >
-              Majors
-              <span className={styles.line}></span>
-            </p>
-            <p
-              onClick={() => {
-                navigate("/exchangeprograms");
-                setIsDrawerOpen(false);
-              }}
-            >
-              Exchange Programs
-              <span className={styles.line}></span>
-            </p> */}
+            <p onClick={() => {document.getElementById('home')?.scrollIntoView({behavior: 'smooth'}); setIsDrawerOpen(false);}}>Home<span className={styles.line}></span></p>
+            <p onClick={() => {document.getElementById('about')?.scrollIntoView({behavior: 'smooth'}); setIsDrawerOpen(false);}}>About<span className={styles.line}></span></p>
+            <p onClick={() => {document.getElementById('programs')?.scrollIntoView({behavior: 'smooth'}); setIsDrawerOpen(false);}}>Programs<span className={styles.line}></span></p>
+            <p onClick={() => {document.getElementById('reviews')?.scrollIntoView({behavior: 'smooth'}); setIsDrawerOpen(false);}}>Reviews<span className={styles.line}></span></p>
             <button
               type="button"
               onClick={() => {
@@ -113,22 +85,23 @@ const LandingNavbar = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyPress={handleSearch}
+              onFocus={goToSearchDestination}
             />
             <SearchIcon className={styles.searchIcon} />
           </div>
           <div className={styles.navLinks}>
-            <p onClick={() => navigate("/")}>
+            <p onClick={()=> document.getElementById('home')?.scrollIntoView({behavior:'smooth'})}>
               Home <span className={styles.line}></span>
             </p>
-            {/* <p onClick={() => navigate("/about")}>
-              About us <span className={styles.line}></span>
+            <p onClick={()=> document.getElementById('about')?.scrollIntoView({behavior:'smooth'})}>
+              About <span className={styles.line}></span>
             </p>
-            <p onClick={() => navigate("/majors")}>
-              Majors <span className={styles.line}></span>
+            <p onClick={()=> document.getElementById('programs')?.scrollIntoView({behavior:'smooth'})}>
+              Programs <span className={styles.line}></span>
             </p>
-            <p onClick={() => navigate("/exchangeprograms")}>
-              Exchange Programs <span className={styles.line}></span>
-            </p> */}
+            <p onClick={()=> document.getElementById('reviews')?.scrollIntoView({behavior:'smooth'})}>
+              Reviews <span className={styles.line}></span>
+            </p>
             <button type="button" onClick={() => navigate("/register")}>
               Registration
             </button>

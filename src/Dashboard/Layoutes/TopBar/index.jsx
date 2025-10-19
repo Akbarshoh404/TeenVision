@@ -6,11 +6,14 @@ import { FiSearch, FiUser, FiMenu, FiX, FiLogOut } from "react-icons/fi";
 
 const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
   const user = JSON.parse(localStorage.getItem("user")) || {};
-  const userName = user.full_name || "User";
+  const userName = user.full_name || user.username || user.email?.split("@")[0] || "User";
   const userEmail = user.email || "user@example.com";
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    return localStorage.getItem("sidebar_collapsed") === "true";
+  });
 
   // Retrieve programs and tutorials from localStorage
   const programs = JSON.parse(localStorage.getItem("programs")) || [];
@@ -64,6 +67,17 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
     window.location.href = "/login";
   };
 
+  const toggleCollapse = () => {
+    const next = !isCollapsed;
+    setIsCollapsed(next);
+    localStorage.setItem("sidebar_collapsed", String(next));
+    // set CSS var for layout spacing
+    document.documentElement.style.setProperty(
+      "--sidebar-width",
+      next ? "80px" : "350px"
+    );
+  };
+
   return (
     <>
       <header className={styles.topBar}>
@@ -75,6 +89,14 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
             aria-expanded={isNavOpen}
           >
             {isNavOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+          </button>
+          <button
+            className={styles.hamburger}
+            onClick={toggleCollapse}
+            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            style={{ left: 60 }}
+          >
+            {isCollapsed ? "»" : "«"}
           </button>
           <div className={styles.responsiveIcons}>
             <button
