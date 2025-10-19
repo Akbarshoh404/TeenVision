@@ -61,10 +61,46 @@ const LandingNavbar = () => {
               />
               <SearchIcon className={styles.searchIcon} />
             </div>
-            <p onClick={() => {document.getElementById('home')?.scrollIntoView({behavior: 'smooth'}); setIsDrawerOpen(false);}}>Home<span className={styles.line}></span></p>
-            <p onClick={() => {document.getElementById('about')?.scrollIntoView({behavior: 'smooth'}); setIsDrawerOpen(false);}}>About<span className={styles.line}></span></p>
-            <p onClick={() => {document.getElementById('programs')?.scrollIntoView({behavior: 'smooth'}); setIsDrawerOpen(false);}}>Programs<span className={styles.line}></span></p>
-            <p onClick={() => {document.getElementById('reviews')?.scrollIntoView({behavior: 'smooth'}); setIsDrawerOpen(false);}}>Reviews<span className={styles.line}></span></p>
+            <p
+              onClick={() => {
+                document
+                  .getElementById("home")
+                  ?.scrollIntoView({ behavior: "smooth" });
+                setIsDrawerOpen(false);
+              }}
+            >
+              Home<span className={styles.line}></span>
+            </p>
+            <p
+              onClick={() => {
+                document
+                  .getElementById("about")
+                  ?.scrollIntoView({ behavior: "smooth" });
+                setIsDrawerOpen(false);
+              }}
+            >
+              About<span className={styles.line}></span>
+            </p>
+            <p
+              onClick={() => {
+                document
+                  .getElementById("programs")
+                  ?.scrollIntoView({ behavior: "smooth" });
+                setIsDrawerOpen(false);
+              }}
+            >
+              Programs<span className={styles.line}></span>
+            </p>
+            <p
+              onClick={() => {
+                document
+                  .getElementById("reviews")
+                  ?.scrollIntoView({ behavior: "smooth" });
+                setIsDrawerOpen(false);
+              }}
+            >
+              Reviews<span className={styles.line}></span>
+            </p>
             <button
               type="button"
               onClick={() => {
@@ -90,16 +126,48 @@ const LandingNavbar = () => {
             <SearchIcon className={styles.searchIcon} />
           </div>
           <div className={styles.navLinks}>
-            <a href="#home" onClick={(e)=>{e.preventDefault(); document.getElementById('home')?.scrollIntoView({behavior:'smooth'});}}>
+            <a
+              href="#home"
+              onClick={(e) => {
+                e.preventDefault();
+                document
+                  .getElementById("home")
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
               Home <span className={styles.line}></span>
             </a>
-            <a href="#about" onClick={(e)=>{e.preventDefault(); document.getElementById('about')?.scrollIntoView({behavior:'smooth'});}}>
+            <a
+              href="#about"
+              onClick={(e) => {
+                e.preventDefault();
+                document
+                  .getElementById("about")
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
               About <span className={styles.line}></span>
             </a>
-            <a href="#programs" onClick={(e)=>{e.preventDefault(); document.getElementById('programs')?.scrollIntoView({behavior:'smooth'});}}>
+            <a
+              href="#reviews"
+              onClick={(e) => {
+                e.preventDefault();
+                document
+                  .getElementById("reviews")
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
               Programs <span className={styles.line}></span>
             </a>
-            <a href="#reviews" onClick={(e)=>{e.preventDefault(); document.getElementById('reviews')?.scrollIntoView({behavior:'smooth'});}}>
+            <a
+              href="#programs"
+              onClick={(e) => {
+                e.preventDefault();
+                document
+                  .getElementById("programs")
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
               Reviews <span className={styles.line}></span>
             </a>
             <button type="button" onClick={() => navigate("/register")}>

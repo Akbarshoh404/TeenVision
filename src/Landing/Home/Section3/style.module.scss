@@ -1,8 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100..900&display=swap");
 
 * {
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
@@ -122,12 +122,12 @@
   text-align: center;
 }
 
-.csMajor {
+.computer scienceMajor {
   font-weight: 600;
   border-width: 2px;
 }
 
-.mathMajor {
+.mathematicsMajor {
   border-style: dashed;
 }
 
@@ -186,6 +186,12 @@
   gap: 6px;
 }
 
+.countryFlag {
+  width: 16px;
+  height: 12px;
+  vertical-align: middle;
+}
+
 .separator {
   font-family: Poppins, sans-serif;
   font-weight: 400;
@@ -203,6 +209,14 @@
   text-align: left;
   padding: 0 24px 24px;
   flex-grow: 1;
+}
+
+.noPrograms {
+  font-family: Poppins, sans-serif;
+  font-size: 16px;
+  color: #777;
+  text-align: center;
+  grid-column: span 3;
 }
 
 @media screen and (max-width: 1500px) {
@@ -253,6 +267,10 @@
   .title {
     font-size: 36px;
     line-height: 42px;
+  }
+
+  .noPrograms {
+    grid-column: span 2;
   }
 }
 
@@ -313,6 +331,10 @@
   .seeMoreButton {
     font-size: 16px;
     padding: 8px 16px;
+  }
+
+  .noPrograms {
+    grid-column: span 1;
   }
 }
 

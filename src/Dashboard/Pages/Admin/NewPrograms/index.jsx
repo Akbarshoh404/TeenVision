@@ -24,6 +24,36 @@ const DashboardAdminNewPrograms = () => {
     funding: "",
   });
   const navigate = useNavigate();
+  const LIMIT = 10; // Matches API's default limit
+
+  const fetchAllPages = async (url, token, accumulatedItems = []) => {
+    try {
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+      });
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Unauthorized. Redirecting to login...");
+        }
+        throw new Error(`Failed to fetch data: ${response.status}`);
+      }
+      const data = await response.json();
+      const newItems = (data.results || []).map((item) => ({
+        ...item,
+        type: item.type.charAt(0).toUpperCase() + item.type.slice(1),
+      }));
+      const allItems = [...accumulatedItems, ...newItems];
+      if (data.next) {
+        return fetchAllPages(data.next, token, allItems);
+      }
+      return allItems;
+    } catch (err) {
+      throw err;
+    }
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -36,58 +66,26 @@ const DashboardAdminNewPrograms = () => {
         );
       }
 
-      const [majorsResponse, programsResponse, tutorialsResponse] =
-        await Promise.all([
-          fetch("https://teenvision-1.onrender.com/api/v1/majors/", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-            },
-          }),
-          fetch("https://teenvision-1.onrender.com/api/v1/programs/", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-            },
-          }),
-          fetch(
-            "https://teenvision-1.onrender.com/api/v1/programs/tutorials/",
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                Accept: "application/json",
-              },
-            }
-          ),
-        ]);
-
-      if (!majorsResponse.ok || !programsResponse.ok || !tutorialsResponse.ok) {
-        if (
-          majorsResponse.status === 401 ||
-          programsResponse.status === 401 ||
-          tutorialsResponse.status === 401
-        ) {
-          throw new Error("Unauthorized. Redirecting to login...");
-        }
-        throw new Error(
-          `Failed to fetch data: Majors ${majorsResponse.status}, Programs ${programsResponse.status}, Tutorials ${tutorialsResponse.status}`
-        );
-      }
-
-      const [majorsData, programsData, tutorialsData] = await Promise.all([
-        majorsResponse.json(),
-        programsResponse.json(),
-        tutorialsResponse.json(),
+      const [majorsData, programItems, tutorialItems] = await Promise.all([
+        fetch("https://teenvision-1.onrender.com/api/v1/majors/", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }).then(async (res) => {
+          if (!res.ok) throw new Error(`Majors fetch failed: ${res.status}`);
+          return res.json();
+        }),
+        fetchAllPages(
+          `https://teenvision-1.onrender.com/api/v1/programs/?limit=${LIMIT}`,
+          token
+        ),
+        fetchAllPages(
+          `https://teenvision-1.onrender.com/api/v1/programs/tutorials/?limit=${LIMIT}`,
+          token
+        ),
       ]);
 
-      const programItems = (programsData.results || []).map((item) => ({
-        ...item,
-        type: item.type.charAt(0).toUpperCase() + item.type.slice(1),
-      }));
-      const tutorialItems = (tutorialsData.results || []).map((item) => ({
-        ...item,
-        type: item.type.charAt(0).toUpperCase() + item.type.slice(1),
-      }));
       const uniqueItems = [
         ...programItems,
         ...tutorialItems.filter(

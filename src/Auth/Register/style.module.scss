@@ -1,12 +1,18 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
 .register {
   width: 100%;
   height: 100vh;
   background: #070d18;
   color: white !important;
   display: flex;
-  overflow: hidden; /* Hide scrollbars during animations */
+  overflow: hidden;
 }
 
 .left {
@@ -28,7 +34,46 @@
   justify-content: center;
   gap: 30px;
   padding: 0 150px;
+  position: relative; /* Added for absolute positioning of back button */
   animation: fadeInRight 1s ease-out;
+}
+
+.backButton {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: none;
+  border: 1px solid #42bdec;
+  border-radius: 8px;
+  color: #ffffff;
+  font-family: Poppins, sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease,
+    box-shadow 0.3s ease;
+
+  &:hover {
+    background-color: #42bdec;
+    transform: translateX(-2px); /* Slight left shift to emphasize "back" */
+    box-shadow: 0 0 8px rgba(66, 189, 236, 0.3);
+  }
+}
+
+.backIcon {
+  width: 16px;
+  height: 16px;
+  stroke: #ffffff;
+  transition: stroke 0.3s ease;
+
+  .backButton:hover & {
+    stroke: #070d18; /* Darker stroke on hover for contrast */
+  }
 }
 
 .texts {
@@ -117,34 +162,6 @@
 
 .p3 span:hover {
   color: #6b9cff;
-}
-
-.confirm {
-  padding-top: 30px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.confirm input[type="checkbox"] {
-  width: 25px;
-  height: 25px;
-  accent-color: #242424;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.confirm input[type="checkbox"]:checked {
-  background-color: #242424;
-}
-
-.confirm label {
-  font-family: Poppins, sans-serif;
-  font-size: 16px;
-  color: #7f7f7f;
-  font-weight: 500;
-  line-height: 24px;
-  letter-spacing: 0%;
 }
 
 .button {
@@ -250,21 +267,45 @@
   .right {
     padding: 0 50px;
   }
+
+  .backButton {
+    top: 15px;
+    left: 15px;
+    padding: 8px 16px;
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  .backIcon {
+    width: 14px;
+    height: 14px;
+  }
 }
 
 @media (max-width: 420px) {
   .right {
     padding: 0 30px;
   }
+
   .p3 {
     font-size: 14px;
   }
+
   .p2 {
     font-size: 16px;
   }
-  .confirm input {
-    height: 40px;
-    width: 40px;
+
+  .backButton {
+    top: 10px;
+    left: 10px;
+    padding: 6px 12px;
+    font-size: 12px;
+    line-height: 20px;
+  }
+
+  .backIcon {
+    width: 12px;
+    height: 12px;
   }
 }
 
@@ -272,5 +313,10 @@
   .right {
     gap: 10px;
     padding: 0 12px;
+  }
+
+  .backButton {
+    top: 8px;
+    left: 8px;
   }
 }

@@ -18,7 +18,7 @@ const DashboardAdminCreatePrograms = () => {
     link: "",
     country: "",
     format: "",
-    photo: "", // Will store File when chosen
+    photo: "", // Now stores URL string instead of File
     type: "",
     funding: "",
     start_age: "",
@@ -68,14 +68,12 @@ const DashboardAdminCreatePrograms = () => {
   }, [navigate]);
 
   const handleInputChange = (event) => {
-    const { name, value, files } = event.target;
+    const { name, value } = event.target;
     if (name === "major") {
       const selectedIds = Array.from(event.target.selectedOptions).map(
         (option) => parseInt(option.value, 10)
       );
       setFormData((prev) => ({ ...prev, major: selectedIds }));
-    } else if (name === "photo" && files && files.length > 0) {
-      setFormData((prev) => ({ ...prev, photo: files[0] }));
     } else {
       setFormData((prev) => ({
         ...prev,
@@ -106,9 +104,7 @@ const DashboardAdminCreatePrograms = () => {
       programData.append("link", formData.link);
       if (formData.country) programData.append("country", formData.country);
       if (formData.format) programData.append("format", formData.format);
-      if (formData.photo instanceof File) {
-        programData.append("photo", formData.photo);
-      }
+      if (formData.photo) programData.append("photo", formData.photo); // Now a URL string
       programData.append("type", formData.type);
       if (formData.funding) programData.append("funding", formData.funding);
       if (formData.start_age)
@@ -273,12 +269,13 @@ const DashboardAdminCreatePrograms = () => {
                 </select>
               </div>
               <div className={styles.formGroup}>
-                <label>Photo</label>
+                <label>Photo URL</label>
                 <input
-                  type="file"
+                  type="url"
                   name="photo"
-                  accept="image/*"
+                  value={formData.photo}
                   onChange={handleInputChange}
+                  placeholder="e.g., https://example.com/image.jpg"
                 />
               </div>
               <div className={styles.formGroup}>

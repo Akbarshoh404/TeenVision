@@ -45,7 +45,6 @@ const Login = () => {
     setErrors({});
 
     try {
-      // Try primary login endpoint with form-encoded body
       const formBody = new URLSearchParams();
       formBody.append("email", email);
       formBody.append("password", password);
@@ -60,8 +59,6 @@ const Login = () => {
         }
       );
 
-      // Some deployments return tokens and user from /auth/login/.
-      // If they don't, fall back to /auth/token/ for JWTs.
       let access = loginRes.data?.access;
       let refresh = loginRes.data?.refresh;
       let user = loginRes.data?.user;
@@ -80,7 +77,6 @@ const Login = () => {
       }
 
       if (!user) {
-        // Persist minimal user info; detailed profile can be fetched later
         user = { email };
       }
 
@@ -111,7 +107,6 @@ const Login = () => {
             navigate("/dashboard/home");
           }
         } else {
-          // No user id to check admin; treat as normal user
           await fetchAllPrograms();
           navigate("/dashboard/home");
         }
@@ -125,6 +120,8 @@ const Login = () => {
         errorMessage = "Invalid email or password.";
       } else if (err.response?.status === 401) {
         errorMessage = "Unauthorized: Incorrect credentials.";
+      } else if (err.response?.status === 429) {
+        errorMessage = "Too many requests. Please try again later.";
       } else if (err.request) {
         errorMessage =
           "Unable to connect to the server. Please check your network.";
@@ -166,6 +163,27 @@ const Login = () => {
     <div className={`page-root ${styles.login}`}>
       <div className={styles.left}></div>
       <div className={styles.right}>
+        <button
+          className={styles.backButton}
+          type="button"
+          onClick={() => navigate("/")}
+        >
+          <svg
+            className={styles.backIcon}
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+          Back to Landing
+        </button>
         <div className={styles.texts}>
           <p className={styles.p1}>Sign In</p>
           <p className={styles.p2}>
@@ -199,15 +217,6 @@ const Login = () => {
             {loading ? <span className={styles.loader}></span> : "Continue"}
           </button>
         </form>
-
-        <button
-          className={styles.buttonSecondary}
-          type="button"
-          onClick={() => navigate("/")}
-          style={{ marginTop: 12 }}
-        >
-          Go to Landing
-        </button>
 
         <p className={styles.p3}>
           Don't have an account?{" "}

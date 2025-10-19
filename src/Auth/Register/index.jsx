@@ -66,7 +66,6 @@ const Register = () => {
         }
       );
 
-      // Get JWT tokens after successful registration
       try {
         const tokenRes = await axios.post(
           "https://teenvision-1.onrender.com/api/v1/auth/token/",
@@ -76,9 +75,7 @@ const Register = () => {
           localStorage.setItem("access_token", tokenRes.data.access);
           localStorage.setItem("refresh_token", tokenRes.data.refresh);
         }
-      } catch (_) {
-        // If token acquisition fails, continue without blocking navigation
-      }
+      } catch (_) {}
 
       localStorage.setItem(
         "user",
@@ -90,7 +87,6 @@ const Register = () => {
         autoClose: 3000,
       });
 
-      // Fetch programs and navigate to dashboard
       await fetchAllPrograms();
       navigate("/dashboard/home");
     } catch (err) {
@@ -146,6 +142,27 @@ const Register = () => {
     <div className={`page-root ${styles.register}`}>
       <div className={styles.left}></div>
       <div className={styles.right}>
+        <button
+          className={styles.backButton}
+          type="button"
+          onClick={() => navigate("/")}
+        >
+          <svg
+            className={styles.backIcon}
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+          Back to Landing
+        </button>
         <div className={styles.texts}>
           <p className={styles.p1}>Sign Up</p>
           <p className={styles.p2}>
@@ -188,15 +205,6 @@ const Register = () => {
             {loading ? <span className={styles.loader}></span> : "Continue"}
           </button>
         </form>
-
-        <button
-          className={styles.buttonSecondary}
-          type="button"
-          onClick={() => navigate("/")}
-          style={{ marginTop: 12 }}
-        >
-          Go to Landing
-        </button>
 
         <p className={styles.p3}>
           Already have an account?{" "}
