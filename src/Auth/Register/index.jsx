@@ -142,6 +142,27 @@ const Register = () => {
     <div className={`page-root ${styles.register}`}>
       <div className={styles.left}></div>
       <div className={styles.right}>
+        <button
+          className={styles.backButton}
+          type="button"
+          onClick={() => navigate("/")}
+        >
+          <svg
+            className={styles.backIcon}
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+          Back to Landing
+        </button>
         <div className={styles.texts}>
           <p className={styles.p1}>Sign Up</p>
           <p className={styles.p2}>
@@ -184,8 +205,6 @@ const Register = () => {
             {loading ? <span className={styles.loader}></span> : "Continue"}
           </button>
         </form>
-
-        
 
         <p className={styles.p3}>
           Already have an account?{" "}

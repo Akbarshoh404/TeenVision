@@ -61,7 +61,6 @@ const LandingNavbar = () => {
               />
               <SearchIcon className={styles.searchIcon} />
             </div>
-<<<<<<< HEAD
             <p
               onClick={() => {
                 document
@@ -102,12 +101,6 @@ const LandingNavbar = () => {
             >
               Reviews<span className={styles.line}></span>
             </p>
-=======
-            <p onClick={() => {document.getElementById('home')?.scrollIntoView({behavior: 'smooth'}); setIsDrawerOpen(false);}}>Home<span className={styles.line}></span></p>
-            <p onClick={() => {document.getElementById('about')?.scrollIntoView({behavior: 'smooth'}); setIsDrawerOpen(false);}}>About<span className={styles.line}></span></p>
-            <p onClick={() => {document.getElementById('programs')?.scrollIntoView({behavior: 'smooth'}); setIsDrawerOpen(false);}}>Programs<span className={styles.line}></span></p>
-            <p onClick={() => {document.getElementById('reviews')?.scrollIntoView({behavior: 'smooth'}); setIsDrawerOpen(false);}}>Reviews<span className={styles.line}></span></p>
->>>>>>> a186fd603ec2cf2474e90a314ea3d0880b712b4e
             <button
               type="button"
               onClick={() => {
@@ -133,7 +126,6 @@ const LandingNavbar = () => {
             <SearchIcon className={styles.searchIcon} />
           </div>
           <div className={styles.navLinks}>
-<<<<<<< HEAD
             <a
               href="#home"
               onClick={(e) => {
@@ -157,17 +149,6 @@ const LandingNavbar = () => {
               About <span className={styles.line}></span>
             </a>
             <a
-              href="#reviews"
-              onClick={(e) => {
-                e.preventDefault();
-                document
-                  .getElementById("reviews")
-                  ?.scrollIntoView({ behavior: "smooth" });
-              }}
-            >
-              Programs <span className={styles.line}></span>
-            </a>
-            <a
               href="#programs"
               onClick={(e) => {
                 e.preventDefault();
@@ -176,22 +157,19 @@ const LandingNavbar = () => {
                   ?.scrollIntoView({ behavior: "smooth" });
               }}
             >
+              Programs <span className={styles.line}></span>
+            </a>
+            <a
+              href="#reviews"
+              onClick={(e) => {
+                e.preventDefault();
+                document
+                  .getElementById("reviews")
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
               Reviews <span className={styles.line}></span>
             </a>
-=======
-            <p onClick={()=> document.getElementById('home')?.scrollIntoView({behavior:'smooth'})}>
-              Home <span className={styles.line}></span>
-            </p>
-            <p onClick={()=> document.getElementById('about')?.scrollIntoView({behavior:'smooth'})}>
-              About <span className={styles.line}></span>
-            </p>
-            <p onClick={()=> document.getElementById('programs')?.scrollIntoView({behavior:'smooth'})}>
-              Programs <span className={styles.line}></span>
-            </p>
-            <p onClick={()=> document.getElementById('reviews')?.scrollIntoView({behavior:'smooth'})}>
-              Reviews <span className={styles.line}></span>
-            </p>
->>>>>>> a186fd603ec2cf2474e90a314ea3d0880b712b4e
             <button type="button" onClick={() => navigate("/register")}>
               Registration
             </button>

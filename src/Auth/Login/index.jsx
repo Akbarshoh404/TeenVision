@@ -164,7 +164,6 @@ const Login = () => {
       <div className={styles.left}></div>
       <div className={styles.right}>
         <button
-<<<<<<< HEAD
           className={styles.backButton}
           type="button"
           onClick={() => navigate("/")}
@@ -184,14 +183,6 @@ const Login = () => {
             <path d="M15 18l-6-6 6-6" />
           </svg>
           Back to Landing
-=======
-          className={styles.buttonSecondary}
-          type="button"
-          onClick={() => navigate("/")}
-          style={{ alignSelf: "flex-start", marginBottom: 12 }}
-        >
-          ← Back to Landing
->>>>>>> a186fd603ec2cf2474e90a314ea3d0880b712b4e
         </button>
         <div className={styles.texts}>
           <p className={styles.p1}>Sign In</p>
@@ -226,8 +217,6 @@ const Login = () => {
             {loading ? <span className={styles.loader}></span> : "Continue"}
           </button>
         </form>
-
-        
 
         <p className={styles.p3}>
           Don't have an account?{" "}

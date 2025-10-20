@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./style.module.scss";
 import img from "../../../Components/images/cardexample.png";
-<<<<<<< HEAD
 
-=======
->>>>>>> a186fd603ec2cf2474e90a314ea3d0880b712b4e
 const countryCodeMap = {
   USA: "us",
   Canada: "ca",
@@ -16,7 +13,6 @@ const countryCodeMap = {
 
 const HomeSection3 = () => {
   const [programs, setPrograms] = useState([]);
-<<<<<<< HEAD
   const [majors, setMajors] = useState([]);
 
   const fetchAllPages = async (url, accumulatedItems = []) => {
@@ -53,26 +49,12 @@ const HomeSection3 = () => {
         const items = programData
           .filter((p) => p.type === "program" && p.status === "on")
           .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-=======
-
-  useEffect(() => {
-    const fetchPrograms = async () => {
-      try {
-        const res = await fetch(
-          "https://teenvision-1.onrender.com/api/v1/programs/"
-        );
-        const data = await res.json();
-        // Normalize and take latest items; fall back to placeholder image
-        const items = (data.results || [])
-          .filter((p) => p.type === "program")
->>>>>>> a186fd603ec2cf2474e90a314ea3d0880b712b4e
           .slice(0, 6)
           .map((p) => ({
             ...p,
             photo: p.photo || img,
             date: p.created_at,
           }));
-<<<<<<< HEAD
 
         setMajors(majorsData.results || []);
         setPrograms(items);
@@ -90,17 +72,6 @@ const HomeSection3 = () => {
     return major ? major.name : "Unknown";
   };
 
-=======
-        setPrograms(items);
-      } catch (e) {
-        // On failure, keep empty list; UI can remain minimal
-        setPrograms([]);
-      }
-    };
-    fetchPrograms();
-  }, []);
-
->>>>>>> a186fd603ec2cf2474e90a314ea3d0880b712b4e
   return (
     <section className={styles.section}>
       <div className={styles.container}>
@@ -112,7 +83,6 @@ const HomeSection3 = () => {
         </div>
 
         <div className={styles.cards}>
-<<<<<<< HEAD
           {programs.length === 0 ? (
             <p className={styles.noPrograms}>No programs available.</p>
           ) : (
@@ -133,11 +103,7 @@ const HomeSection3 = () => {
                         <span
                           key={index}
                           className={`${styles.majorButton} ${
-                            styles[
-                              `${majorName
-                                .toLowerCase()
-                                .replace(/\s+/g, "")}Major`
-                            ] || ""
+                            styles[`${majorName.toLowerCase()}Major`] || ""
                           }`}
                         >
                           {majorName}
@@ -163,17 +129,6 @@ const HomeSection3 = () => {
                       />
                     )}
                     {program.country || "Unknown"}
-=======
-          {programs.map((program) => (
-            <div key={program.id} className={styles.card}>
-              <div className={styles.cardImage}>
-                <img src={program.photo} alt={program.title} />
-              </div>
-              <div className={styles.cardMajors}>
-                {(program.major || []).map((major, index) => (
-                  <span key={index} className={styles.majorButton}>
-                    {typeof major === "string" ? major : String(major)}
->>>>>>> a186fd603ec2cf2474e90a314ea3d0880b712b4e
                   </span>
                   <span className={styles.separator}>|</span>
                   <span className={styles.cardType}>
