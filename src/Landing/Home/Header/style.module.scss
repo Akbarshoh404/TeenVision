@@ -8,36 +8,36 @@
 
 .header {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   background: #070d18;
   color: white;
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .container {
-  height: 100%;
-  width: 95%;
-  margin: auto;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  position: relative;
-  padding-top: 7% !important;
 }
 
 .center {
   width: 100%;
-  min-width: 300px;
-  min-height: 80vh;
-  padding: 50px 0;
+  max-width: 800px;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 40px;
-  z-index: 2;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
   animation: fadeIn 1s ease-in-out;
 }
 
@@ -46,18 +46,17 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 15px;
+  gap: clamp(0.75rem, 2vw, 1rem);
+  text-align: center;
 }
 
 .centerText1 {
-  font-family: Inter;
+  font-family: Inter, sans-serif;
   font-weight: 700;
-  font-size: 64px;
-  line-height: 70px;
-  letter-spacing: -1px;
-  text-align: center;
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
   color: white;
-  width: 60%;
 }
 
 .centerText1 span {
@@ -65,27 +64,24 @@
 }
 
 .centerText2 {
-  font-family: Poppins;
+  font-family: Poppins, sans-serif;
   font-weight: 400;
-  font-size: 18px;
-  line-height: 32px;
-  letter-spacing: 0%;
-  text-align: center;
+  font-size: clamp(1rem, 2vw, 1.125rem);
+  line-height: 1.5;
   color: #dbdbdb;
-  width: 60%;
+  max-width: 90%;
 }
 
 .seeMore {
   background: white;
   border: none;
-  padding: 15px 40px;
-  border-radius: 30px;
+  padding: clamp(0.75rem, 2vw, 1rem) clamp(1.5rem, 3vw, 2.5rem);
+  border-radius: 3rem;
   color: #070d18;
-  font-family: Poppins;
+  font-family: Poppins, sans-serif;
   font-weight: 500;
-  font-size: 16px;
+  font-size: clamp(0.875rem, 2vw, 1rem);
   cursor: pointer;
-  margin: 20px 0;
   transition: background 0.3s;
 }
 
@@ -97,7 +93,7 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  gap: 60px;
+  gap: clamp(2rem, 5vw, 3rem);
   flex-wrap: wrap;
 }
 
@@ -105,153 +101,29 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 0.5rem;
 }
 
 .centerCardP1 {
-  font-family: "Poppins", sans-serif;
+  font-family: Poppins, sans-serif;
   font-weight: 700;
-  font-size: 36px;
-  line-height: 40px;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  line-height: 1.2;
   color: #dbdbdb;
-  text-align: center;
 }
 
 .centerCardP2 {
-  font-family: "Poppins", sans-serif;
+  font-family: Poppins, sans-serif;
   font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
+  font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+  line-height: 1.4;
   color: #dbdbdb;
-  text-align: center;
-}
-
-/* Review Card (for comments with author and rating) */
-.reviewCard {
-  position: absolute;
-  background: #ffffff26;
-  backdrop-filter: blur(6px);
-  padding: 16px 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 240px;
-  z-index: 5;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  animation: float 3s ease-in-out infinite;
-}
-
-.commentHeader {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.commentImage {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: #dbdbdb;
-}
-
-.commentAuthor {
-  font-family: Poppins;
-  font-size: 14px;
-  font-weight: 500;
-  color: white;
-}
-
-.commentRating {
-  font-family: Poppins;
-  font-size: 14px;
-  color: #f4c430;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.commentText1 {
-  font-family: Poppins;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 100%;
-  letter-spacing: 0px;
-  color: white;
-  margin: 0;
-}
-
-.commentText2 {
-  font-family: Poppins;
-  font-weight: 400;
-  font-size: 10px;
-  line-height: 100%;
-  letter-spacing: 0px;
-  color: white;
-  margin: 0;
-}
-
-/* Unified Card Style for Web and Game Development */
-.codeCard,
-.gameCard {
-  position: absolute;
-  background: #ffffff; /* White background */
-  padding: 16px 20px; /* Smaller padding */
-  border-radius: 12px;
-  border: none; /* No border */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  width: 300px; /* Larger width */
-  z-index: 5;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
-  animation: float 3s ease-in-out infinite;
-  transition: transform 0.3s ease;
-}
-
-.codeCard:hover,
-.gameCard:hover {
-  transform: scale(1.05);
-}
-
-.codeCard .commentIcon,
-.gameCard .commentIcon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  background: #41bbbe; /* Theme-consistent color */
-}
-
-.commentTitle {
-  font-family: Poppins;
-  font-weight: 500;
-  font-size: 18px;
-  color: #000000;
-  margin: 0;
-}
-
-.keywordContainer {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.commentSubtext {
-  font-family: Poppins;
-  font-size: 14px;
-  background: #f2f2f2; /* Keyword background */
-  color: #828282; /* Keyword text color */
-  padding: 4px 8px;
-  border-radius: 4px;
-  margin: 0;
-  display: inline-block;
 }
 
 .floatingIcon {
   position: absolute;
-  width: 120px;
-  height: 120px;
+  width: clamp(3rem, 8vw, 5rem);
+  height: clamp(3rem, 8vw, 5rem);
   z-index: 5;
   animation: float 4s ease-in-out infinite;
 }
@@ -269,7 +141,7 @@
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(1rem);
   }
   to {
     opacity: 1;
@@ -282,7 +154,7 @@
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-0.625rem);
   }
   100% {
     transform: translateY(0);
@@ -291,140 +163,103 @@
 
 @media (max-width: 1024px) {
   .center {
-    width: 100%;
-    min-height: 70vh;
-    padding: 40px 0;
+    padding: 1.5rem;
   }
   .centerText1 {
-    font-size: 48px;
-    line-height: 54px;
-    width: 80%;
+    font-size: clamp(1.75rem, 4.5vw, 3rem);
   }
   .centerText2 {
-    font-size: 16px;
-    line-height: 28px;
-  }
-  .reviewCard {
-    width: 220px;
-  }
-  .codeCard,
-  .gameCard {
-    width: 280px;
-    padding: 14px 18px;
-  }
-  .codeCard .commentIcon,
-  .gameCard .commentIcon {
-    width: 35px;
-    height: 35px;
-  }
-  .commentTitle {
-    font-size: 16px;
-  }
-  .commentSubtext {
-    font-size: 12px;
-    padding: 3px 6px;
+    font-size: clamp(0.875rem, 2vw, 1rem);
   }
   .floatingIcon {
-    width: 100px;
-    height: 100px;
-  }
-  .reviewCard:first-child {
-    top: 20%;
-  }
-  .codeCard {
-    top: 60%;
-  }
-  .gameCard {
-    top: 70%;
+    width: clamp(2.5rem, 7vw, 4rem);
+    height: clamp(2.5rem, 7vw, 4rem);
   }
 }
 
 @media (max-width: 768px) {
   .container {
-    padding: 30px 15px;
+    padding: 1.5rem;
   }
   .center {
-    width: 100%;
-    min-height: 60vh;
-    padding: 30px 0;
+    padding: 1rem;
   }
   .centerText1 {
-    font-size: 32px;
-    line-height: 38px;
+    font-size: clamp(1.5rem, 4vw, 2rem);
   }
   .centerText2 {
-    font-size: 14px;
-    line-height: 24px;
-  }
-  .numbers {
-    gap: 30px;
-  }
-  .centerCardP1 {
-    font-size: 28px;
-    line-height: 32px;
-  }
-  .centerCardP2 {
-    font-size: 12px;
-    line-height: 18px;
+    font-size: clamp(0.75rem, 1.8vw, 0.875rem);
   }
   .seeMore {
-    padding: 12px 30px;
-    font-size: 14px;
+    padding: clamp(0.625rem, 2vw, 0.75rem) clamp(1.25rem, 3vw, 1.875rem);
+    font-size: clamp(0.75rem, 1.8vw, 0.875rem);
   }
-  .reviewCard,
-  .codeCard,
-  .gameCard {
-    display: none;
+  .centerCardP1 {
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  }
+  .centerCardP2 {
+    font-size: clamp(0.625rem, 1.2vw, 0.75rem);
   }
   .floatingIcon {
-    width: 80px;
-    height: 80px;
-  }
-  .lightbulb {
-    left: 80%;
-    top: 15%;
-  }
-  .bell {
-    left: 5%;
-    top: 70%;
+    width: clamp(2rem, 6vw, 3rem);
+    height: clamp(2rem, 6vw, 3rem);
   }
 }
 
 @media (max-width: 480px) {
+  .container {
+    padding: 1rem;
+  }
   .center {
-    min-height: 50vh;
-    padding: 20px 0;
+    padding: 0.5rem;
   }
   .centerText1 {
-    font-size: 28px;
-    line-height: 34px;
+    font-size: clamp(1.25rem, 3.5vw, 1.75rem);
   }
   .centerText2 {
-    font-size: 12px;
-    line-height: 20px;
-  }
-  .centerCardP1 {
-    font-size: 24px;
-    line-height: 28px;
-  }
-  .centerCardP2 {
-    font-size: 10px;
-    line-height: 16px;
+    font-size: clamp(0.625rem, 1.5vw, 0.75rem);
   }
   .seeMore {
-    padding: 10px 25px;
-    font-size: 12px;
+    padding: clamp(0.5rem, 1.5vw, 0.625rem) clamp(1rem, 2.5vw, 1.5rem);
+    font-size: clamp(0.625rem, 1.5vw, 0.75rem);
+  }
+  .centerCardP1 {
+    font-size: clamp(1rem, 2vw, 1.5rem);
+  }
+  .centerCardP2 {
+    font-size: clamp(0.5rem, 1vw, 0.625rem);
   }
   .floatingIcon {
-    width: 60px;
-    height: 60px;
+    width: clamp(1.5rem, 5vw, 2.5rem);
+    height: clamp(1.5rem, 5vw, 2.5rem);
   }
-  .lightbulb {
-    left: 75%;
-    top: 10%;
+}
+
+@media (min-width: 1600px) {
+  .container {
+    max-width: 1600px;
   }
-  .bell {
-    left: 5%;
-    top: 65%;
+  .center {
+    max-width: 1000px;
+  }
+  .centerText1 {
+    font-size: clamp(3rem, 4.5vw, 4.5rem);
+  }
+  .centerText2 {
+    font-size: clamp(1.125rem, 1.8vw, 1.25rem);
+  }
+  .seeMore {
+    padding: clamp(0.875rem, 1.5vw, 1.125rem) clamp(2rem, 3vw, 3rem);
+    font-size: clamp(1rem, 1.5vw, 1.125rem);
+  }
+  .centerCardP1 {
+    font-size: clamp(2rem, 3vw, 2.5rem);
+  }
+  .centerCardP2 {
+    font-size: clamp(0.875rem, 1.5vw, 1rem);
+  }
+  .floatingIcon {
+    width: clamp(4rem, 6vw, 6rem);
+    height: clamp(4rem, 6vw, 6rem);
   }
 }

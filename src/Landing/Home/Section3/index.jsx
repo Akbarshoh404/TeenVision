@@ -73,15 +73,14 @@ const HomeSection3 = () => {
   };
 
   return (
-    <section className={styles.section}>
+    <section id="programs" className={styles.section}>
       <div className={styles.container}>
         <div className={styles.titleWrapper}>
-          <p className={styles.title}>
+          <h2 className={styles.title}>
             <span>Latest</span> Programs
-          </p>
+          </h2>
           <button className={styles.seeMoreButton}>See More</button>
         </div>
-
         <div className={styles.cards}>
           {programs.length === 0 ? (
             <p className={styles.noPrograms}>No programs available.</p>

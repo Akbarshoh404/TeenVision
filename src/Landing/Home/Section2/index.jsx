@@ -7,17 +7,17 @@ import {
   FaChevronLeft,
   FaChevronRight,
 } from "react-icons/fa";
-import img from "../../../Components/images/cardexample.png";
-
 import Xurshid from "../../../Components/images/Xurshidbek.jpg";
-import Akbarshoh from "../../../Components/images/me.jpg"
+import Akbarshoh from "../../../Components/images/me.jpg";
+import Charos from "../../../Components/images/Charos.jpg";
+import Behruz from "../../../Components/images/Bexruz.jpg";
 
 const teamMembers = [
   {
     id: 1,
     image: Xurshid,
     name: "Fayzullayev Xurshidbek",
-    responsibility: "Co-Founder",
+    responsibility: "Co-Founder, Project Manager",
     description:
       "Visionary leader and strategic thinker behind the project. Xurshidbek ensures the team stays focused, organized, and always moving toward success.",
     social: {
@@ -41,7 +41,7 @@ const teamMembers = [
   },
   {
     id: 3,
-    image: img,
+    image: Charos,
     name: "Charos Hakimova",
     responsibility: "Designer",
     description:
@@ -54,10 +54,11 @@ const teamMembers = [
   },
   {
     id: 4,
-    image: img,
+    image: Behruz,
     name: "Bexruz",
     responsibility: "Backend Developer",
-    description: "Backend wizard ensuring everything runs smoothly behind the scenes. Bexruz focuses on performance, security, and reliable server-side architecture.",
+    description:
+      "Backend wizard ensuring everything runs smoothly behind the scenes. Bexruz focuses on performance, security, and reliable server-side architecture.",
     social: {
       instagram: "https://instagram.com/janesmith",
       telegram: "https://twitter.com/janesmith",
@@ -69,16 +70,17 @@ const teamMembers = [
 const HomeSection2 = () => {
   const carouselRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [cardsPerPage, setCardsPerPage] = useState(
-    window.innerWidth <= 800 ? 1 : 3
-  );
+  const [cardsPerPage, setCardsPerPage] = useState(3);
 
   useEffect(() => {
     const updateCardsPerPage = () => {
-      setCardsPerPage(window.innerWidth <= 800 ? 1 : 3);
+      if (window.innerWidth <= 480) setCardsPerPage(1);
+      else if (window.innerWidth <= 800) setCardsPerPage(2);
+      else setCardsPerPage(3);
       setCurrentIndex(0);
     };
 
+    updateCardsPerPage();
     window.addEventListener("resize", updateCardsPerPage);
     return () => window.removeEventListener("resize", updateCardsPerPage);
   }, []);
@@ -121,10 +123,9 @@ const HomeSection2 = () => {
   };
 
   return (
-    <div className={styles.section}>
+    <section id="team" className={styles.section}>
       <div className={styles.container}>
         <h2 className={styles.title}>TeenVision Team</h2>
-
         <div
           className={styles.carouselWrapper}
           onKeyDown={handleKeyDown}
@@ -140,7 +141,6 @@ const HomeSection2 = () => {
               <FaChevronLeft />
             </button>
           </div>
-
           <div className={styles.carousel} ref={carouselRef}>
             {teamMembers.map((member) => (
               <div key={member.id} className={styles.card}>
@@ -181,7 +181,6 @@ const HomeSection2 = () => {
               </div>
             ))}
           </div>
-
           <div className={styles.navButtonRight}>
             <button
               className={styles.navButton}
@@ -193,7 +192,6 @@ const HomeSection2 = () => {
             </button>
           </div>
         </div>
-
         <div className={styles.dots}>
           {Array.from({ length: totalCards - cardsPerPage + 1 }).map(
             (_, index) => (
@@ -209,7 +207,7 @@ const HomeSection2 = () => {
           )}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

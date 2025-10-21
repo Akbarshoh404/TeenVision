@@ -8,7 +8,10 @@ import {
   FaSearch,
 } from "react-icons/fa";
 
+import { useNavigate } from "react-router";
+
 const LandingFooter = () => {
+  let navigate = useNavigate();
   return (
     <footer className={styles.footer}>
       <div className={styles.topFooter}>
@@ -16,14 +19,14 @@ const LandingFooter = () => {
           <div className={styles.topFooterSection1}>
             <p className={styles.topFooterSection1P1}>Key Words</p>
             <div className={styles.topFooterSection1Cards}>
-              <div className={styles.topFooterSection1Card}>Lorem</div>
-              <div className={styles.topFooterSection1Card}>Lorem</div>
-              <div className={styles.topFooterSection1Card}>Lorem</div>
-              <div className={styles.topFooterSection1Card}>Lorem</div>
-              <div className={styles.topFooterSection1Card}>Lorem</div>
-              <div className={styles.topFooterSection1Card}>Lorem</div>
-              <div className={styles.topFooterSection1Card}>Lorem</div>
-              <div className={styles.topFooterSection1Card}>Lorem</div>
+              <div className={styles.topFooterSection1Card}>IT</div>
+              <div className={styles.topFooterSection1Card}>Competetion</div>
+              <div className={styles.topFooterSection1Card}>Science</div>
+              <div className={styles.topFooterSection1Card}>Volunteering</div>
+              <div className={styles.topFooterSection1Card}>Physics</div>
+              <div className={styles.topFooterSection1Card}>Biology</div>
+              <div className={styles.topFooterSection1Card}>Engineering</div>
+              <div className={styles.topFooterSection1Card}>Mathermatics</div>
             </div>
           </div>
 
@@ -45,7 +48,11 @@ const LandingFooter = () => {
               </form>
             </div>
 
-            <div className={styles.topFooterSection2Div2}>
+            <div className={styles.topFooterSection2Div2} onClick={
+              ()=>{
+                navigate("/login")
+              }
+            }>
               <p className={styles.topFooterSection2Div2P1}>Announcements</p>
               <a
                 href="https://example.com/announcements"

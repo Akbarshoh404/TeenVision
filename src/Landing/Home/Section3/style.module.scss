@@ -8,34 +8,40 @@
 
 .section {
   width: 100%;
-  height: fit-content;
+  min-height: 100vh;
   background-color: #f9f9f9;
-  padding: 80px 0;
+  padding: clamp(3rem, 8vw, 5rem) 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .container {
-  width: 85%;
-  height: 100%;
-  margin: auto;
-  padding: 0 24px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(0.75rem, 2vw, 1rem);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 48px;
+  gap: clamp(1rem, 3vw, 1.5rem);
+  padding-top: 50px;
+  padding-bottom: 50px;
 }
 
 .titleWrapper {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: clamp(0.5rem, 1.5vw, 0.75rem);
 }
 
 .title {
   font-family: Poppins, sans-serif;
   font-weight: 700;
-  font-size: 40px;
-  line-height: 48px;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  line-height: 1.2;
   text-align: center;
   color: #333;
 
@@ -47,12 +53,12 @@
 .seeMoreButton {
   font-family: Poppins, sans-serif;
   font-weight: 500;
-  font-size: 18px;
+  font-size: clamp(0.75rem, 1.8vw, 0.875rem);
   color: #297379;
   background: transparent;
   border: 2px solid #297379;
-  border-radius: 25px;
-  padding: 10px 20px;
+  border-radius: 1.25rem;
+  padding: clamp(0.375rem, 1vw, 0.5rem) clamp(0.75rem, 1.5vw, 1rem);
   cursor: pointer;
   transition: all 0.3s ease;
 
@@ -64,21 +70,25 @@
 
 .cards {
   width: 100%;
-  height: fit-content;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 50px;
-  margin: auto;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(350px, 1fr)
+  ); /* Increased min width */
+  gap: clamp(1rem, 2vw, 1.5rem);
+  justify-items: center;
 }
 
 .card {
   background-color: white;
-  border-radius: 20px;
-  box-shadow: 0px 4px 4px 0px #070d184d;
+  border-radius: 1rem;
+  box-shadow: 0 4px 4px rgba(7, 13, 24, 0.3);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: clamp(0.5rem, 1.5vw, 0.75rem);
   transition: transform 0.3s ease;
+  max-width: 500px; /* Increased from 350px */
+  padding: clamp(1rem, 2vw, 1.5rem); /* Added padding for larger appearance */
 
   &:hover {
     transform: scale(1.05);
@@ -87,13 +97,14 @@
 
 .cardImage {
   width: 100%;
-  border-radius: 20px 20px 0 0;
+  border-radius: 1rem 1rem 0 0;
   overflow: hidden;
+  aspect-ratio: 16 / 9;
 }
 
 .cardImage img {
   width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: cover;
   transition: transform 0.5s ease;
 }
@@ -105,20 +116,20 @@
 .cardMajors {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  padding: 0 24px;
+  gap: clamp(0.375rem, 1vw, 0.5rem);
+  padding: 0 clamp(1rem, 2vw, 1.5rem);
 }
 
 .majorButton {
   font-family: Poppins, sans-serif;
   font-weight: 500;
-  font-size: 12px;
-  line-height: 18px;
+  font-size: clamp(0.625rem, 1.5vw, 0.75rem);
+  line-height: 1.5;
   color: #297379;
   background-color: #e6f0f1;
   border: 1px solid #297379;
-  border-radius: 16px;
-  padding: 4px 12px;
+  border-radius: 1rem;
+  padding: clamp(0.25rem, 0.5vw, 0.375rem) clamp(0.5rem, 1vw, 0.75rem);
   text-align: center;
 }
 
@@ -138,11 +149,11 @@
 .cardTitle {
   font-family: Poppins, sans-serif;
   font-weight: 600;
-  font-size: 20px;
-  line-height: 26px;
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem); /* Increased font size */
+  line-height: 1.3;
   color: #222;
   text-align: left;
-  padding: 0 24px;
+  padding: 0 clamp(1rem, 2vw, 1.5rem);
   position: relative;
 }
 
@@ -150,7 +161,7 @@
   content: "";
   position: absolute;
   bottom: -2px;
-  left: 24px;
+  left: clamp(1rem, 2vw, 1.5rem);
   width: 0;
   height: 2px;
   background: linear-gradient(to right, #6236f5, #00ddeb);
@@ -158,15 +169,15 @@
 }
 
 .cardTitle:hover::after {
-  width: calc(100% - 48px);
+  width: calc(100% - clamp(2rem, 4vw, 3rem));
 }
 
 .cardInfoRow {
   display: flex;
-  align-items: center;
-  gap: 8px;
   flex-wrap: wrap;
-  padding: 0 24px;
+  align-items: center;
+  gap: clamp(0.375rem, 1vw, 0.5rem);
+  padding: 0 clamp(1rem, 2vw, 1.5rem);
 }
 
 .cardCountry,
@@ -174,8 +185,8 @@
 .cardDate {
   font-family: Poppins, sans-serif;
   font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
+  font-size: clamp(0.75rem, 1.8vw, 0.875rem);
+  line-height: 1.5;
   color: #555;
   text-align: left;
 }
@@ -183,217 +194,191 @@
 .cardCountry {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.375rem;
 }
 
 .countryFlag {
-  width: 16px;
-  height: 12px;
+  width: 18px; /* Slightly larger */
+  height: 14px;
   vertical-align: middle;
 }
 
 .separator {
   font-family: Poppins, sans-serif;
   font-weight: 400;
-  font-size: 14px;
-  line-height: 20px;
+  font-size: clamp(0.75rem, 1.8vw, 0.875rem);
+  line-height: 1.5;
   color: #555;
 }
 
 .cardDescription {
   font-family: Poppins, sans-serif;
   font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: clamp(0.875rem, 2vw, 1rem); /* Increased font size */
+  line-height: 1.5;
   color: #777;
   text-align: left;
-  padding: 0 24px 24px;
+  padding: 0 clamp(1rem, 2vw, 1.5rem) clamp(1rem, 2vw, 1.5rem);
   flex-grow: 1;
 }
 
 .noPrograms {
   font-family: Poppins, sans-serif;
-  font-size: 16px;
+  font-size: clamp(0.875rem, 2vw, 1rem);
   color: #777;
   text-align: center;
-  grid-column: span 3;
+  grid-column: 1 / -1;
 }
 
-@media screen and (max-width: 1500px) {
+@media (max-width: 768px) {
+  .section {
+    padding: clamp(2rem, 6vw, 3rem) 0;
+  }
+
   .container {
-    width: 90%;
-    padding: 0 20px;
-    gap: 40px;
-  }
-
-  .cards {
-    gap: 20px;
-  }
-
-  .cardTitle {
-    font-size: 18px;
-    line-height: 24px;
-  }
-
-  .cardCountry,
-  .cardType,
-  .cardDate,
-  .separator {
-    font-size: 13px;
-    line-height: 18px;
-  }
-
-  .cardDescription {
-    font-size: 15px;
-    line-height: 22px;
-  }
-
-  .majorButton {
-    font-size: 11px;
-    padding: 3px 10px;
-  }
-}
-
-@media screen and (max-width: 1300px) {
-  .container {
-    gap: 36px;
-  }
-
-  .cards {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-  }
-
-  .title {
-    font-size: 36px;
-    line-height: 42px;
-  }
-
-  .noPrograms {
-    grid-column: span 2;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .container {
-    width: 95%;
-    padding: 0 16px;
-    gap: 32px;
+    max-width: 1000px;
+    padding: 0 clamp(0.5rem, 1.5vw, 0.75rem);
+    gap: clamp(0.75rem, 2vw, 1rem);
   }
 
   .titleWrapper {
-    flex-direction: column;
-    gap: 15px;
+    gap: clamp(0.375rem, 1vw, 0.5rem);
+  }
+
+  .title {
+    font-size: clamp(1.25rem, 3.5vw, 1.75rem);
+  }
+
+  .seeMoreButton {
+    font-size: clamp(0.625rem, 1.5vw, 0.75rem);
+    padding: clamp(0.25rem, 0.75vw, 0.375rem) clamp(0.5rem, 1vw, 0.75rem);
   }
 
   .cards {
-    grid-template-columns: 1fr;
-    gap: 16px;
-    width: 100%;
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(300px, 1fr)
+    ); /* Adjusted min width */
+    gap: clamp(0.5rem, 1vw, 0.75rem);
   }
 
   .card {
-    margin: 8px;
-  }
-
-  .cardInfoRow {
-    gap: 6px;
+    max-width: 400px; /* Increased from 300px */
   }
 
   .cardTitle {
-    font-size: 18px;
-    line-height: 24px;
+    font-size: clamp(1rem, 2vw, 1.25rem);
   }
 
-  .cardTitle::after {
-    left: 16px;
-    width: calc(100% - 32px);
+  .cardDescription {
+    font-size: clamp(0.75rem, 1.8vw, 0.875rem);
   }
 
   .cardCountry,
   .cardType,
   .cardDate,
   .separator {
-    font-size: 13px;
-    line-height: 18px;
+    font-size: clamp(0.625rem, 1.5vw, 0.75rem);
   }
 
-  .cardDescription {
-    font-size: 14px;
-    line-height: 20px;
-  }
-
-  .title {
-    font-size: 32px;
-    line-height: 38px;
-  }
-
-  .seeMoreButton {
-    font-size: 16px;
-    padding: 8px 16px;
-  }
-
-  .noPrograms {
-    grid-column: span 1;
+  .majorButton {
+    font-size: clamp(0.5rem, 1.2vw, 0.625rem);
   }
 }
 
-@media screen and (max-width: 480px) {
+@media (max-width: 480px) {
+  .section {
+    padding: clamp(1.5rem, 5vw, 2rem) 0;
+  }
+
   .container {
-    width: 100%;
-    padding: 0 12px;
-    gap: 24px;
+    max-width: 800px;
+    padding: 0 clamp(0.375rem, 1vw, 0.5rem);
+  }
+
+  .title {
+    font-size: clamp(1rem, 3vw, 1.5rem);
+  }
+
+  .seeMoreButton {
+    font-size: clamp(0.5rem, 1.2vw, 0.625rem);
+    padding: clamp(0.25rem, 0.75vw, 0.375rem) clamp(0.375rem, 0.75vw, 0.5rem);
   }
 
   .cards {
-    gap: 12px;
+    gap: clamp(0.375rem, 0.75vw, 0.5rem);
   }
 
   .card {
-    margin: 4px;
+    max-width: 350px; /* Increased from 280px */
   }
 
   .cardInfoRow {
-    gap: 6px;
     flex-direction: column;
     align-items: flex-start;
   }
 
   .cardTitle {
-    font-size: 16px;
-    line-height: 22px;
+    font-size: clamp(0.875rem, 1.8vw, 1rem);
   }
 
-  .cardTitle::after {
-    left: 12px;
-    width: calc(100% - 24px);
+  .cardDescription {
+    font-size: clamp(0.625rem, 1.5vw, 0.75rem);
   }
 
   .cardCountry,
   .cardType,
   .cardDate,
   .separator {
-    font-size: 12px;
-    line-height: 16px;
-  }
-
-  .cardDescription {
-    font-size: 13px;
-    line-height: 18px;
+    font-size: clamp(0.5rem, 1.2vw, 0.625rem);
   }
 
   .majorButton {
-    font-size: 10px;
-    padding: 2px 8px;
+    font-size: clamp(0.5rem, 0.75vw, 0.625rem);
+  }
+}
+
+@media (min-width: 1600px) {
+  .container {
+    max-width: 1400px;
   }
 
   .title {
-    font-size: 28px;
-    line-height: 34px;
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
   }
 
   .seeMoreButton {
-    font-size: 14px;
-    padding: 6px 12px;
+    font-size: clamp(0.875rem, 1.8vw, 1rem);
+    padding: clamp(0.5rem, 1vw, 0.625rem) clamp(1rem, 1.5vw, 1.25rem);
+  }
+
+  .cards {
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(400px, 1fr)
+    ); /* Increased min width */
+  }
+
+  .card {
+    max-width: 550px; /* Increased from 400px */
+  }
+
+  .cardTitle {
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  }
+
+  .cardDescription {
+    font-size: clamp(1rem, 2vw, 1.125rem);
+  }
+
+  .cardCountry,
+  .cardType,
+  .cardDate,
+  .separator {
+    font-size: clamp(0.875rem, 2vw, 1rem);
+  }
+
+  .majorButton {
+    font-size: clamp(0.75rem, 1.8vw, 0.875rem);
   }
 }

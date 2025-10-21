@@ -3,19 +3,19 @@ import styles from "./style.module.scss";
 
 const commentsData = [
   {
-    text: "We have been working with Positivus for the past year and have seen a significant increase in website traffic and leads as a result of their efforts. The team is professional, responsive, and truly cares about the success of our business. We highly recommend Positivus to any company looking to grow their online presence.",
-    author: "Jane Doe",
-    job: "Marketing Director at XYZ Corp",
+    text: "TeenVision helped me find the perfect summer program that matched my interests in technology and design. The verified listings and easy filters made searching stress-free. I love how personalized the recommendations are — it really feels like the platform understands what students are looking for.",
+    author: "🌟 Nargiza S. 17",
+    job: "Student",
   },
   {
-    text: "We have been working with Positivus for the past year and have seen a significant increase in website traffic and leads as a result of their efforts. The team is professional, responsive, and truly cares about the success of our business. We highly recommend Positivus to any company looking to grow their online presence.",
-    author: "John Smith",
-    job: "Product Manager at ABC Inc",
+    text: "I always suggest TeenVision to my students. It’s reliable, well-organized, and full of genuine opportunities. The platform makes it easier for teens to explore verified programs, track deadlines, and stay motivated. It’s an incredible resource that truly supports both students and educators.",
+    author: "💬 Mr. Shuhrat",
+    job: "High School Teacher",
   },
   {
-    text: "We have been working with Positivus for the past year and have seen a significant increase in website traffic and leads as a result of their efforts. The team is professional, responsive, and truly cares about the success of our business. We highly recommend Positivus to any company looking to grow their online presence.",
-    author: "Emily Johnson",
-    job: "CTO at Tech Solutions",
+    text: "TeenVision made finding and managing hackathon applications so simple. I could filter events, save favorites, and never miss a deadline. It’s an amazing tool that helped me discover new interests and connect with other passionate students who love to learn and create.",
+    author: "🚀 Kassym P. 16",
+    job: "Student",
   },
 ];
 
@@ -24,7 +24,6 @@ const HomeSection4 = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const carouselRef = useRef(null);
 
-  // Handle dynamic height adjustment
   useEffect(() => {
     const updateHeight = () => {
       if (carouselRef.current) {
@@ -71,8 +70,9 @@ const HomeSection4 = () => {
   };
 
   return (
-    <section className={styles.section}>
+    <section id="testimonials" className={styles.section}>
       <div className={styles.container}>
+        <h2 className={styles.title}>What Our Users Say</h2>
         <div className={styles.carousel} ref={carouselRef}>
           {commentsData.map((comment, index) => (
             <div

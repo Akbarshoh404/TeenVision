@@ -84,22 +84,12 @@ const LandingNavbar = () => {
             <p
               onClick={() => {
                 document
-                  .getElementById("programs")
-                  ?.scrollIntoView({ behavior: "smooth" });
-                setIsDrawerOpen(false);
-              }}
-            >
-              Programs<span className={styles.line}></span>
-            </p>
-            <p
-              onClick={() => {
-                document
                   .getElementById("reviews")
                   ?.scrollIntoView({ behavior: "smooth" });
                 setIsDrawerOpen(false);
               }}
             >
-              Reviews<span className={styles.line}></span>
+              Programs<span className={styles.line}></span>
             </p>
             <button
               type="button"
@@ -149,17 +139,6 @@ const LandingNavbar = () => {
               About <span className={styles.line}></span>
             </a>
             <a
-              href="#programs"
-              onClick={(e) => {
-                e.preventDefault();
-                document
-                  .getElementById("programs")
-                  ?.scrollIntoView({ behavior: "smooth" });
-              }}
-            >
-              Programs <span className={styles.line}></span>
-            </a>
-            <a
               href="#reviews"
               onClick={(e) => {
                 e.preventDefault();
@@ -168,7 +147,7 @@ const LandingNavbar = () => {
                   ?.scrollIntoView({ behavior: "smooth" });
               }}
             >
-              Reviews <span className={styles.line}></span>
+              Programs <span className={styles.line}></span>
             </a>
             <button type="button" onClick={() => navigate("/register")}>
               Registration

@@ -6,52 +6,52 @@ import img3 from "../../../Components/images/clock 1.png";
 
 const HomeSection1 = () => {
   return (
-    <section className={styles.section}>
+    <section id="about" className={styles.section}>
       <div className={styles.container}>
-        <p className={styles.p1}>
-          About <span>Lorem</span>
-        </p>
-
+        <h2 className={styles.p1}>
+          About <span>TeenVision</span>
+        </h2>
         <p className={styles.p2}>
-          At AFQ Tech, we believe in a systematic approach for any project be it
-          complex or simple. We are a group of individuals with a various set of
-          skill set varies from Digital Marketing to IoT/Robotics solutions. We
-          have our dedicated team for your project which uses various methods
-          such as agile Scrum & agile Kanban. We ensure top-notch quality,
-          on-time delivery, and agility for your project.
+          TeenVision is an online platform designed to help high school students
+          find and apply for verified opportunities such as summer schools,
+          hackathons, and learning programs. With easy search and filter
+          options, students can explore events based on interests, location, and
+          format. Organizers can post and manage listings, while admins ensure
+          authenticity and safety. TeenVision connects teens with inspiring
+          experiences that support learning, creativity, and personal growth.
         </p>
-
         <div className={styles.cards}>
           <div className={styles.card}>
             <div className={styles.cardImg}>
-              <img src={img1} alt="Cutting Edge Technology" />
+              <img src={img1} alt="Verified Opportunities" />
             </div>
-            <p className={styles.cardP1}>Cutting Edge Technology</p>
+            <h3 className={styles.cardP1}>🎓 Verified Opportunities</h3>
             <p className={styles.cardP2}>
-              Take the advantage of our cutting-edge solutions to increase your
-              Return of Investment on IT.
+              Discover genuine, high-quality programs carefully checked by our
+              team — from summer schools to hackathons and workshops. TeenVision
+              ensures every listing is safe, credible, and student-focused.
             </p>
           </div>
-
           <div className={styles.card}>
             <div className={styles.cardImg}>
-              <img src={img2} alt="Cutting Edge Technology" />
+              <img src={img2} alt="Smart Search & Filters" />
             </div>
-            <p className={styles.cardP1}>Cutting Edge Technology</p>
+            <h3 className={styles.cardP1}>🔍 Smart Search & Filters</h3>
             <p className={styles.cardP2}>
-              Take the advantage of our cutting-edge solutions to increase your
-              Return of Investment on IT.
+              Find the right opportunity faster! Use filters by location,
+              subject, cost, or format (online/in-person) to explore programs
+              that match your interests and goals.
             </p>
           </div>
-
           <div className={styles.card}>
             <div className={styles.cardImg}>
-              <img src={img3} alt="Cutting Edge Technology" />
+              <img src={img3} alt="Easy Application Tracking" />
             </div>
-            <p className={styles.cardP1}>Cutting Edge Technology</p>
+            <h3 className={styles.cardP1}>💬 Easy Application Tracking</h3>
             <p className={styles.cardP2}>
-              Take the advantage of our cutting-edge solutions to increase your
-              Return of Investment on IT.
+              Keep all your applications in one place. Track your progress, save
+              favorites, and never miss a deadline with TeenVision’s simple
+              dashboard.
             </p>
           </div>
         </div>
