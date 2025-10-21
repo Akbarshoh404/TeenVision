@@ -1,9 +1,8 @@
-// LandingNavbar.jsx
 import React, { useState } from "react";
 import styles from "./style.module.scss";
 import logo from "../../Components/icons/logo.png";
 import { useNavigate } from "react-router";
-import { ReactComponent as SearchIcon } from "../../Components/icons/search-icon.svg"; // You'll need to add this SVG
+import { ReactComponent as SearchIcon } from "../../Components/icons/search-icon.svg";
 
 const LandingNavbar = () => {
   const navigate = useNavigate();
@@ -16,7 +15,10 @@ const LandingNavbar = () => {
 
   const goToSearchDestination = () => {
     const isAuthenticated = !!localStorage.getItem("access_token");
-    navigate(isAuthenticated ? "/dashboard/home" : "/login");
+    const user = JSON.parse(localStorage.getItem("user"));
+    navigate(
+      user ? "/dashboard/home" : isAuthenticated ? "/dashboard/home" : "/login"
+    );
   };
 
   const handleSearch = (e) => {
