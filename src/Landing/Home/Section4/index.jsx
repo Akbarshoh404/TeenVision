@@ -4,17 +4,17 @@ import styles from "./style.module.scss";
 const commentsData = [
   {
     text: "TeenVision helped me find the perfect summer program that matched my interests in technology and design. The verified listings and easy filters made searching stress-free. I love how personalized the recommendations are — it really feels like the platform understands what students are looking for.",
-    author: "🌟 Nargiza S. 17",
+    author: "Nargiza S. 17",
     job: "Student",
   },
   {
     text: "I always suggest TeenVision to my students. It’s reliable, well-organized, and full of genuine opportunities. The platform makes it easier for teens to explore verified programs, track deadlines, and stay motivated. It’s an incredible resource that truly supports both students and educators.",
-    author: "💬 Mr. Shuhrat",
+    author: "Mr. Shuhrat",
     job: "High School Teacher",
   },
   {
     text: "TeenVision made finding and managing hackathon applications so simple. I could filter events, save favorites, and never miss a deadline. It’s an amazing tool that helped me discover new interests and connect with other passionate students who love to learn and create.",
-    author: "🚀 Kassym P. 16",
+    author: "Kassym P. 16",
     job: "Student",
   },
 ];

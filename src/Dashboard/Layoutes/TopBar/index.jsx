@@ -6,16 +6,13 @@ import { FiSearch, FiUser, FiMenu, FiX, FiLogOut } from "react-icons/fi";
 
 const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
   const user = JSON.parse(localStorage.getItem("user")) || {};
-  const userName = user.full_name || user.username || user.email?.split("@")[0] || "User";
+  const userName =
+    user.full_name || user.username || user.email?.split("@")[0] || "User";
   const userEmail = user.email || "user@example.com";
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(() => {
-    return localStorage.getItem("sidebar_collapsed") === "true";
-  });
 
-  // Retrieve programs and tutorials from localStorage
   const programs = JSON.parse(localStorage.getItem("programs")) || [];
   const tutorials = JSON.parse(localStorage.getItem("tutorials")) || [];
 
@@ -28,17 +25,17 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
         ...programs
           .filter(
             (item) =>
-              item.title.toLowerCase().includes(query) ||
-              (item.desc && item.desc.toLowerCase().includes(query)) ||
-              (item.country && item.country.toLowerCase().includes(query))
+              item.title?.toLowerCase().includes(query) ||
+              item.desc?.toLowerCase().includes(query) ||
+              item.country?.toLowerCase().includes(query)
           )
           .map((item) => ({ ...item, type: "program" })),
         ...tutorials
           .filter(
             (item) =>
-              item.title.toLowerCase().includes(query) ||
-              (item.desc && item.desc.toLowerCase().includes(query)) ||
-              (item.country && item.country.toLowerCase().includes(query))
+              item.title?.toLowerCase().includes(query) ||
+              item.desc?.toLowerCase().includes(query) ||
+              item.country?.toLowerCase().includes(query)
           )
           .map((item) => ({ ...item, type: "tutorial" })),
       ];
@@ -48,34 +45,9 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
     }
   };
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSearchQuery("");
-    setSearchResults([]);
-  };
-
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    localStorage.removeItem("programs");
-    localStorage.removeItem("tutorials");
+    localStorage.clear();
     window.location.href = "/login";
-  };
-
-  const toggleCollapse = () => {
-    const next = !isCollapsed;
-    setIsCollapsed(next);
-    localStorage.setItem("sidebar_collapsed", String(next));
-    // set CSS var for layout spacing
-    document.documentElement.style.setProperty(
-      "--sidebar-width",
-      next ? "80px" : "350px"
-    );
   };
 
   return (
@@ -90,32 +62,17 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
           >
             {isNavOpen ? <FiX size={24} /> : <FiMenu size={24} />}
           </button>
-          <button
-            className={styles.hamburger}
-            onClick={toggleCollapse}
-            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            style={{ left: 60 }}
-          >
-            {isCollapsed ? "»" : "«"}
-          </button>
-          <div className={styles.responsiveIcons}>
-            <button
-              className={styles.iconButton}
-              onClick={openModal}
-              aria-label="Open search modal"
-            >
-              <FiSearch className={styles.icon} />
-            </button>
-          </div>
         </div>
-        <div className={styles.searchContainer} onClick={openModal}>
+        <div className={styles.searchContainer}>
           <FiSearch className={styles.icon} />
           <input
             type="text"
             placeholder="Search programs..."
             className={styles.searchInput}
             aria-label="Search programs"
-            readOnly
+            value={searchQuery}
+            onChange={handleSearch}
+            onClick={() => setIsModalOpen(true)}
           />
         </div>
         <div className={styles.accountContainer}>
@@ -140,8 +97,8 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
           <div className={styles.modalContent}>
             <button
               className={styles.closeButton}
-              onClick={closeModal}
-              aria-label="Close search modal"
+              onClick={() => setIsModalOpen(false)}
+              aria-label="Close search"
             >
               <FiX size={24} />
             </button>
@@ -172,6 +129,7 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
                         <Link
                           to={`/dashboard/${item.type}/${item.slug}`}
                           className={styles.cardLink}
+                          onClick={() => setIsModalOpen(false)}
                         >
                           Learn More
                         </Link>
@@ -195,6 +153,7 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
                         <Link
                           to={`/dashboard/program/${program.slug}`}
                           className={styles.cardLink}
+                          onClick={() => setIsModalOpen(false)}
                         >
                           Learn More
                         </Link>
@@ -215,6 +174,7 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
                         <Link
                           to={`/dashboard/tutorial/${tutorial.slug}`}
                           className={styles.cardLink}
+                          onClick={() => setIsModalOpen(false)}
                         >
                           Learn More
                         </Link>

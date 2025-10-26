@@ -1,30 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 import styles from "./style.module.scss";
 import {
   FiHome,
   FiStar,
   FiBook,
   FiSettings,
-  FiAward,
   FiX,
+  FiSearch,
 } from "react-icons/fi";
 import logo from "../../../Components/icons/logo.png";
 
-import { useNavigate } from "react-router-dom";
-
 const DashboardNavbar = ({ isNavOpen, toggleNav, closeNav }) => {
   const navigate = useNavigate();
-  const [isCollapsed, setIsCollapsed] = useState(() => {
-    return localStorage.getItem("sidebar_collapsed") === "true";
-  });
 
   useEffect(() => {
-    document.documentElement.style.setProperty(
-      "--sidebar-width",
-      isCollapsed ? "80px" : "350px"
-    );
-  }, [isCollapsed]);
+    document.documentElement.style.setProperty("--sidebar-width", "350px");
+  }, []);
+
   return (
     <nav className={`${styles.navbar} ${isNavOpen ? styles.open : ""}`}>
       <button
@@ -40,20 +34,21 @@ const DashboardNavbar = ({ isNavOpen, toggleNav, closeNav }) => {
           className={styles.logoText}
           onClick={() => {
             navigate("/");
+            closeNav();
           }}
         >
           TeenVision
         </span>
       </div>
-      {/* Collapsible toggle visible on wider screens */}
-      <button
-        className={styles.closeBtn}
-        onClick={() => setIsCollapsed((v) => !v)}
-        aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-        style={{ top: 60 }}
-      >
-        {isCollapsed ? "»" : "«"}
-      </button>
+      <div className={styles.searchContainer}>
+        <FiSearch className={styles.icon} />
+        <input
+          type="text"
+          placeholder="Search programs..."
+          className={styles.searchInput}
+          aria-label="Search programs"
+        />
+      </div>
       <ul className={styles.navList}>
         <li className={styles.navItem}>
           <a
@@ -103,18 +98,6 @@ const DashboardNavbar = ({ isNavOpen, toggleNav, closeNav }) => {
             Settings
           </a>
         </li>
-        {/* <li className={styles.navItem}>
-          <a
-            className={styles.navLink}
-            onClick={() => {
-              navigate("/dashboard/premium");
-              closeNav();
-            }}
-          >
-            <FiAward className={styles.icon} />
-            Premium
-          </a>
-        </li> */}
       </ul>
     </nav>
   );

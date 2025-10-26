@@ -81,18 +81,7 @@ const DashboardTutorials = () => {
     fetchMajors();
   }, []);
 
-  const toggleNav = useCallback(() => {
-    setIsNavOpen((prev) => !prev);
-  }, []);
-
-  const closeNav = useCallback(() => {
-    setIsNavOpen(false);
-  }, []);
-
-  const handleSortChange = (e) => {
-    const { name, value } = e.target;
-    setSortCriteria((prev) => ({ ...prev, [name]: value }));
-
+  useEffect(() => {
     const storedTutorials = JSON.parse(
       localStorage.getItem("tutorials") || "[]"
     );
@@ -116,6 +105,48 @@ const DashboardTutorials = () => {
 
     let filtered = [...tutorials];
 
+    if (sortCriteria.start_age) {
+      filtered = filtered.filter(
+        (p) => !p.start_age || p.start_age >= parseInt(sortCriteria.start_age)
+      );
+    }
+    if (sortCriteria.end_age) {
+      filtered = filtered.filter(
+        (p) => !p.end_age || p.end_age <= parseInt(sortCriteria.end_age)
+      );
+    }
+    if (sortCriteria.gender) {
+      filtered = filtered.filter(
+        (p) => p.gender === sortCriteria.gender || p.gender === "All"
+      );
+    }
+    if (sortCriteria.country) {
+      filtered = filtered.filter((p) => p.country === sortCriteria.country);
+    }
+    if (sortCriteria.major) {
+      filtered = filtered.filter((p) =>
+        p.major.includes(parseInt(sortCriteria.major))
+      );
+    }
+    if (sortCriteria.format) {
+      filtered = filtered.filter((p) => p.format === sortCriteria.format);
+    }
+
+    setFilteredTutorials(filtered);
+  }, [sortCriteria]);
+
+  const toggleNav = useCallback(() => {
+    setIsNavOpen((prev) => !prev);
+  }, []);
+
+  const closeNav = useCallback(() => {
+    setIsNavOpen(false);
+  }, []);
+
+  const handleSortChange = (e) => {
+    const { name, value } = e.target;
+    setSortCriteria((prev) => ({ ...prev, [name]: value }));
+
     if (value === "reset") {
       setSortCriteria({
         start_age: "",
@@ -125,31 +156,7 @@ const DashboardTutorials = () => {
         major: "",
         format: "",
       });
-      setFilteredTutorials(tutorials);
-      return;
     }
-
-    if (name === "start_age" && value) {
-      filtered = filtered.filter(
-        (p) => !p.start_age || p.start_age >= parseInt(value)
-      );
-    } else if (name === "end_age" && value) {
-      filtered = filtered.filter(
-        (p) => !p.end_age || p.end_age <= parseInt(value)
-      );
-    } else if (name === "gender" && value) {
-      filtered = filtered.filter(
-        (p) => p.gender === value || p.gender === "All"
-      );
-    } else if (name === "country" && value) {
-      filtered = filtered.filter((p) => p.country === value);
-    } else if (name === "major" && value) {
-      filtered = filtered.filter((p) => p.major.includes(parseInt(value)));
-    } else if (name === "format" && value) {
-      filtered = filtered.filter((p) => p.format === value);
-    }
-
-    setFilteredTutorials(filtered);
   };
 
   const handleLike = async (tutorialId, slug) => {
@@ -157,7 +164,6 @@ const DashboardTutorials = () => {
       const token = localStorage.getItem("access_token");
       if (!token) throw new Error("No access token found");
 
-      console.log("Liking tutorial with slug:", slug); // Debug slug
       await axios.post(
         `https://teenvision-1.onrender.com/api/v1/programs/${slug}/like/`,
         {},
@@ -185,12 +191,10 @@ const DashboardTutorials = () => {
       );
 
       const user = JSON.parse(localStorage.getItem("user") || "{}");
-      if (user.id) {
-        localStorage.setItem(
-          "user",
-          JSON.stringify({ ...user, liked_tutorials: updatedLikedTutorials })
-        );
-      }
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ ...user, liked_tutorials: updatedLikedTutorials })
+      );
     } catch (error) {
       console.error("Error liking/unliking tutorial:", error);
       if (error.response?.status === 401) {
@@ -207,6 +211,7 @@ const DashboardTutorials = () => {
     keys: (tutorial) => tutorial.id,
     from: { opacity: 0, transform: "translateY(20px)" },
     enter: { opacity: 1, transform: "translateY(0)" },
+    leave: { opacity: 0, transform: "translateY(-20px)" },
     config: { duration: 300 },
   });
 
@@ -236,6 +241,9 @@ const DashboardTutorials = () => {
       <main className={styles.mainContent}>
         <section className={styles.section}>
           <div className={styles.container}>
+            <div className={styles.header}>
+              <h2 className={styles.sectionTitle}>Tutorials</h2>
+            </div>
             <div className={styles.sortSection}>
               <select
                 name="start_age"
@@ -312,83 +320,87 @@ const DashboardTutorials = () => {
                 <option value="reset">Reset</option>
               </select>
             </div>
-            <div className={styles.cards}>
-              {transitions((style, tutorial) => (
-                <Link
-                  to={`/dashboard/program/${tutorial.slug}`}
-                  key={tutorial.id}
-                  className={styles.cardLink}
-                >
-                  <animated.div style={style} className={styles.card}>
-                    <div className={styles.cardImage}>
-                      <img
-                        src={tutorial.photo}
-                        alt={tutorial.title}
-                        onError={(e) => {
-                          e.target.src = img;
-                        }}
-                      />
-                      <button
-                        className={`${styles.likeIcon} ${
-                          likedTutorials.includes(tutorial.id)
-                            ? styles.liked
-                            : ""
-                        }`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleLike(tutorial.id, tutorial.slug);
-                        }}
-                      >
-                        {likedTutorials.includes(tutorial.id) ? (
-                          <AiFillHeart size={24} />
+            {filteredTutorials.length > 0 ? (
+              <div className={styles.cards}>
+                {transitions((style, tutorial) => (
+                  <Link
+                    to={`/dashboard/tutorial/${tutorial.slug}`}
+                    key={tutorial.id}
+                    className={styles.cardLink}
+                  >
+                    <animated.div style={style} className={styles.card}>
+                      <div className={styles.cardImage}>
+                        <img
+                          src={tutorial.photo}
+                          alt={tutorial.title}
+                          onError={(e) => {
+                            e.target.src = img;
+                          }}
+                        />
+                        <button
+                          className={`${styles.likeIcon} ${
+                            likedTutorials.includes(tutorial.id)
+                              ? styles.liked
+                              : ""
+                          }`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleLike(tutorial.id, tutorial.slug);
+                          }}
+                        >
+                          {likedTutorials.includes(tutorial.id) ? (
+                            <AiFillHeart size={24} />
+                          ) : (
+                            <AiOutlineHeart size={24} />
+                          )}
+                        </button>
+                      </div>
+                      <div className={styles.cardMajors}>
+                        {tutorial.major.length > 0 ? (
+                          tutorial.major.map((majorId, index) => (
+                            <span
+                              key={index}
+                              className={`${styles.majorButton} ${
+                                styles[
+                                  majors[majorId]?.toLowerCase() + "Major"
+                                ] || ""
+                              }`}
+                            >
+                              {majors[majorId] || majorId}
+                            </span>
+                          ))
                         ) : (
-                          <AiOutlineHeart size={24} />
+                          <span className={styles.majorButton}>No Majors</span>
                         )}
-                      </button>
-                    </div>
-                    <div className={styles.cardMajors}>
-                      {tutorial.major.length > 0 ? (
-                        tutorial.major.map((majorId, index) => (
-                          <span
-                            key={index}
-                            className={`${styles.majorButton} ${
-                              styles[
-                                majors[majorId]?.toLowerCase() + "Major"
-                              ] || ""
-                            }`}
-                          >
-                            {majors[majorId] || majorId}
-                          </span>
-                        ))
-                      ) : (
-                        <span className={styles.majorButton}>No Majors</span>
-                      )}
-                    </div>
-                    <h3 className={styles.cardTitle}>{tutorial.title}</h3>
-                    <div className={styles.cardInfoRow}>
-                      {tutorial.country && (
-                        <>
-                          <span className={styles.cardCountry}>
-                            {tutorial.country || "N/A"}
-                          </span>
-                          <span className={styles.separator}>|</span>
-                        </>
-                      )}
-                      <span className={styles.cardType}>{tutorial.type}</span>
-                      {tutorial.date && (
-                        <>
-                          <span className={styles.separator}>|</span>
-                          <span className={styles.cardDate}>
-                            {new Date(tutorial.date).toLocaleDateString()}
-                          </span>
-                        </>
-                      )}
-                    </div>
-                    <p className={styles.cardDescription}>{tutorial.desc}</p>
-                  </animated.div>
-                </Link>
-              ))}
-            </div>
+                      </div>
+                      <h3 className={styles.cardTitle}>{tutorial.title}</h3>
+                      <div className={styles.cardInfoRow}>
+                        {tutorial.country && (
+                          <>
+                            <span className={styles.cardCountry}>
+                              {tutorial.country || "N/A"}
+                            </span>
+                            <span className={styles.separator}>|</span>
+                          </>
+                        )}
+                        <span className={styles.cardType}>{tutorial.type}</span>
+                        {tutorial.date && (
+                          <>
+                            <span className={styles.separator}>|</span>
+                            <span className={styles.cardDate}>
+                              {new Date(tutorial.date).toLocaleDateString()}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                      <p className={styles.cardDescription}>{tutorial.desc}</p>
+                    </animated.div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <p className={styles.noPrograms}>No tutorials available</p>
+            )}
           </div>
         </section>
       </main>

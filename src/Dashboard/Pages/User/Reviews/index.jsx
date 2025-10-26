@@ -61,9 +61,10 @@ const DashboardReviews = () => {
 
     const fetchLikedItems = async () => {
       let storedPrograms = JSON.parse(localStorage.getItem("programs") || "[]");
-      let storedTutorials = JSON.parse(localStorage.getItem("tutorials") || "[]");
+      let storedTutorials = JSON.parse(
+        localStorage.getItem("tutorials") || "[]"
+      );
 
-      // Fallback: if local caches are empty (e.g., after re-login), fetch them
       try {
         if (!Array.isArray(storedPrograms) || storedPrograms.length === 0) {
           const resPrograms = await fetch(
@@ -86,6 +87,7 @@ const DashboardReviews = () => {
       } catch (e) {
         console.error("Failed to refresh caches for reviews:", e);
       }
+
       const allItems = [
         ...storedPrograms.map((item) => ({ ...item, itemType: "program" })),
         ...storedTutorials.map((item) => ({ ...item, itemType: "tutorial" })),
@@ -210,11 +212,10 @@ const DashboardReviews = () => {
           : [...new Set([...likedItems.tutorials, itemId])];
       }
 
-      setLikedItems((prev) => ({
-        ...prev,
+      setLikedItems({
         programs: updatedLikedPrograms,
         tutorials: updatedLikedTutorials,
-      }));
+      });
       localStorage.setItem(
         "liked_programs",
         JSON.stringify(updatedLikedPrograms)
@@ -225,7 +226,6 @@ const DashboardReviews = () => {
       );
 
       const user = JSON.parse(localStorage.getItem("user") || "{}");
-      // Persist likes into user object for future sessions regardless of user id
       localStorage.setItem(
         "user",
         JSON.stringify({

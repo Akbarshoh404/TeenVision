@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import DashboardNavbar from "../../../Layoutes/Navbar";
 import DashboardTopBar from "../../../Layoutes/TopBar";
-import Loading from "../../../Layoutes/Loader/index"; // Adjust path as provided
+import Loading from "../../../Layoutes/Loader/index";
 import styles from "./style.module.scss";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";

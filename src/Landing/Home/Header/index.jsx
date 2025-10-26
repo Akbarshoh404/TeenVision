@@ -18,8 +18,8 @@ const HomeHeader = () => {
               We’re here to help you to be the <span>best one!</span>
             </p>
             <p className={styles.centerText2}>
-              We harness the latest technologies to develop cutting-edge digital
-              solutions for modern business requirements
+              We help students find trusted programs and opportunities that
+              support their learning and personal growth
             </p>
           </div>
           <button
@@ -33,12 +33,12 @@ const HomeHeader = () => {
           </button>
           <div className={styles.numbers}>
             <div className={styles.centerCard}>
-              <p className={styles.centerCardP1}>1234</p>
-              <p className={styles.centerCardP2}>Lorem Ipsum is Simply</p>
+              <p className={styles.centerCardP1}>110+</p>
+              <p className={styles.centerCardP2}>Programs</p>
             </div>
             <div className={styles.centerCard}>
-              <p className={styles.centerCardP1}>1234</p>
-              <p className={styles.centerCardP2}>Lorem Ipsum is Simply</p>
+              <p className={styles.centerCardP1}>800+</p>
+              <p className={styles.centerCardP2}>Users</p>
             </div>
           </div>
         </div>

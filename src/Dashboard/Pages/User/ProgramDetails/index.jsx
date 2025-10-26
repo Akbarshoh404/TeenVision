@@ -31,8 +31,8 @@ const ProgramDetails = () => {
           gender:
             response.data.gender === "any"
               ? "All"
-              : response.data.gender.charAt(0).toUpperCase() +
-                response.data.gender.slice(1),
+              : response.data.gender?.charAt(0).toUpperCase() +
+                response.data.gender?.slice(1),
           format: response.data.format
             ? response.data.format.charAt(0).toUpperCase() +
               response.data.format.slice(1)
@@ -117,7 +117,9 @@ const ProgramDetails = () => {
             className={styles.heroImage}
             onError={handleImageError}
           />
-          <div className={styles.heroOverlay}>
+        </div>
+        <div className={styles.contentContainer}>
+          <div className={styles.titleSection}>
             <h1 className={styles.heroTitle}>{program.title}</h1>
             <a
               href={program.link}
@@ -128,23 +130,33 @@ const ProgramDetails = () => {
               Apply Now
             </a>
           </div>
-        </div>
-        <div className={styles.contentContainer}>
           <div className={styles.infoBar}>
-            <span className={styles.infoItem}>{program.country || "N/A"}</span>
-            <span className={styles.separator}>•</span>
+            {program.country && (
+              <>
+                <span className={styles.infoItem}>{program.country}</span>
+                <span className={styles.separator}>•</span>
+              </>
+            )}
             <span className={styles.infoItem}>{program.type}</span>
-            <span className={styles.separator}>•</span>
-            <span className={styles.infoItem}>
-              {new Date(program.date).toLocaleDateString()}
-            </span>
+            {program.date && (
+              <>
+                <span className={styles.separator}>•</span>
+                <span className={styles.infoItem}>
+                  {new Date(program.date).toLocaleDateString()}
+                </span>
+              </>
+            )}
           </div>
           <div className={styles.majors}>
-            {majors.map((majorName, index) => (
-              <span key={index} className={styles.majorButton}>
-                {majorName}
-              </span>
-            ))}
+            {majors.length > 0 ? (
+              majors.map((majorName, index) => (
+                <span key={index} className={styles.majorButton}>
+                  {majorName}
+                </span>
+              ))
+            ) : (
+              <span className={styles.majorButton}>No Majors</span>
+            )}
           </div>
           <h2 className={styles.sectionTitle}>Overview</h2>
           <p className={styles.fullInfo}>{program.full_info}</p>
@@ -153,25 +165,25 @@ const ProgramDetails = () => {
           <h2 className={styles.sectionTitle}>Additional Information</h2>
           <div className={styles.extraInfoGrid}>
             <div className={styles.extraInfoCard}>
-              <span className={styles.extraLabel}>Deadline</span>
+              <span className={styles.extraLabel}>Deadline: </span>
               <span className={styles.extraValue}>{program.deadline}</span>
             </div>
             <div className={styles.extraInfoCard}>
-              <span className={styles.extraLabel}>Format</span>
+              <span className={styles.extraLabel}>Format: </span>
               <span className={styles.extraValue}>{program.format}</span>
             </div>
             <div className={styles.extraInfoCard}>
-              <span className={styles.extraLabel}>Funding</span>
+              <span className={styles.extraLabel}>Funding: </span>
               <span className={styles.extraValue}>{program.funding}</span>
             </div>
             <div className={styles.extraInfoCard}>
-              <span className={styles.extraLabel}>Age Range</span>
+              <span className={styles.extraLabel}>Age Range: </span>
               <span className={styles.extraValue}>
                 {program.start_age} - {program.end_age}
               </span>
             </div>
             <div className={styles.extraInfoCard}>
-              <span className={styles.extraLabel}>Gender</span>
+              <span className={styles.extraLabel}>Gender: </span>
               <span className={styles.extraValue}>{program.gender}</span>
             </div>
           </div>

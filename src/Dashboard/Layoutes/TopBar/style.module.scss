@@ -15,7 +15,6 @@ $secondary-text: #b0b8c4;
 
 .topBar {
   width: 100%;
-  padding-left: var(--sidebar-width, 350px);
   height: 80px;
   background-color: $primary-bg;
   display: flex;
@@ -24,6 +23,7 @@ $secondary-text: #b0b8c4;
   padding: 0 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   z-index: 900;
+  transition: padding-left 0.3s ease;
 }
 
 .searchContainer {
@@ -33,7 +33,8 @@ $secondary-text: #b0b8c4;
   border: 1px solid $card-border;
   border-radius: 8px;
   padding: 12px;
-  width: 400px;
+  max-width: 400px;
+  width: 100%;
   cursor: pointer;
   transition: background-color 0.2s, border-color 0.2s;
 }
@@ -48,10 +49,7 @@ $secondary-text: #b0b8c4;
   border: none;
   color: #000000;
   font-family: "Inter", sans-serif;
-  font-weight: 400;
   font-size: 16px;
-  line-height: 100%;
-  letter-spacing: -1%;
   width: 100%;
   outline: none;
   cursor: pointer;
@@ -65,7 +63,6 @@ $secondary-text: #b0b8c4;
   display: flex;
   align-items: center;
   gap: 12px;
-  position: relative;
   padding: 8px;
   border-radius: 8px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -92,8 +89,6 @@ $secondary-text: #b0b8c4;
   font-family: "Inter", sans-serif;
   font-weight: 500;
   font-size: 18px;
-  line-height: 100%;
-  letter-spacing: -1%;
   color: $text-color;
 }
 
@@ -101,8 +96,6 @@ $secondary-text: #b0b8c4;
   font-family: "Inter", sans-serif;
   font-weight: 400;
   font-size: 14px;
-  line-height: 100%;
-  letter-spacing: -1%;
   color: $secondary-text;
 }
 
@@ -117,7 +110,6 @@ $secondary-text: #b0b8c4;
   border-radius: 6px;
   padding: 12px 16px;
   font-family: "Inter", sans-serif;
-  font-weight: 500;
   font-size: 16px;
   cursor: pointer;
   align-items: center;
@@ -148,31 +140,17 @@ $secondary-text: #b0b8c4;
 }
 
 .hamburger {
-  display: none;
-  position: absolute;
-  top: 28px;
-  left: 20px;
   background: none;
   border: none;
   cursor: pointer;
-  z-index: 1200;
   color: $text-color;
-}
-
-.responsiveIcons {
-  display: none;
-}
-
-.iconButton {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 8px;
+  font-size: 24px;
 }
 
 .leftContainer {
   display: flex;
   align-items: center;
+  gap: 12px;
 }
 
 .searchModal {
@@ -192,7 +170,7 @@ $secondary-text: #b0b8c4;
 .modalContent {
   background: $card-bg;
   border-radius: 12px;
-  padding: 30px;
+  padding: 20px;
   width: 90%;
   max-width: 800px;
   max-height: 90vh;
@@ -215,20 +193,18 @@ $secondary-text: #b0b8c4;
 
 .closeButton {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 15px;
+  right: 15px;
   background: $hover-bg;
   border: 1px solid $hover-border;
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: $text-color;
   cursor: pointer;
-  font-size: 20px;
-  z-index: 1100;
   transition: background-color 0.2s, transform 0.2s;
 }
 
@@ -258,10 +234,7 @@ $secondary-text: #b0b8c4;
   border: none;
   color: #000000;
   font-family: "Inter", sans-serif;
-  font-weight: 400;
   font-size: 16px;
-  line-height: 100%;
-  letter-spacing: -1%;
   width: 100%;
   outline: none;
 }
@@ -317,9 +290,7 @@ $secondary-text: #b0b8c4;
   color: $focus-border;
   text-decoration: none;
   font-family: "Inter", sans-serif;
-  font-weight: 500;
   font-size: 14px;
-  display: inline-block;
 }
 
 .cardLink:hover {
@@ -328,29 +299,43 @@ $secondary-text: #b0b8c4;
 
 .noResults {
   font-family: "Inter", sans-serif;
-  font-weight: 400;
   font-size: 16px;
   color: $secondary-text;
   text-align: center;
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (min-width: 1201px) {
   .topBar {
-    left: 0;
-    padding: 0 20px;
-    justify-content: space-between;
-    padding-left: 50px;
+    padding-left: 350px;
+  }
+
+  .hamburger {
+    display: none;
+  }
+
+  .searchContainer {
+    display: flex;
+  }
+}
+
+@media (max-width: 1200px) {
+  .topBar {
+    padding-left: 20px;
   }
 
   .searchContainer {
     display: none;
   }
 
-  .responsiveIcons {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  .hamburger {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .topBar {
+    padding: 0 16px;
   }
 
   .accountContainer {
@@ -375,24 +360,9 @@ $secondary-text: #b0b8c4;
     font-size: 16px;
   }
 
-  .accountContainer:hover {
-    transform: scale(1.03);
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-  }
-
-  .hamburger {
-    display: block;
-    margin-right: 20px;
-  }
-
-  .leftContainer {
-    gap: 20px;
-  }
-
   .modalContent {
     width: 95%;
-    padding: 20px;
-    max-width: 100%;
+    padding: 16px;
   }
 
   .modalSearchInput {
@@ -416,10 +386,9 @@ $secondary-text: #b0b8c4;
   }
 
   .closeButton {
-    top: 15px;
-    right: 15px;
-    width: 32px;
-    height: 32px;
-    font-size: 18px;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
   }
 }

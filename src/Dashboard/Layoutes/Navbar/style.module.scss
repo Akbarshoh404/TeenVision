@@ -17,14 +17,13 @@ $focus-border: #4a90e2;
   left: 0;
   height: 100vh;
   width: var(--sidebar-width, 350px);
-  max-width: 100%;
   background-color: $primary-bg;
   color: #ffffff;
   display: flex;
   flex-direction: column;
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.3s ease;
   z-index: 1000;
 }
 
@@ -42,7 +41,6 @@ $focus-border: #4a90e2;
   position: absolute;
   top: 20px;
   right: 20px;
-  z-index: 1100;
 }
 
 .logoContainer {
@@ -61,10 +59,32 @@ $focus-border: #4a90e2;
   font-family: "Inter", sans-serif;
   font-weight: 600;
   font-size: 28px;
-  line-height: 100%;
-  letter-spacing: -1%;
   margin-left: 10px;
   cursor: pointer;
+}
+
+.searchContainer {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border: 1px solid $card-border;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 20px;
+}
+
+.searchInput {
+  background: none;
+  border: none;
+  color: #000000;
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  width: 100%;
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: #6b7280;
 }
 
 .navList {
@@ -80,18 +100,14 @@ $focus-border: #4a90e2;
   display: flex;
   align-items: center;
   font-family: "Inter", sans-serif;
-  font-weight: 400;
   font-size: 16px;
-  line-height: 100%;
-  letter-spacing: -1%;
   color: #ffffff;
   text-decoration: none;
   padding: 12px;
   border: 1px solid $card-border;
   border-radius: 8px;
   background-color: $card-bg;
-  transition: background-color 0.2s, border-color 0.2s, transform 0.1s,
-    color 0.2s;
+  transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
 }
 
 .navLink:hover {
@@ -121,15 +137,32 @@ $focus-border: #4a90e2;
   margin-right: 10px;
   font-size: 18px;
   color: #ffffff;
-  transition: color 0.2s;
+}
+
+.searchContainer .icon {
+  color: #000000;
 }
 
 /* Responsive Design */
+@media (min-width: 1201px) {
+  .navbar {
+    transform: translateX(0);
+  }
+
+  .closeBtn {
+    display: none;
+  }
+
+  .searchContainer {
+    display: none;
+  }
+}
+
 @media (max-width: 1200px) {
   .navbar {
     width: 100%;
+    max-width: 350px;
     transform: translateX(-100%);
-    padding: 16px;
     padding-top: 80px;
   }
 
@@ -141,8 +174,11 @@ $focus-border: #4a90e2;
     display: block;
   }
 
+  .searchContainer {
+    display: flex;
+  }
+
   .logoContainer {
-    padding-top: 20px;
     margin-bottom: 20px;
   }
 
@@ -168,5 +204,21 @@ $focus-border: #4a90e2;
 
   .logoText {
     font-size: 24px;
+  }
+
+  .navLink {
+    font-size: 14px;
+  }
+
+  .icon {
+    font-size: 16px;
+  }
+
+  .searchContainer {
+    padding: 8px;
+  }
+
+  .searchInput {
+    font-size: 14px;
   }
 }

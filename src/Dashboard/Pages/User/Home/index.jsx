@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { Link } from "react-router-dom"; // Added for navigation
+import { Link } from "react-router-dom";
 import { useTransition, animated } from "@react-spring/web";
 import PropTypes from "prop-types";
 import DashboardNavbar from "../../../Layoutes/Navbar";
@@ -309,66 +309,73 @@ const DashboardHome = () => {
               </select>
             </div>
             <div className={styles.cards}>
-              {transitions((style, program) => (
-                <Link
-                  to={`/dashboard/program/${program.slug}`}
-                  key={program.id}
-                  className={styles.cardLink}
-                >
-                  <animated.div style={style} className={styles.card}>
-                    <div className={styles.cardImage}>
-                      <img
-                        src={program.photo}
-                        alt={program.title}
-                        onError={(e) => {
-                          e.target.src = img;
-                        }}
-                      />
-                      <button
-                        className={`${styles.likeIcon} ${
-                          likedPrograms.includes(program.id) ? styles.liked : ""
-                        }`}
-                        onClick={(e) => {
-                          e.preventDefault(); // Prevent Link navigation on like
-                          handleLike(program.id, program.slug);
-                        }}
-                      >
-                        {likedPrograms.includes(program.id) ? (
-                          <AiFillHeart size={24} />
-                        ) : (
-                          <AiOutlineHeart size={24} />
-                        )}
-                      </button>
-                    </div>
-                    <div className={styles.cardMajors}>
-                      {program.major.map((majorId, index) => (
-                        <span
-                          key={index}
-                          className={`${styles.majorButton} ${
-                            styles[majors[majorId]?.toLowerCase() + "Major"] ||
-                            ""
+              {filteredPrograms.length === 0 ? (
+                <p className={styles.noPrograms}>No programs available</p>
+              ) : (
+                transitions((style, program) => (
+                  <Link
+                    to={`/dashboard/program/${program.slug}`}
+                    key={program.id}
+                    className={styles.cardLink}
+                  >
+                    <animated.div style={style} className={styles.card}>
+                      <div className={styles.cardImage}>
+                        <img
+                          src={program.photo}
+                          alt={program.title}
+                          onError={(e) => {
+                            e.target.src = img;
+                          }}
+                        />
+                        <button
+                          className={`${styles.likeIcon} ${
+                            likedPrograms.includes(program.id)
+                              ? styles.liked
+                              : ""
                           }`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleLike(program.id, program.slug);
+                          }}
                         >
-                          {majors[majorId] || majorId}
+                          {likedPrograms.includes(program.id) ? (
+                            <AiFillHeart size={24} />
+                          ) : (
+                            <AiOutlineHeart size={24} />
+                          )}
+                        </button>
+                      </div>
+                      <div className={styles.cardMajors}>
+                        {program.major.map((majorId, index) => (
+                          <span
+                            key={index}
+                            className={`${styles.majorButton} ${
+                              styles[
+                                majors[majorId]?.toLowerCase() + "Major"
+                              ] || ""
+                            }`}
+                          >
+                            {majors[majorId] || majorId}
+                          </span>
+                        ))}
+                      </div>
+                      <h3 className={styles.cardTitle}>{program.title}</h3>
+                      <div className={styles.cardInfoRow}>
+                        <span className={styles.cardCountry}>
+                          {program.country || "N/A"}
                         </span>
-                      ))}
-                    </div>
-                    <h3 className={styles.cardTitle}>{program.title}</h3>
-                    <div className={styles.cardInfoRow}>
-                      <span className={styles.cardCountry}>
-                        {program.country || "N/A"}
-                      </span>
-                      <span className={styles.separator}>|</span>
-                      <span className={styles.cardType}>{program.type}</span>
-                      <span className={styles.separator}>|</span>
-                      <span className={styles.cardDate}>
-                        {new Date(program.date).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <p className={styles.cardDescription}>{program.desc}</p>
-                  </animated.div>
-                </Link>
-              ))}
+                        <span className={styles.separator}>|</span>
+                        <span className={styles.cardType}>{program.type}</span>
+                        <span className={styles.separator}>|</span>
+                        <span className={styles.cardDate}>
+                          {new Date(program.date).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <p className={styles.cardDescription}>{program.desc}</p>
+                    </animated.div>
+                  </Link>
+                ))
+              )}
             </div>
           </div>
         </section>

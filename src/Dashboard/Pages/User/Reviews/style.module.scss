@@ -21,12 +21,13 @@ $border-radius: 12px;
   background-color: $primary-bg;
   font-family: "Poppins", sans-serif;
   min-height: 100vh;
-  animation: fadeIn 0.8s ease-out, hideScroll 0.8s forwards;
+  animation: fadeIn 0.8s ease-out;
 }
 
 .mainContent {
-  margin-left: clamp(230px, 22vw, 290px);
-  transition: margin-left 0.3s ease-in-out;
+  margin-left: 350px; /* Matches --sidebar-width from DashboardNavbar */
+  transition: margin-left 0.3s ease-in-out, margin-top 0.3s ease-in-out;
+  flex-grow: 1;
 }
 
 .section {
@@ -36,13 +37,14 @@ $border-radius: 12px;
 }
 
 .container {
-  width: clamp(80%, 85%, 90%);
+  width: 90%;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 clamp(12px, 2vw, 24px);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: clamp(40px, 5vw, 64px);
+  gap: clamp(30px, 4vw, 48px);
 }
 
 .header {
@@ -55,25 +57,22 @@ $border-radius: 12px;
 .sectionTitle {
   font-family: Poppins, sans-serif;
   font-weight: 600;
-  font-size: clamp(20px, 3vw, 28px);
-  line-height: clamp(28px, 4vw, 36px);
+  font-size: clamp(18px, 2.5vw, 24px);
+  line-height: clamp(24px, 3vw, 30px);
   color: #222;
 }
 
 .sortSection {
   display: grid;
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(clamp(120px, 15vw, 160px), 1fr)
-  );
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: clamp(8px, 1vw, 12px);
   width: 100%;
   padding: clamp(12px, 2vw, 16px) 0;
 
   select {
     font-family: Poppins, sans-serif;
-    font-size: clamp(12px, 1.5vw, 14px);
-    padding: clamp(8px, 1.5vw, 10px) clamp(12px, 2vw, 16px);
+    font-size: clamp(12px, 1.4vw, 14px);
+    padding: clamp(8px, 1.2vw, 10px) clamp(12px, 1.8vw, 16px);
     border: 1px solid $input-border;
     border-radius: $border-radius;
     background-color: $input-bg;
@@ -103,12 +102,9 @@ $border-radius: 12px;
 .cards {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(clamp(250px, 30vw, 300px), 1fr)
-  );
-  gap: clamp(16px, 3vw, 50px);
-  cursor: pointer;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 320px));
+  gap: clamp(16px, 2.5vw, 32px);
+  justify-content: center; /* Center cards when fewer than grid allows */
 }
 
 .cardLink {
@@ -118,21 +114,25 @@ $border-radius: 12px;
 
 .card {
   background-color: $input-bg;
-  border-radius: clamp(10px, 2vw, 20px);
-  box-shadow: 0px 4px 4px rgba(7, 13, 24, 0.3);
+  border-radius: clamp(10px, 1.5vw, 16px);
+  box-shadow: 0px 4px 8px rgba(7, 13, 24, 0.2);
   display: flex;
   flex-direction: column;
-  gap: clamp(12px, 2vw, 16px);
+  gap: clamp(10px, 1.5vw, 14px);
   transition: transform 0.4s ease;
+  max-width: 320px; /* Prevent cards from becoming too large */
+  width: 100%;
+  margin: 0 auto; /* Center cards within grid cell */
 
   &:hover {
-    animation: float 2s ease-in-out infinite;
+    transform: translateY(-5px);
+    box-shadow: 0px 8px 16px rgba(7, 13, 24, 0.3);
   }
 }
 
 .cardImage {
   width: 100%;
-  border-radius: clamp(10px, 2vw, 20px) clamp(10px, 2vw, 20px) 0 0;
+  border-radius: clamp(10px, 1.5vw, 16px) clamp(10px, 1.5vw, 16px) 0 0;
   overflow: hidden;
   position: relative;
 }
@@ -151,44 +151,44 @@ $border-radius: 12px;
 
 .placeholderImage {
   width: 100%;
-  height: 150px;
+  height: clamp(120px, 15vw, 150px);
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #e6f0f1;
-  font-size: 48px;
+  font-size: clamp(24px, 3vw, 32px);
   color: $accent-color;
-  border-radius: clamp(10px, 2vw, 20px) clamp(10px, 2vw, 20px) 0 0;
+  border-radius: clamp(10px, 1.5vw, 16px) clamp(10px, 1.5vw, 16px) 0 0;
 }
 
 .cardMajors {
   display: flex;
   flex-wrap: wrap;
-  gap: clamp(6px, 1vw, 8px);
-  padding: 0 clamp(12px, 2vw, 24px);
+  gap: clamp(6px, 0.8vw, 8px);
+  padding: 0 clamp(10px, 1.5vw, 16px);
 }
 
 .majorButton {
   font-family: Poppins, sans-serif;
   font-weight: 500;
   font-size: clamp(10px, 1.2vw, 12px);
-  line-height: clamp(14px, 1.8vw, 18px);
+  line-height: clamp(14px, 1.8vw, 16px);
   color: $accent-color;
   background-color: #e6f0f1;
   border: 1px solid $accent-color;
-  border-radius: clamp(8px, 1.5vw, 16px);
-  padding: clamp(3px, 0.5vw, 4px) clamp(8px, 1vw, 12px);
+  border-radius: clamp(6px, 1vw, 8px);
+  padding: clamp(3px, 0.5vw, 4px) clamp(6px, 1vw, 10px);
   text-align: center;
 }
 
 .cardTitle {
   font-family: Poppins, sans-serif;
   font-weight: 600;
-  font-size: clamp(16px, 2vw, 20px);
-  line-height: clamp(20px, 2.5vw, 26px);
+  font-size: clamp(16px, 1.8vw, 18px);
+  line-height: clamp(20px, 2.2vw, 24px);
   color: #222;
   text-align: left;
-  padding: 0 clamp(12px, 2vw, 24px);
+  padding: 0 clamp(10px, 1.5vw, 16px);
   position: relative;
 }
 
@@ -196,7 +196,7 @@ $border-radius: 12px;
   content: "";
   position: absolute;
   bottom: -2px;
-  left: clamp(12px, 2vw, 24px);
+  left: clamp(10px, 1.5vw, 16px);
   width: 0;
   height: 2px;
   background: linear-gradient(to right, $gradient-start, $gradient-end);
@@ -204,16 +204,15 @@ $border-radius: 12px;
 }
 
 .cardTitle:hover::after {
-  width: calc(100% - clamp(24px, 4vw, 48px));
+  width: calc(100% - clamp(20px, 3vw, 32px));
 }
 
 .cardInfoRow {
   display: flex;
   align-items: center;
-  gap: clamp(6px, 1vw, 8px);
-  flex-wrap: nowrap;
-  padding: 0 clamp(12px, 2vw, 24px);
-  overflow: hidden;
+  gap: clamp(6px, 0.8vw, 8px);
+  flex-wrap: wrap;
+  padding: 0 clamp(10px, 1.5vw, 16px);
 }
 
 .cardCountry,
@@ -221,13 +220,13 @@ $border-radius: 12px;
 .cardDate {
   font-family: Poppins, sans-serif;
   font-weight: 400;
-  font-size: clamp(11px, 1.3vw, 14px);
-  line-height: clamp(14px, 1.8vw, 18px);
+  font-size: clamp(10px, 1.2vw, 12px);
+  line-height: clamp(14px, 1.6vw, 16px);
   color: $accent-color;
   background-color: #e6f0f1;
   border: 1px solid $accent-color;
-  border-radius: clamp(8px, 1.5vw, 16px);
-  padding: clamp(3px, 0.5vw, 4px) clamp(8px, 1vw, 12px);
+  border-radius: clamp(6px, 1vw, 8px);
+  padding: clamp(3px, 0.5vw, 4px) clamp(6px, 1vw, 10px);
   text-align: center;
   max-width: clamp(80px, 30%, 100px);
   overflow: hidden;
@@ -235,28 +234,22 @@ $border-radius: 12px;
   white-space: nowrap;
 }
 
-.cardCountry {
-  display: flex;
-  align-items: center;
-  gap: clamp(4px, 0.8vw, 6px);
-}
-
 .separator {
   font-family: Poppins, sans-serif;
   font-weight: 400;
-  font-size: clamp(11px, 1.3vw, 14px);
-  line-height: clamp(14px, 1.8vw, 20px);
+  font-size: clamp(10px, 1.2vw, 12px);
+  line-height: clamp(14px, 1.6vw, 16px);
   color: #555;
 }
 
 .cardDescription {
   font-family: Poppins, sans-serif;
   font-weight: 400;
-  font-size: clamp(13px, 1.6vw, 16px);
-  line-height: clamp(18px, 2.2vw, 24px);
+  font-size: clamp(12px, 1.4vw, 14px);
+  line-height: clamp(16px, 2vw, 20px);
   color: #777;
   text-align: left;
-  padding: 0 clamp(12px, 2vw, 24px) clamp(12px, 2vw, 24px);
+  padding: 0 clamp(10px, 1.5vw, 16px) clamp(10px, 1.5vw, 16px);
   flex-grow: 1;
 }
 
@@ -264,9 +257,9 @@ $border-radius: 12px;
   background: none;
   border: none;
   position: absolute;
-  top: clamp(5px, 1vw, 10px);
-  right: clamp(5px, 1vw, 10px);
-  padding: clamp(5px, 1vw, 8px);
+  top: clamp(5px, 0.8vw, 8px);
+  right: clamp(5px, 0.8vw, 8px);
+  padding: clamp(4px, 0.8vw, 6px);
   cursor: pointer;
   color: $accent-color;
 
@@ -287,23 +280,20 @@ $border-radius: 12px;
 .noPrograms {
   font-family: Poppins, sans-serif;
   font-weight: 600;
-  font-size: clamp(20px, 3vw, 32px);
-  line-height: clamp(28px, 4vw, 40px);
+  font-size: clamp(16px, 2.5vw, 20px);
+  line-height: clamp(20px, 3vw, 24px);
   color: #222;
   text-align: center;
   width: 100%;
-  margin: clamp(50px, 8vw, 100px) 0;
+  padding: clamp(20px, 4vw, 40px);
 }
 
-@keyframes float {
-  0% {
-    transform: translateY(0);
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
-  50% {
-    transform: translateY(-10px);
-  }
-  100% {
-    transform: translateY(0);
+  to {
+    opacity: 1;
   }
 }
 
@@ -319,200 +309,163 @@ $border-radius: 12px;
   }
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes hideScroll {
-  0% {
-    overflow: hidden;
-  }
-  99% {
-    overflow: hidden;
-  }
-  100% {
-    overflow: auto;
-  }
-}
-
-@media (max-width: 2560px) {
+/* Responsive Design */
+@media (min-width: 1201px) {
   .mainContent {
-    margin-left: clamp(240px, 20vw, 300px);
-  }
-  .container {
-    width: 88%;
-  }
-  .cards {
-    gap: clamp(30px, 3vw, 50px);
+    margin-left: 350px;
   }
 }
 
-@media (max-width: 1920px) {
+@media (max-width: 1200px) {
   .mainContent {
-    margin-left: clamp(230px, 18vw, 280px);
+    margin-left: 0;
+    margin-top: 80px; /* Matches topbar height */
   }
-  .container {
-    width: 90%;
-  }
-  .cards {
-    gap: clamp(24px, 2.5vw, 40px);
-  }
-  .sortSection {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  }
-}
 
-@media (max-width: 1600px) {
-  .mainContent {
-    margin-left: clamp(220px, 17vw, 270px);
-  }
   .container {
-    width: 92%;
-    padding: 0 18px;
+    width: 95%;
+    gap: clamp(24px, 3.5vw, 40px);
   }
-  .cards {
-    gap: clamp(20px, 2vw, 30px);
-  }
-  .sortSection {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  }
-}
 
-@media (max-width: 1366px) {
-  .mainContent {
-    margin-left: clamp(210px, 16vw, 260px);
-  }
-  .container {
-    width: 94%;
-    padding: 0 16px;
-  }
-  .cards {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-  }
   .sortSection {
     grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   }
-}
 
-@media (max-width: 1024px) {
-  .mainContent {
-    margin-left: 0;
-    margin-top: 64px;
-  }
-  .container {
-    width: 96%;
-    padding: 0 14px;
-    gap: clamp(32px, 4vw, 48px);
-  }
   .cards {
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 20px;
-  }
-  .sortSection {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 320px));
+    gap: clamp(12px, 2vw, 24px);
   }
 }
 
 @media (max-width: 768px) {
+  .mainContent {
+    margin-top: 80px;
+  }
+
+  .section {
+    padding: clamp(15px, 2.5vw, 20px) clamp(8px, 1.5vw, 12px)
+      clamp(40px, 6vw, 60px);
+  }
+
   .container {
     width: 100%;
-    padding: 0 12px;
-    gap: clamp(28px, 4vw, 40px);
+    padding: 0 clamp(8px, 1.5vw, 12px);
+    gap: clamp(20px, 3vw, 32px);
   }
-  .cards {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
+
   .sortSection {
     grid-template-columns: 1fr;
+    gap: clamp(6px, 1vw, 10px);
   }
+
   .sortSection select {
     width: 100%;
+    font-size: clamp(11px, 1.3vw, 13px);
+    padding: clamp(6px, 1vw, 8px) clamp(10px, 1.5vw, 12px);
   }
-  .card {
-    margin: 0 8px;
-  }
-}
 
-@media (max-width: 600px) {
-  .section {
-    padding: 15px 10px 50px;
-  }
-  .container {
-    padding: 0 10px;
-    gap: clamp(24px, 4vw, 36px);
-  }
   .cards {
-    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 320px));
+    gap: clamp(10px, 1.5vw, 16px);
   }
+
   .card {
-    margin: 0 4px;
-  }
-  .cardInfoRow {
-    gap: clamp(4px, 0.8vw, 6px);
-  }
-  .cardCountry,
-  .cardType,
-  .cardDate {
-    max-width: clamp(70px, 28%, 90px);
-    font-size: clamp(10px, 1.2vw, 12px);
+    margin: 0 clamp(4px, 1vw, 8px);
   }
 }
 
 @media (max-width: 480px) {
+  .section {
+    padding: clamp(10px, 2vw, 15px) clamp(6px, 1.2vw, 10px)
+      clamp(30px, 5vw, 50px);
+  }
+
   .container {
-    padding: 0 8px;
-    gap: clamp(20px, 4vw, 32px);
+    padding: 0 clamp(6px, 1vw, 10px);
+    gap: clamp(16px, 2.5vw, 24px);
   }
+
   .cards {
-    gap: 10px;
+    gap: clamp(8px, 1.2vw, 12px);
   }
+
   .card {
-    margin: 0 2px;
+    margin: 0 clamp(2px, 0.5vw, 4px);
   }
+
+  .sectionTitle {
+    font-size: clamp(16px, 2vw, 20px);
+  }
+
   .sortSection select {
-    font-size: 12px;
-    padding: 6px 10px;
+    font-size: clamp(10px, 1.2vw, 12px);
+    padding: clamp(5px, 0.8vw, 6px) clamp(8px, 1.2vw, 10px);
   }
+
+  .cardTitle {
+    font-size: clamp(14px, 1.6vw, 16px);
+    line-height: clamp(18px, 2vw, 20px);
+  }
+
+  .cardDescription {
+    font-size: clamp(11px, 1.3vw, 13px);
+    line-height: clamp(14px, 1.8vw, 18px);
+  }
+
   .cardInfoRow {
-    gap: clamp(3px, 0.6vw, 5px);
+    gap: clamp(4px, 0.6vw, 6px);
   }
+
   .cardCountry,
   .cardType,
   .cardDate {
-    max-width: clamp(60px, 26%, 80px);
     font-size: clamp(9px, 1.1vw, 11px);
+    max-width: clamp(60px, 25%, 80px);
   }
 }
 
 @media (max-width: 360px) {
+  .section {
+    padding: clamp(8px, 1.8vw, 12px) clamp(4px, 0.8vw, 8px)
+      clamp(20px, 4vw, 40px);
+  }
+
   .container {
-    padding: 0 6px;
-    gap: clamp(16px, 4vw, 28px);
+    padding: 0 clamp(4px, 0.8vw, 8px);
+    gap: clamp(12px, 2vw, 20px);
   }
+
   .cards {
-    gap: 8px;
+    gap: clamp(6px, 1vw, 10px);
   }
+
   .card {
     margin: 0;
   }
+
   .sortSection select {
-    font-size: 11px;
-    padding: 5px 8px;
+    font-size: clamp(9px, 1.1vw, 11px);
+    padding: clamp(4px, 0.7vw, 5px) clamp(6px, 1vw, 8px);
   }
+
+  .cardTitle {
+    font-size: clamp(13px, 1.5vw, 15px);
+    line-height: clamp(16px, 1.8vw, 18px);
+  }
+
+  .cardDescription {
+    font-size: clamp(10px, 1.2vw, 12px);
+    line-height: clamp(13px, 1.6vw, 16px);
+  }
+
   .cardInfoRow {
-    gap: clamp(2px, 0.5vw, 4px);
+    gap: clamp(3px, 0.5vw, 4px);
   }
+
   .cardCountry,
   .cardType,
   .cardDate {
-    max-width: clamp(50px, 25%, 70px);
     font-size: clamp(8px, 1vw, 10px);
+    max-width: clamp(50px, 24%, 70px);
   }
 }
