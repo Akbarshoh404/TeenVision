@@ -1,5 +1,4 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useTransition, animated } from "@react-spring/web";
 import PropTypes from "prop-types";
 import DashboardNavbar from "../../../Layoutes/Navbar";
@@ -323,10 +322,12 @@ const DashboardTutorials = () => {
             {filteredTutorials.length > 0 ? (
               <div className={styles.cards}>
                 {transitions((style, tutorial) => (
-                  <Link
-                    to={`/dashboard/tutorial/${tutorial.slug}`}
-                    key={tutorial.id}
+                  <a
+                    href={tutorial.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className={styles.cardLink}
+                    key={tutorial.id}
                   >
                     <animated.div style={style} className={styles.card}>
                       <div className={styles.cardImage}>
@@ -399,7 +400,7 @@ const DashboardTutorials = () => {
                       </div>
                       <p className={styles.cardDescription}>{tutorial.desc}</p>
                     </animated.div>
-                  </Link>
+                  </a>
                 ))}
               </div>
             ) : (
