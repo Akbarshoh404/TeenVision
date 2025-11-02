@@ -71,7 +71,7 @@ const DashboardNavbar = ({ isNavOpen, toggleNav, closeNav }) => {
             }}
           >
             <FiStar className={styles.icon} />
-            Reviews
+            Liked Programs
           </a>
         </li>
         <li className={styles.navItem}>

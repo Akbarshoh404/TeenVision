@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./style.module.scss";
 import img from "../../../Components/images/cardexample.png";
+import { useNavigate } from "react-router";
 
 const countryCodeMap = {
   USA: "us",
@@ -9,9 +10,134 @@ const countryCodeMap = {
   Australia: "au",
   Germany: "de",
   France: "fr",
+  Global: "gl",
+  Switzerland: "ch",
+  Japan: "jp",
+  "Saudi Arabia": "sa",
+  China: "cn",
+  Russia: "ru",
+  Turkey: "tr",
+  "Hong Kong": "hk",
 };
 
+const fallbackPrograms = [
+  {
+    id: 1,
+    title: "Google Summer of Code",
+    slug: "google-summer-of-code",
+    desc: "Global online program introducing students to open source development.",
+    link: "https://summerofcode.withgoogle.com/",
+    country: "Global",
+    format: "online",
+    photo:
+      "https://upload.wikimedia.org/wikipedia/commons/3/33/Google_Summer_of_Code_logo.svg",
+    type: "program",
+    funding: "paid",
+    start_age: 18,
+    end_age: 30,
+    gender: "any",
+    status: "on",
+    created_at: "2025-10-20 09:20:00+00",
+    major: [],
+  },
+  {
+    id: 2,
+    title: "MITES Summer Program",
+    slug: "mites-summer-program",
+    desc: "Free six-week residential program at MIT for talented high school students.",
+    link: "https://mitesapp.mit.edu/",
+    country: "USA",
+    format: "in-person",
+    photo:
+      "https://news.mit.edu/sites/default/files/styles/news_article__image_gallery/public/images/202307/MITES-Classroom.jpg",
+    type: "program",
+    funding: "full",
+    start_age: 16,
+    end_age: 18,
+    gender: "any",
+    status: "on",
+    created_at: "2025-10-20 09:20:00+00",
+    major: [],
+  },
+  {
+    id: 3,
+    title: "Microsoft Imagine Cup",
+    slug: "microsoft-imagine-cup",
+    desc: "Global student competition for tech innovation.",
+    link: "https://imaginecup.microsoft.com/",
+    country: "Global",
+    format: "online",
+    photo:
+      "https://upload.wikimedia.org/wikipedia/en/d/d2/Imagine_Cup_logo.png",
+    type: "program",
+    funding: "paid",
+    start_age: 16,
+    end_age: 30,
+    gender: "any",
+    status: "on",
+    created_at: "2025-10-20 09:20:00+00",
+    major: [],
+  },
+  {
+    id: 4,
+    title: "CERN Summer Student Program",
+    slug: "cern-summer-student-program",
+    desc: "Summer research program at CERN for physics and computing students.",
+    link: "https://careers.cern/summer",
+    country: "Switzerland",
+    format: "in-person",
+    photo:
+      "https://home.cern/sites/home.web.cern.ch/files/styles/medium/public/image/2016/07/Summer_Students_2016.jpg",
+    type: "program",
+    funding: "paid",
+    start_age: 18,
+    end_age: 28,
+    gender: "any",
+    status: "on",
+    created_at: "2025-10-20 09:20:00+00",
+    major: [],
+  },
+  {
+    id: 5,
+    title: "Rise Global Challenge",
+    slug: "rise-global-challenge",
+    desc: "Global scholarship and mentorship program for young changemakers.",
+    link: "https://www.risefortheworld.org/",
+    country: "Global",
+    format: "online",
+    photo:
+      "https://www.schmidtfutures.com/wp-content/uploads/2021/03/rise-logo.png",
+    type: "program",
+    funding: "full",
+    start_age: 15,
+    end_age: 17,
+    gender: "any",
+    status: "on",
+    created_at: "2025-10-20 09:20:00+00",
+    major: [],
+  },
+  {
+    id: 7,
+    title: "NASA Internships and Fellowships",
+    slug: "nasa-internships",
+    desc: "Hands-on experience at NASA centers for students in STEM.",
+    link: "https://intern.nasa.gov/",
+    country: "USA",
+    format: "in-person",
+    photo: "https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg",
+    type: "program",
+    funding: "paid",
+    start_age: 18,
+    end_age: 25,
+    gender: "any",
+    status: "on",
+    created_at: "2025-10-20 09:20:00+00",
+    major: [],
+  },
+];
+
 const HomeSection3 = () => {
+  const navigate = useNavigate();
   const [programs, setPrograms] = useState([]);
   const [majors, setMajors] = useState([]);
 
@@ -46,21 +172,34 @@ const HomeSection3 = () => {
           ),
         ]);
 
-        const items = programData
+        let items = programData
           .filter((p) => p.type === "program" && p.status === "on")
           .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-          .slice(0, 6)
-          .map((p) => ({
-            ...p,
-            photo: p.photo || img,
-            date: p.created_at,
-          }));
+          .slice(0, 6);
+
+        // Fallback if API fails or returns less than 6
+        if (items.length < 6) {
+          const fallback = fallbackPrograms.slice(0, 6 - items.length);
+          items = [...items, ...fallback];
+        }
+
+        items = items.map((p) => ({
+          ...p,
+          photo: p.photo || img,
+          date: p.created_at,
+        }));
 
         setMajors(majorsData.results || []);
         setPrograms(items);
       } catch (e) {
         console.error(e);
-        setPrograms([]);
+        // Use fallback on complete failure
+        const fallback = fallbackPrograms.map((p) => ({
+          ...p,
+          photo: p.photo || img,
+          date: p.created_at,
+        }));
+        setPrograms(fallback);
         setMajors([]);
       }
     };
@@ -79,7 +218,14 @@ const HomeSection3 = () => {
           <h2 className={styles.title}>
             <span>Latest</span> Programs
           </h2>
-          <button className={styles.seeMoreButton}>See More</button>
+          <button
+            className={styles.seeMoreButton}
+            onClick={() => {
+            navigate("/register");
+            }}
+          >
+            See More
+          </button>
         </div>
         <div className={styles.cards}>
           {programs.length === 0 ? (

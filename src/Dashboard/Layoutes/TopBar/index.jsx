@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
 import styles from "./style.module.scss";
 import { FiSearch, FiUser, FiMenu, FiX, FiLogOut } from "react-icons/fi";
 
@@ -48,6 +47,12 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
   const handleLogout = () => {
     localStorage.clear();
     window.location.href = "/login";
+  };
+
+  const handleItemClick = (e, item) => {
+    e.preventDefault();
+    setIsModalOpen(false);
+    window.open(item.link, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -126,13 +131,13 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
                           {item.desc || "No description available"} -{" "}
                           {item.country || "N/A"}
                         </p>
-                        <Link
-                          to={`/dashboard/${item.type}/${item.slug}`}
+                        <a
+                          href={item.link}
                           className={styles.cardLink}
-                          onClick={() => setIsModalOpen(false)}
+                          onClick={(e) => handleItemClick(e, item)}
                         >
                           Learn More
-                        </Link>
+                        </a>
                       </div>
                     ))}
                   </>
@@ -150,13 +155,13 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
                           {program.desc || "No description available"} -{" "}
                           {program.country || "N/A"}
                         </p>
-                        <Link
-                          to={`/dashboard/program/${program.slug}`}
+                        <a
+                          href={program.link}
                           className={styles.cardLink}
-                          onClick={() => setIsModalOpen(false)}
+                          onClick={(e) => handleItemClick(e, program)}
                         >
                           Learn More
-                        </Link>
+                        </a>
                       </div>
                     ))
                   ) : (
@@ -171,13 +176,13 @@ const DashboardTopBar = ({ isNavOpen, toggleNav }) => {
                           {tutorial.desc || "No description available"} -{" "}
                           {tutorial.country || "N/A"}
                         </p>
-                        <Link
-                          to={`/dashboard/tutorial/${tutorial.slug}`}
+                        <a
+                          href={tutorial.link}
                           className={styles.cardLink}
-                          onClick={() => setIsModalOpen(false)}
+                          onClick={(e) => handleItemClick(e, tutorial)}
                         >
                           Learn More
-                        </Link>
+                        </a>
                       </div>
                     ))
                   ) : (
