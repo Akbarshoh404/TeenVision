@@ -166,8 +166,8 @@ const Register = () => {
         <div className={styles.texts}>
           <p className={styles.p1}>Sign Up</p>
           <p className={styles.p2}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry.
+            Start your journey with TeenVision and open the door to new
+            possibilities.
           </p>
         </div>
 

@@ -331,7 +331,11 @@ const DashboardTutorials = () => {
                     <animated.div style={style} className={styles.card}>
                       <div className={styles.cardImage}>
                         <img
-                          src={tutorial.photo}
+                          src={
+                            tutorial.photo.startsWith("http")
+                              ? tutorial.photo
+                              : `https://teenvision-1.onrender.com${tutorial.photo}`
+                          }
                           alt={tutorial.title}
                           onError={(e) => {
                             e.target.src = img;

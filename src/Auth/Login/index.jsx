@@ -187,8 +187,7 @@ const Login = () => {
         <div className={styles.texts}>
           <p className={styles.p1}>Sign In</p>
           <p className={styles.p2}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry.
+            Welcome back to TeenVision — your vision starts here.
           </p>
         </div>
 
